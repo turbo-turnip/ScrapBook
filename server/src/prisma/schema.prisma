@@ -70,3 +70,24 @@ model Interest {
 
   @@map(name: "interest")
 }
+
+model DM {
+  id String @id @db.Uuid()
+  users User[] @relation(fields: [userIDs], references: [id])
+  userIDs String[]
+  messages Message[] @default([]) @relation(fields: [messageIDs], references: [id])
+  messageIDs String[]
+
+  @@map(name: "dm")
+}
+
+model Message {
+  id String @id @db.Uuid()
+  user User
+  userID String
+  content String @db.VarChar(255)
+  reactions Reaction[] @default([])
+  reactionIDs String[]
+
+  @@map(name: "message")
+}
