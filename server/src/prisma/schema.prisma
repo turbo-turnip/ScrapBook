@@ -15,12 +15,12 @@ model User {
   avatar         String      @default("/media/default-avatar.svg") @db.VarChar(255)
   details        String      @db.VarChar(512)
   followers      Int
-  communities    Community[] @relation(fields: [communityIDs], reference: [id])
+  communities    Community[] @relation(fields: [communityIDs], references: [id])
   communityIDs   String[]
-  posts          Post[]      @relation(fields: [postIDs], reference: [id])
+  posts          Post[]      @relation(fields: [postIDs], references: [id])
   postIDs        String[]
   likes          Int
-  interests      Interest[]
+  interests      Interest[]  @relation(fields: [interestIDs], references: [id])
   interestIDs    String[]
   activity       String      @db.VarChar(25)
   blockedUsers   User[]
@@ -37,12 +37,14 @@ model Community {
   id        String   @id @db.Uuid()
   title     String   @unique @db.VarChar(35)
   details   String   @db.VarChar(512)
-  members   User[]   @relation(fields: [memberIDs], reference: [id])
+  members   User[]   @relation(fields: [memberIDs], references: [id])
   memberIDs String[]
-  posts     Post[]   @relation(fields: [postIDs], reference: [id])
+  posts     Post[]   @relation(fields: [postIDs], references: [id])
   postIDs   String[]
-  admins    User[]   @relation(fields: [adminIDs], reference: [id])
+  admins    User[]   @relation(fields: [adminIDs], references: [id])
   adminIDs  String[]
+
+  @@map(name: "community")
 }
 
 model Post {
@@ -54,6 +56,17 @@ model Post {
   commentIDs String[]
   images     String[]  @default([])
   videos     String[]  @default([])
-  member     User      @relation(fields: [memberID], reference: [id])
+  member     User      @relation(fields: [memberID], references: [id])
   memberID   String
+
+  @@map(name: "post")
+}
+
+model Interest {
+  id      String   @id @db.Uuid()
+  name    String   @db.VarChar(35)
+  users   User[]   @relation(fields: [userIDs], references: [id])
+  userIDs String[]
+
+  @@map(name: "interest")
 }
