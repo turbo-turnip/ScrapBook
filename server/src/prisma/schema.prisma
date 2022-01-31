@@ -8,21 +8,39 @@ datasource db {
 }
 
 model User {
-  id     String @id @db.Uuid()
-  name   String @unique @db.VarChar(35)
-  email  String @unique @db.VarChar(60)
-  password String @db.VarChar(150)
-  avatar String @default("/media/default-avatar.svg") @db.VarChar(255)
-  details String @db.VarChar(512)
-  followers Int
-  communities Community[]
-  posts Post[]
-  likes Int
-  interests Interest[]
-  activity String @db.VarChar(25)
-  blockedUsers User[]
-  openDMs DM[]
-  friends User[]
+  id             String      @id @db.Uuid()
+  name           String      @unique @db.VarChar(35)
+  email          String      @unique @db.VarChar(60)
+  password       String      @db.VarChar(150)
+  avatar         String      @default("/media/default-avatar.svg") @db.VarChar(255)
+  details        String      @db.VarChar(512)
+  followers      Int
+  communities    Community[] @relation(fields: [communityIDs], reference: [id])
+  communityIDs   String[]
+  posts          Post[]
+  postIDs        String[]
+  likes          Int
+  interests      Interest[]
+  interestIDs    String[]
+  activity       String      @db.VarChar(25)
+  blockedUsers   User[]
+  blockedUserIDs String[]
+  openDMs        DM[]
+  openDMIDs      String[]
+  friends        User[]
+  friendIDs      String[]
 
   @@map(name: "user")
+}
+
+model Community {
+  id        String   @id @db.Uuid()
+  title     String   @unique @db.VarChar(35)
+  details   String   @db.VarChar(512)
+  members   User[]   @relation(fields: [memberIDs], reference: [id])
+  memberIDs String[]
+  posts     Post[]
+  postIDs   String[]
+  admins    User[]   @relation(fields: [adminIDs], reference: [id])
+  adminIDs  String[]
 }
