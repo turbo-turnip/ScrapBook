@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id     String @id @db.Uuid()
+  name   String @unique @db.VarChar(35)
+  email  String @unique @db.VarChar(60)
+  password String @db.VarChar(150)
+  avatar String @default("/media/default-avatar.svg") @db.VarChar(255)
+  details String @db.VarChar(512)
+  followers Int
+  communities Community[]
+  posts Post[]
+  likes Int
+  interests Interest[]
+  activity String @db.VarChar(25)
+  blockedUsers User[]
+  openDMs DM[]
+  friends User[]
+
+  @@map(name: "user")
+}
