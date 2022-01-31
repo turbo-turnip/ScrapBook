@@ -17,7 +17,7 @@ model User {
   followers      Int
   communities    Community[] @relation(fields: [communityIDs], reference: [id])
   communityIDs   String[]
-  posts          Post[]
+  posts          Post[]      @relation(fields: [postIDs], reference: [id])
   postIDs        String[]
   likes          Int
   interests      Interest[]
@@ -39,8 +39,21 @@ model Community {
   details   String   @db.VarChar(512)
   members   User[]   @relation(fields: [memberIDs], reference: [id])
   memberIDs String[]
-  posts     Post[]
+  posts     Post[]   @relation(fields: [postIDs], reference: [id])
   postIDs   String[]
   admins    User[]   @relation(fields: [adminIDs], reference: [id])
   adminIDs  String[]
+}
+
+model Post {
+  id         String    @id @db.Uuid()
+  title      String    @db.VarChar(150)
+  body       String?   @db.VarChar(800)
+  likes      Int
+  comments   Comment[]
+  commentIDs String[]
+  images     String[]  @default([])
+  videos     String[]  @default([])
+  member     User      @relation(fields: [memberID], reference: [id])
+  memberID   String
 }
