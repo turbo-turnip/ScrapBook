@@ -8,33 +8,53 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(cuid())
-  name      String     @unique @db.VarChar(35)
-  email     String     @unique @db.VarChar(60)
-  password  String     @db.VarChar(150)
-  avatar    String     @default("/media/default-avatar.svg") @db.VarChar(255)
-  details   String     @db.VarChar(512)
-  followers Int
-  // TODO: communities
-  likes     Int
-  interests Interest[]
-  activity  String     @db.VarChar(25)
-  openDMs   DM[]
-  posts     Post[]
-  messages  Message[]
-  comments  Comment[]
-  // TODO: friends
-  // TODO: blocked users
+  id           String        @id @default(cuid())
+  name         String        @unique @db.VarChar(35)
+  email        String        @unique @db.VarChar(60)
+  password     String        @db.VarChar(150)
+  avatar       String        @default("/media/default-avatar.svg") @db.VarChar(255)
+  details      String        @db.VarChar(512)
+  friends      Friend[]
+  followers    Follower[]
+  blockedUsers BlockedUser[]
+  communities  Community[]
+  likes        Int
+  interests    Interest[]
+  activity     String        @db.VarChar(25)
+  openDMs      DM[]
+  posts        Post[]
+  messages     Message[]
+  comments     Comment[]
 
   @@map(name: "user")
 }
 
+model Follower {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userID], references: [id])
+  userID String
+}
+
+model BlockedUser {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userID], references: [id])
+  userID String
+}
+
+model Friend {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userID], references: [id])
+  userID String
+}
+
 model Community {
-  id      String @id @default(cuid())
-  title   String @unique @db.VarChar(35)
-  details String @db.VarChar(512)
+  id       String  @id @default(cuid())
+  title    String  @unique @db.VarChar(35)
+  details  String  @db.VarChar(512)
   // TODO: users
-  posts   Post[]
+  posts    Post[]
+  member   User?   @relation(fields: [memberID], references: [id])
+  memberID String?
 
   @@map(name: "community")
 }
