@@ -8,23 +8,24 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  name         String        @unique @db.VarChar(35)
-  email        String        @unique @db.VarChar(60)
-  password     String        @db.VarChar(150)
-  avatar       String        @default("/media/default-avatar.svg") @db.VarChar(255)
-  details      String        @db.VarChar(512)
-  friends      Friend[]
-  followers    Follower[]
-  blockedUsers BlockedUser[]
-  communities  Community[]
-  likes        Int
-  interests    Interest[]
-  activity     String        @db.VarChar(25)
-  openDMs      DM[]
-  posts        Post[]
-  messages     Message[]
-  comments     Comment[]
+  id               String            @id @default(cuid())
+  name             String            @unique @db.VarChar(35)
+  email            String            @unique @db.VarChar(60)
+  password         String            @db.VarChar(150)
+  avatar           String            @default("/media/default-avatar.svg") @db.VarChar(255)
+  details          String            @db.VarChar(512)
+  friends          Friend[]
+  followers        Follower[]
+  blockedUsers     BlockedUser[]
+  communities      Community[]
+  likes            Int
+  interests        Interest[]
+  activity         String            @db.VarChar(25)
+  openDMs          DM[]
+  posts            Post[]
+  messages         Message[]
+  comments         Comment[]
+  communityMembers CommunityMember[]
 
   @@map(name: "user")
 }
@@ -39,21 +40,36 @@ model BlockedUser {
   id     String @id @default(cuid())
   user   User   @relation(fields: [userID], references: [id])
   userID String
+
+  @@map("blocked_user")
 }
 
 model Friend {
   id     String @id @default(cuid())
   user   User   @relation(fields: [userID], references: [id])
   userID String
+
+  @@map("friend")
+}
+
+model CommunityMember {
+  id          String    @id @default(cuid())
+  nickname    String?
+  community   Community @relation(fields: [communityID], references: [id])
+  communityID String
+  user        User      @relation(fields: [userID], references: [id])
+  userID      String
+
+  @@map("community_member")
 }
 
 model Community {
-  id       String  @id @default(cuid())
-  title    String  @unique @db.VarChar(35)
-  details  String  @db.VarChar(512)
-  // TODO: users
+  id       String            @id @default(cuid())
+  title    String            @unique @db.VarChar(35)
+  details  String            @db.VarChar(512)
+  members  CommunityMember[]
   posts    Post[]
-  member   User?   @relation(fields: [memberID], references: [id])
+  member   User?             @relation(fields: [memberID], references: [id])
   memberID String?
 
   @@map(name: "community")
@@ -65,14 +81,36 @@ model Post {
   body        String?   @db.VarChar(800)
   likes       Int
   comments    Comment[]
-  // TODO: images
-  // TODO: videos
+  images      Image[]
+  videos      Video[]
   user        User      @relation(fields: [userID], references: [id])
   userID      String
   community   Community @relation(fields: [communityID], references: [id])
   communityID String
 
   @@map(name: "post")
+}
+
+model Image {
+  id      String  @id @default(cuid())
+  url     String? @db.VarChar(255)
+  caption String? @db.VarChar(150)
+  alt     String? @db.VarChar(150)
+  post    Post?    @relation(fields: [postID], references: [id])
+  postID  String?
+
+  @@map(name: "image")
+}
+
+model Video {
+  id      String  @id @default(cuid())
+  url     String? @db.VarChar(255)
+  caption String? @db.VarChar(150)
+  alt     String? @db.VarChar(150)
+  post    Post?    @relation(fields: [postID], references: [id])
+  postID  String?
+
+  @@map(name: "video")
 }
 
 model Interest {
