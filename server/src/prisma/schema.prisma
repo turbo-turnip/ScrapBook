@@ -34,6 +34,8 @@ model Follower {
   id     String @id @default(cuid())
   user   User   @relation(fields: [userID], references: [id])
   userID String
+
+  @@map(name: "follower")
 }
 
 model BlockedUser {
@@ -96,7 +98,7 @@ model Image {
   url     String? @db.VarChar(255)
   caption String? @db.VarChar(150)
   alt     String? @db.VarChar(150)
-  post    Post?    @relation(fields: [postID], references: [id])
+  post    Post?   @relation(fields: [postID], references: [id])
   postID  String?
 
   @@map(name: "image")
@@ -107,7 +109,7 @@ model Video {
   url     String? @db.VarChar(255)
   caption String? @db.VarChar(150)
   alt     String? @db.VarChar(150)
-  post    Post?    @relation(fields: [postID], references: [id])
+  post    Post?   @relation(fields: [postID], references: [id])
   postID  String?
 
   @@map(name: "video")

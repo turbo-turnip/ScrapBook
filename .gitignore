@@ -2,3 +2,5 @@
 /server/.env
 /**/node_modules
 /**/package-lock.json
+/server/logs
+/server/logs/*
