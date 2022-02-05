@@ -1,17 +1,19 @@
 import env from './config/env.config'
-import { LogType, log, flush } from './util/log.util';
-import express from 'express';
+import { LogType, log, flush, logsPath } from './util/log.util';
+import express, { Application, Request, Response } from 'express';
+import { PrismaClient } from '@prisma/client';
 
-const main = async (port: number) => {
-  const app = express();
+(async () => {
+  const app: Application = express();
+  const prisma = new PrismaClient();
 
-  // Limit incoming requests to 5 kilobytes
-  app.use(express.json({ limit: '5kb' }));
+  async function main(port: number) {
+    app.listen(port, () => log(LogType.INIT, `Server started on port ${port}`));
+  }
 
-  app.listen(port, () => {
-    // Start server and log start info
-    log(LogType.INIT, `Server listening on port ${port}`);
-  });
-}
-
-main(8080);
+  try {
+    await main(8080);
+  } catch(err) {
+    console.log('error :|');
+  }
+})();

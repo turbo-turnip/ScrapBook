@@ -1,4 +1,5 @@
 import { readFile, readFileSync, writeFileSync } from 'fs';
+import env from '../config/env.config';
 
 // Logging types
 export enum LogType {
@@ -6,7 +7,8 @@ export enum LogType {
   SUCCESS = "[SUCCESS]",
   ADDED = "[ADDED]",
   INIT = "[INIT]",
-  HTTP_ERROR = "[HTTP_ERROR]"
+  HTTP_ERROR = "[HTTP_ERROR]",
+  TERMINATE = "[TERMINATED]"
 }
 
 // Absolute path to logs (Relative: ../logs/log.txt)
@@ -31,4 +33,8 @@ export const log = (type: LogType, message: string) => {
   currentLogs += `${type} ${message} ${date}`;
 
   writeFileSync(logsPath, currentLogs);
+
+  // Console.log if in development mode
+  if (env.ENV === "DEV") 
+    console.log(`${type} ${message}`);
 }

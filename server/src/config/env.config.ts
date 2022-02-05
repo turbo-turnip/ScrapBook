@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 
-const envPath = `${process.cwd()}/src/.env`;
+const envPath = `${process.cwd()}/.env`;
 
 const vars = config({ path: envPath });
 if (vars.error)
