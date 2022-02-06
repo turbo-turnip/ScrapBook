@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cabin:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind:wght@300&display=swap');
+
+:root {
+  --heading-font: 'Nunito Sans';
+  --subheading-font: 'Cabin';
+  --text-font: 'Hind';
+  --blue: rgb(52, 138, 167);
+  --orange: rgb(255, 157, 87);
+  --white: rgb(255, 255, 255);
+  --border: rgb(224, 224, 224);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: none;
+  position: static;
+  text-decoration: none;
+  font-family: var(--text-font);
+}

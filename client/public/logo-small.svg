@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="23.590446mm"
+   height="20.381208mm"
+   viewBox="0 0 23.590446 20.381208"
+   version="1.1"
+   id="svg15415"
+   inkscape:version="1.1 (c4e8f9e, 2021-05-24)"
+   sodipodi:docname="logo-small.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview15417"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="2.7549814"
+     inkscape:cx="42.287037"
+     inkscape:cy="36.842354"
+     inkscape:window-width="1600"
+     inkscape:window-height="847"
+     inkscape:window-x="1920"
+     inkscape:window-y="127"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs15412" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-83.796854,-97.664343)">
+    <g
+       id="g15673">
+      <path
+         d="m 89.734924,108.79877 q -1.47441,0 -2.55428,-0.64376 -1.07985,-0.64375 -1.68208,-1.80669 -0.58147,-1.18367 -0.58147,-2.7827 0,-1.59901 0.58147,-2.76195 0.60223,-1.183692 1.68208,-1.827442 1.07987,-0.64376 2.55428,-0.64376 1.45365,0 2.53351,0.64376 1.10063,0.64375 1.68209,1.827442 0.60224,1.16294 0.60224,2.76195 0,1.59903 -0.60224,2.7827 -0.58146,1.16294 -1.68209,1.80669 -1.07986,0.64376 -2.53351,0.64376 z m 0,-1.34981 q 1.41211,0 2.26355,-0.9968 0.85142,-1.01755 0.85142,-2.88654 0,-1.88975 -0.85142,-2.88655 -0.85144,-0.996792 -2.26355,-0.996792 -1.43289,0 -2.28431,0.996792 -0.83065,0.9968 -0.83065,2.88655 0,1.86899 0.83065,2.88654 0.85142,0.9968 2.28431,0.9968 z"
+         id="path14057"
+         style="font-size:10.5833px;line-height:1.25;font-family:'Nunito Sans';-inkscape-font-specification:'Nunito Sans';fill:#348aa7;fill-opacity:1;stroke:#348aa7;stroke-width:1.33625;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" />
+      <path
+         d="m 101.29439,108.79877 q -1.474416,0 -2.554266,-0.64376 -1.07986,-0.64375 -1.68209,-1.80669 -0.58146,-1.18367 -0.58146,-2.7827 0,-1.59901 0.58146,-2.76195 0.60223,-1.183692 1.68209,-1.827442 1.07985,-0.64376 2.554266,-0.64376 1.45367,0 2.53352,0.64376 1.10062,0.64375 1.68208,1.827442 0.60223,1.16294 0.60223,2.76195 0,1.59903 -0.60223,2.7827 -0.58146,1.16294 -1.68208,1.80669 -1.07985,0.64376 -2.53352,0.64376 z m 0,-1.34981 q 1.41213,0 2.26355,-0.9968 0.85143,-1.01755 0.85143,-2.88654 0,-1.88975 -0.85143,-2.88655 -0.85142,-0.996792 -2.26355,-0.996792 -1.432866,0 -2.284306,0.996792 -0.83066,0.9968 -0.83066,2.88655 0,1.86899 0.83066,2.88654 0.85144,0.9968 2.284306,0.9968 z"
+         id="path14059"
+         style="font-size:10.5833px;line-height:1.25;font-family:'Nunito Sans';-inkscape-font-specification:'Nunito Sans';fill:#348aa7;fill-opacity:1;stroke:#348aa7;stroke-width:1.33625;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" />
+      <path
+         style="font-size:12.2259px;line-height:1.25;font-family:'Nunito Sans';-inkscape-font-specification:'Nunito Sans';fill:#000000;fill-opacity:0;stroke:#348aa7;stroke-width:2.90924;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 85.251474,111.02817 c 0,0 11.22237,12.61984 20.681206,-0.15205"
+         id="path14232" />
+    </g>
+  </g>
+</svg>
