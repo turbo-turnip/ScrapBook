@@ -1,3 +1,72 @@
+.signup {
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  top: 10vh;
+  margin-top: 5rem;
+  margin-bottom: 10rem;
+}
+
+.signup h1 {
+  font-size: 3rem;
+  font-family: var(--heading-font);
+  color: var(--blue);
+}
+
+.signup p {
+  font-size: 2rem;
+}
+
+.signup a {
+  color: var(--darker-blue);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.section {
+  width: 100vw;
+  position: relative;
+  top: 10vh;
+  display: flex;
+  justify-content: center;
+}
+
+.sectionContent:first-of-type {
+  position: relative;
+  top: 5rem;
+}
+
+.sectionContent {
+  width: 100%;
+  max-width: 800px;
+  padding: 0 3rem;
+  margin-bottom: 3rem;
+}
+
+.sectionContent:not(:first-of-type) {
+  margin-top: 3rem !important;
+}
+
+.topWave {
+  position: absolute;
+  top: 0;
+  min-width: 100%;
+  z-index: -1;
+}
+
+.sectionHeading {
+  font-size: 3rem;
+  font-family: var(--subheading-font);
+}
+
+.sectionDescription {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
 .banner {
   width: 100vw;
   height: 90vh;
@@ -41,18 +110,40 @@
 .heading h1 {
   text-align: center;
   color: var(--darker-blue);
-}
-
-.heading h1 span {
   font-family: var(--heading-font);
   font-weight: bolder;
   filter: drop-shadow(-5px 5px 0px var(--orange));
-  transform: rotate(0deg);
   transition: 0.1s;
 }
 
-.heading h1 span:hover {
+.heading h1:hover {
   filter: drop-shadow(-10px 10px 0px var(--orange));
+}
+
+.scroll {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  left: 50%;
+  bottom: 50px;
+  background: var(--darker-blue);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px #0009;
+  cursor: pointer;
+  animation: bounce 1s ease-in-out infinite alternate;
+}
+
+@keyframes bounce {
+  from {
+    transform: translate(-50%, -20px);
+  }
+
+  to {
+    transform: translate(-50%, 20px);
+  }
 }
 
 @media (max-width: 920px) {
@@ -78,8 +169,35 @@
   .heading h1 {
     line-height: 4rem;
   }
+}
 
-  .banner {
-    height: 80vh;
+@media (max-width: 500px) {
+  .heading {
+    font-size: 2rem;
+    position: relative;
+    bottom: 100px;
+  }
+
+  .aboutHeading {
+    font-size: 2.25rem;
+  }
+
+  .aboutDescription {
+    font-size: 1.15rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .sectionContent {
+    margin-top: 10rem;
+    max-width: 1000px;
+  }
+
+  .sectionHeading {
+    font-size: 3.5rem;
+  }
+
+  .sectionDescription {
+    font-size: 1.5rem;
   }
 }

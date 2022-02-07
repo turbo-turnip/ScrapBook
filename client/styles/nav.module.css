@@ -10,6 +10,7 @@
   border-bottom: 1px solid var(--border);
   background: var(--white);
   min-width: 100vw;
+  z-index: 100000;
 }
 
 .content {
