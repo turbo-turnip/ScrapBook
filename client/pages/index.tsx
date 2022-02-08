@@ -104,7 +104,7 @@ const Home: NextPage = () => {
         <div className={styles.sectionContent}>
           <h1 className={styles.sectionHeading}>Why Us?</h1>
           <p className={styles.sectionDescription}>We're open source, and we don't collect your personal data.</p>
-          <p className={styles.sectionDescription}>Although, if you want us to recommend communities and other users, opt-in to the interest-related suggestion plan, where you input your interests, and we try and find users and communities you might like!</p>
+          <p className={styles.sectionDescription}>Although, if you want us to recommend communities and other users, opt-in to <Link href="/suggestions">ScrapBook Suggestions</Link>, where you input your interests, and we try and find users and communities that share interests with you!</p>
           <p className={styles.sectionDescription}>We encrypt all of your private information and DMs.</p>
           <p className={styles.sectionDescription}>Discover and join, or create your own communities on ScrapBook!</p>
         </div>
