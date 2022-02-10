@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@prisma/client": "^3.9.1",
+    "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.14",
     "anymatch": "^3.1.2",

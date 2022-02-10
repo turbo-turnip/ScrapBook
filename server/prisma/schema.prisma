@@ -12,56 +12,61 @@ model User {
   name             String            @unique @db.VarChar(35)
   email            String            @unique @db.VarChar(60)
   password         String            @db.VarChar(150)
-  avatar           String            @default("/media/default-avatar.svg") @db.VarChar(255)
-  details          String            @db.VarChar(512)
-  friends          Friend[]
-  followers        Follower[]
+  details          String?           @db.VarChar(512)
+  avatar           String?           @db.VarChar(150)
+  likes            Int?
+  activity         String?           @db.VarChar(25)
   blockedUsers     BlockedUser[]
-  communities      Community[]
-  likes            Int
-  interests        Interest[]
-  activity         String            @db.VarChar(25)
-  openDMs          DM[]
-  posts            Post[]
-  messages         Message[]
   comments         Comment[]
+  communities      Community[]
   communityMembers CommunityMember[]
+  followers        Follower[]
+  friends          Friend[]
+  messages         Message[]
+  posts            Post[]
+  openDMs          DM[]
+  interests        Interest[]
 
-  @@map(name: "user")
+  @@map("user")
 }
 
 model Follower {
   id     String @id @default(cuid())
-  user   User   @relation(fields: [userID], references: [id])
   userID String
+  user   User   @relation(fields: [userID], references: [id])
 
-  @@map(name: "follower")
+  @@index([userID], map: "follower_userID_fkey")
+  @@map("follower")
 }
 
 model BlockedUser {
   id     String @id @default(cuid())
-  user   User   @relation(fields: [userID], references: [id])
   userID String
+  user   User   @relation(fields: [userID], references: [id])
 
+  @@index([userID], map: "blocked_user_userID_fkey")
   @@map("blocked_user")
 }
 
 model Friend {
   id     String @id @default(cuid())
-  user   User   @relation(fields: [userID], references: [id])
   userID String
+  user   User   @relation(fields: [userID], references: [id])
 
+  @@index([userID], map: "friend_userID_fkey")
   @@map("friend")
 }
 
 model CommunityMember {
   id          String    @id @default(cuid())
   nickname    String?
-  community   Community @relation(fields: [communityID], references: [id])
   communityID String
-  user        User      @relation(fields: [userID], references: [id])
   userID      String
+  community   Community @relation(fields: [communityID], references: [id])
+  user        User      @relation(fields: [userID], references: [id])
 
+  @@index([communityID], map: "community_member_communityID_fkey")
+  @@index([userID], map: "community_member_userID_fkey")
   @@map("community_member")
 }
 
@@ -69,12 +74,13 @@ model Community {
   id       String            @id @default(cuid())
   title    String            @unique @db.VarChar(35)
   details  String            @db.VarChar(512)
+  memberID String?
+  member   User?             @relation(fields: [memberID], references: [id])
   members  CommunityMember[]
   posts    Post[]
-  member   User?             @relation(fields: [memberID], references: [id])
-  memberID String?
 
-  @@map(name: "community")
+  @@index([memberID], map: "community_memberID_fkey")
+  @@map("community")
 }
 
 model Post {
@@ -82,15 +88,17 @@ model Post {
   title       String    @db.VarChar(150)
   body        String?   @db.VarChar(800)
   likes       Int
+  userID      String
+  communityID String
+  community   Community @relation(fields: [communityID], references: [id])
+  user        User      @relation(fields: [userID], references: [id])
   comments    Comment[]
   images      Image[]
   videos      Video[]
-  user        User      @relation(fields: [userID], references: [id])
-  userID      String
-  community   Community @relation(fields: [communityID], references: [id])
-  communityID String
 
-  @@map(name: "post")
+  @@index([communityID], map: "post_communityID_fkey")
+  @@index([userID], map: "post_userID_fkey")
+  @@map("post")
 }
 
 model Image {
@@ -98,10 +106,11 @@ model Image {
   url     String? @db.VarChar(255)
   caption String? @db.VarChar(150)
   alt     String? @db.VarChar(150)
-  post    Post?   @relation(fields: [postID], references: [id])
   postID  String?
+  post    Post?   @relation(fields: [postID], references: [id])
 
-  @@map(name: "image")
+  @@index([postID], map: "image_postID_fkey")
+  @@map("image")
 }
 
 model Video {
@@ -109,60 +118,67 @@ model Video {
   url     String? @db.VarChar(255)
   caption String? @db.VarChar(150)
   alt     String? @db.VarChar(150)
-  post    Post?   @relation(fields: [postID], references: [id])
   postID  String?
+  post    Post?   @relation(fields: [postID], references: [id])
 
-  @@map(name: "video")
+  @@index([postID], map: "video_postID_fkey")
+  @@map("video")
 }
 
 model Interest {
   id    String @id @default(cuid())
   name  String @db.VarChar(35)
-  users User[] @relation(references: [id])
+  users User[]
 
-  @@map(name: "interest")
+  @@map("interest")
 }
 
 model DM {
   id       String    @id @default(cuid())
-  users    User[]    @relation(references: [id])
   messages Message[]
+  users    User[]
 
-  @@map(name: "dm")
+  @@map("dm")
 }
 
 model Message {
   id              String     @id @default(cuid())
-  user            User       @relation(fields: [userID], references: [id])
   userID          String
   content         String     @db.VarChar(255)
-  reactions       Reaction[]
-  directMessage   DM         @relation(fields: [directMessageID], references: [id])
   directMessageID String
+  directMessage   DM         @relation(fields: [directMessageID], references: [id])
+  user            User       @relation(fields: [userID], references: [id])
+  reactions       Reaction[]
 
-  @@map(name: "message")
+  @@index([directMessageID], map: "message_directMessageID_fkey")
+  @@index([userID], map: "message_userID_fkey")
+  @@map("message")
 }
 
 model Comment {
   id        String     @id @default(cuid())
-  user      User       @relation(fields: [userID], references: [id])
   userID    String
   content   String     @db.VarChar(255)
-  reactions Reaction[]
-  post      Post       @relation(fields: [postID], references: [id])
   postID    String
+  post      Post       @relation(fields: [postID], references: [id])
+  user      User       @relation(fields: [userID], references: [id])
+  reactions Reaction[]
 
-  @@map(name: "comment")
+  @@index([postID], map: "comment_postID_fkey")
+  @@index([userID], map: "comment_userID_fkey")
+  @@map("comment")
 }
 
 model Reaction {
   id        String   @id @default(cuid())
   name      String
   count     Int      @default(1)
-  comment   Comment? @relation(fields: [commentID], references: [id])
   commentID String?
-  message   Message? @relation(fields: [messageID], references: [id])
   messageID String?
+  comment   Comment? @relation(fields: [commentID], references: [id])
+  message   Message? @relation(fields: [messageID], references: [id])
 
-  @@map(name: "reaction")
+  @@index([commentID], map: "reaction_commentID_fkey")
+  @@index([messageID], map: "reaction_messageID_fkey")
+  @@map("reaction")
 }
