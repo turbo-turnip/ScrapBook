@@ -1,12 +1,9 @@
-import env from './config/env.config'
 import { LogType, log, flush, logsPath } from './util/log.util';
 import express, { Application, Request, Response, json } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { UserRouter } from './routes';
 import cors from "cors";
 
 const app: Application = express();
-const prisma = new PrismaClient();
 
 (async () => {
   async function main(port: number) {
@@ -25,5 +22,4 @@ const prisma = new PrismaClient();
 
 process.on('exit', () => {
   log(LogType.TERMINATE, 'Server terminated');
-  prisma.$disconnect();
 });

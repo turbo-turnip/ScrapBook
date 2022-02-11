@@ -12,10 +12,10 @@ model User {
   name             String            @unique @db.VarChar(35)
   email            String            @unique @db.VarChar(60)
   password         String            @db.VarChar(150)
-  details          String?           @db.VarChar(512)
-  avatar           String?           @db.VarChar(150)
-  likes            Int?
-  activity         String?           @db.VarChar(25)
+  details          String            @default("") @db.VarChar(512)
+  avatar           String            @default("/media/default-avatar.svg") @db.VarChar(150)
+  activity         String            @default("Online") @db.VarChar(25)
+  likes            Int               @default(0)
   blockedUsers     BlockedUser[]
   comments         Comment[]
   communities      Community[]
