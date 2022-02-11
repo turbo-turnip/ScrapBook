@@ -35,7 +35,7 @@ export const addUser = async (req: Request, res: Response) => {
     });
 
     log(LogType.ADDED, "Successfully created user");
-    res.status(200).json(newUser);
+    res.status(200).json({ success: true, ...newUser });
 
     return;
   } catch (err: any) {

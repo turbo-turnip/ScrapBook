@@ -9,7 +9,7 @@ const app: Application = express();
   async function main(port: number) {
     app.use(json({ limit: '5kb' }));
     app.use(cors({ origin: "http://localhost:3000" }));
-    app.use('/user', UserRouter);
+    app.use('/users', UserRouter);
     app.listen(port, () => log(LogType.INIT, `Server started on port ${port}`));
   }
 
