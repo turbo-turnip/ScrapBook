@@ -195,3 +195,30 @@
 [INIT] Server started on port 8080 [PM 18:58:18:591-2/3/2022]
 [ADDED] Successfully created user [PM 18:58:50:922-2/3/2022]
 [ADDED] Successfully created user [PM 18:59:58:190-2/3/2022]
+[TERMINATED] Server terminated [PM 20:31:44:808-2/3/2022]
+[INIT] Server started on port 8080 [PM 20:31:46:5-2/3/2022]
+[TERMINATED] Server terminated [AM 7:16:54:311-2/4/2022]
+[INIT] Server started on port 8080 [AM 7:16:55:487-2/4/2022]
+[TERMINATED] Server terminated [AM 7:18:11:7-2/4/2022]
+[INIT] Server started on port 8080 [AM 7:18:12:483-2/4/2022]
+[ERROR] Unsuccessfully created user; request body: {"name":"cooluser123456","password":"asdf","email":"asdf@asdf.comn","suggestions":true} [AM 7:18:37:241-2/4/2022]
+[TERMINATED] Server terminated [AM 7:19:1:945-2/4/2022]
+[INIT] Server started on port 8080 [AM 7:19:3:113-2/4/2022]
+[ERROR] Unsuccessfully created user; request body: {"name":"cooluser123456","password":"asdf","email":"asdf@asdf.comn","suggestions":true} error: Error: 
+Invalid `prisma.user.create()` invocation in
+/Users/atticus/Desktop/ScrapBook/server/src/controller/user.controller.ts:27:39
+
+  24 try { 
+  25   const hashedPassword = await hash(password);
+  26   const hashedEmail = await hash(email);
+→ 27   const newUser = await prisma.user.create(
+  The provided value for the column is too long for the column's type. Column: email [AM 7:19:4:55-2/4/2022]
+[TERMINATED] Server terminated [AM 7:19:30:775-2/4/2022]
+[INIT] Server started on port 8080 [AM 7:19:31:943-2/4/2022]
+[ADDED] Successfully created user [AM 7:19:33:332-2/4/2022]
+[TERMINATED] Server terminated [AM 7:30:28:616-2/4/2022]
+[INIT] Server started on port 8080 [AM 7:30:45:149-2/4/2022]
+[ADDED] Successfully created user [AM 7:30:55:387-2/4/2022]
+[TERMINATED] Server terminated [AM 7:31:49:725-2/4/2022]
+[INIT] Server started on port 8080 [AM 7:31:50:930-2/4/2022]
+[TERMINATED] Server terminated [AM 7:33:28:1-2/4/2022]

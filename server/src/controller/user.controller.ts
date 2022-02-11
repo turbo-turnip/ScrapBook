@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { log, LogType } from '../util/log.util';
+import { hash } from 'argon2';
 
 const prisma = new PrismaClient();
 
@@ -21,8 +22,16 @@ export const addUser = async (req: Request, res: Response) => {
   }
 
   try { 
+    // Hash email and password with Argon2 https://npmjs.com/package/argon2
+    const hashedPassword = await hash(password);
+    const hashedEmail = await hash(email);
     const newUser = await prisma.user.create({
-      data: { name, email, password, suggestions }
+      data: { 
+        name, 
+        email: hashedEmail, 
+        password: hashedPassword, 
+        suggestions 
+      }
     });
 
     log(LogType.ADDED, "Successfully created user");
@@ -39,7 +48,7 @@ export const addUser = async (req: Request, res: Response) => {
 
       return;
     } else {
-      log(LogType.ERROR, `Unsuccessfully created user; request body: ${JSON.stringify(req.body)}`);
+      log(LogType.ERROR, `Unsuccessfully created user; request body: ${JSON.stringify(req.body)} error: ${err}`);
       res.status(500).json({ success: false, error: "Something went wrong; please refresh the page and try again, or try again with different credentials" });
 
       return;
