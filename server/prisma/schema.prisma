@@ -16,6 +16,7 @@ model User {
   avatar           String            @default("/media/default-avatar.svg") @db.VarChar(150)
   activity         String            @default("Online") @db.VarChar(25)
   likes            Int               @default(0)
+  suggestions      Boolean           @default(false)
   blockedUsers     BlockedUser[]
   comments         Comment[]
   communities      Community[]

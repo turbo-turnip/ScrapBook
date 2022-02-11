@@ -10,6 +10,7 @@ export const addUser = async (req: Request, res: Response) => {
   const name: string = req.body.name;
   const email: string = req.body.email;
   const password: string = req.body.password;
+  const suggestions: boolean = !!req.body.suggestions;
 
   if (!name || !email || !password) {
     // Gets the variable name of the null value out of `name`, `email`, and `password`
@@ -21,7 +22,7 @@ export const addUser = async (req: Request, res: Response) => {
 
   try { 
     const newUser = await prisma.user.create({
-      data: { name, email, password }
+      data: { name, email, password, suggestions }
     });
 
     log(LogType.ADDED, "Successfully created user");
