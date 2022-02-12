@@ -7,3 +7,6 @@
 /frontend/next-env.d.ts
 /server/logs/*.txt
 /server/prisma/migrations/**
+/.DS_Store
+/**/.DS_Store
+/client/.next
