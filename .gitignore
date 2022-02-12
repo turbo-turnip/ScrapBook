@@ -5,3 +5,4 @@
 /server/logs
 /server/logs/*
 /frontend/next-env.d.ts
+/server/logs/*.txt
