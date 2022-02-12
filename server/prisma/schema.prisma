@@ -17,6 +17,7 @@ model User {
   activity         String            @default("Online") @db.VarChar(25)
   likes            Int               @default(0)
   suggestions      Boolean           @default(false)
+  verified         Boolean           @default(false)
   blockedUsers     BlockedUser[]
   comments         Comment[]
   communities      Community[]

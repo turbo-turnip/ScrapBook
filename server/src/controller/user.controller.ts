@@ -2,10 +2,12 @@ import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { log, LogType } from '../util/log.util';
 import { hash, verify } from 'argon2';
+import { email } from '../util/email.util';
+import { getUserByID, userExistsID } from '../service';
 
 const prisma = new PrismaClient();
 
-// POST :8080/user
+// POST :8080s/user
 // Create a new user in the database
 export const addUser = async (req: Request, res: Response) => {
   const name: string = req.body.name;
@@ -50,7 +52,7 @@ export const addUser = async (req: Request, res: Response) => {
     });
 
     log(LogType.ADDED, "Successfully created user");
-    res.status(200).json({ success: true, message: `Successfully created new user ${name}!`, ...newUser });
+    res.status(200).json({ success: true, message: `Successfully signed up as ${name}!`, ...newUser });
 
     return;
   } catch (err: any) {
@@ -66,6 +68,36 @@ export const addUser = async (req: Request, res: Response) => {
       res.status(500).json({ success: false, error: "Something went wrong; please refresh the page and try again, or try again with different credentials" });
 
       return;
+    }
+  }
+}
+
+// POST :8080/users/sendVerificationEmail
+// Send a verification email to user
+export const sendVerificationEmail = async (req: Request, res: Response) => {
+  const userEmail = req.body?.email;
+  if (!userEmail) {
+    res.status(400).json({ success: false, error: "Please supply an email." });
+    return;
+  }
+
+  const exists = await userExistsID(req.body?.id || "");
+  if (exists) {
+    try {
+      const emailRes = await email({
+        to: userEmail,
+        subject: "Verify your email for ScrapBook",
+        html: `
+          <h1>Verify your email for ScrapBook</h1>
+          <h3>To get started and use the full potential of ScrapBook, verify your email address you signed up with! (${userEmail})</h4>
+          <a>Click this link to verify your email!</a>
+        `
+      });
+      
+      log(LogType.SUCCESS, `Successfully sent verification email. Info: ${emailRes}`);
+      res.status(200).json({ success: true, message: "Verification email sent" });
+    } catch (err) {
+      res.status(500).json({ success: false, error: err });
     }
   }
 }

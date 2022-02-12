@@ -2,13 +2,13 @@ import { FC, useEffect, useRef, useState } from "react";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useSpring, animated } from "@react-spring/three";
 
-interface Props {
+interface LockProps {
   rotation?: Array<number>;
   scale?: Array<number>;
   position?: Array<number>;
 }
 
-export const LockModel: FC<Props> = ({ ...props }) => {
+export const LockModel: FC<LockProps> = ({ ...props }) => {
   const group = useRef();
   const { nodes, materials, animations } = useGLTF("/lock.glb");
   const { actions } = useAnimations(animations, group);

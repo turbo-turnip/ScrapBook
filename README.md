@@ -27,6 +27,7 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 - Add functionality for hearts, comments, and reactions on posts
 - Create XP pets and customization options for them
 - Add levels and gifting for XP pets and customizations
+- Add UI animations to frontend
 
 ## Support
 
