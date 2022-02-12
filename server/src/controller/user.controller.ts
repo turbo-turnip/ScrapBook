@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { log, LogType } from '../util/log.util';
-import { hash } from 'argon2';
+import { hash, verify } from 'argon2';
 
 const prisma = new PrismaClient();
 
@@ -21,7 +21,22 @@ export const addUser = async (req: Request, res: Response) => {
     return;
   }
 
-  try { 
+  try {
+    // Check if email already exists in the database 
+    const allEmails = await prisma.user.findMany({
+      select: {
+        email: true
+      }
+    });
+    const similarEmails = await Promise.all(await allEmails.map(async (e) => {
+      const similarEmail = await verify(e.email, email);
+      return similarEmail;
+    }));
+    if (similarEmails.includes(true)) {
+      res.status(400).json({ success: false, error: `There is already a user under the same email, please choose a different one.` });
+      return;
+    }
+
     // Hash email and password with Argon2 https://npmjs.com/package/argon2
     const hashedPassword = await hash(password);
     const hashedEmail = await hash(email);
@@ -35,7 +50,7 @@ export const addUser = async (req: Request, res: Response) => {
     });
 
     log(LogType.ADDED, "Successfully created user");
-    res.status(200).json({ success: true, ...newUser });
+    res.status(200).json({ success: true, message: `Successfully created new user ${name}!`, ...newUser });
 
     return;
   } catch (err: any) {
@@ -43,8 +58,7 @@ export const addUser = async (req: Request, res: Response) => {
     // Error gets thrown when a unique field collides
     // Return HTTP status 400 when email or name already exist in database
     if (code === "P2002") {
-      const similarKey = err.meta.target.split(/user_|_key/g)[1];
-      res.status(400).json({ success: false, error: `There is already a user under the same ${similarKey}, please choose a different one.` });
+      res.status(400).json({ success: false, error: `There is already a user under the same name, please choose a different one.` });
 
       return;
     } else {
