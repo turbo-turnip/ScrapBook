@@ -6,3 +6,4 @@
 /server/logs/*
 /frontend/next-env.d.ts
 /server/logs/*.txt
+/server/prisma/migrations/**
