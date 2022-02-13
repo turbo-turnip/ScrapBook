@@ -4,6 +4,7 @@ import { log, LogType } from '../util/log.util';
 import { hash, verify } from 'argon2';
 import { email } from '../util/email.util';
 import { getUserByID, userExistsID } from '../service';
+import { hashEmailCode } from '../util/hashCode.util';
 
 const prisma = new PrismaClient();
 
@@ -83,14 +84,19 @@ export const sendVerificationEmail = async (req: Request, res: Response) => {
 
   const exists = await userExistsID(req.body?.id || "");
   if (exists) {
+    const user = await getUserByID(req.body?.id || "");
+    const hexUsername = Buffer.from(user.name, "utf8").toString("hex");
+    const hexCode = Buffer.from(hashEmailCode(userEmail).join("_"), "utf8").toString("hex");
     try {
+
       const emailRes = await email({
         to: userEmail,
         subject: "Verify your email for ScrapBook",
         html: `
           <h1>Verify your email for ScrapBook</h1>
           <h3>To get started and use the full potential of ScrapBook, verify your email address you signed up with! (${userEmail})</h4>
-          <a>Click this link to verify your email!</a>
+          <br/>
+          <a href="http://localhost:/verify/${hexUsername}/${hexCode}">Click this link to verify your email!</a>
         `
       });
       

@@ -14,11 +14,16 @@ export const userExistsID = (id: string) => {
 }
 
 export const getUserByID = (id: string) => {
-  return new Promise(async (res, rej) => {
+  type UserType = {
+    name: string,
+    [key: string]: string
+  }
+
+  return new Promise<UserType>(async (res, rej) => {
     const user = await prisma.user.findFirst({
       where: { id }
     });
 
-    res(user);
+    res((user as any) as UserType);
   });
 }
