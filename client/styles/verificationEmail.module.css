@@ -1,12 +1,23 @@
 .heading {
   margin-top: calc(10vh + 1rem);
-  margin-left: 1rem;
+  margin-left: 1.25rem;
   font-family: var(--heading-font);
   margin-bottom: 0.8rem;
 }
 
 .info {
   margin-bottom: 1rem;
-  margin-left: 1rem;
+  margin-left: 1.25rem;
   font-size: 1.25rem;
+}
+
+.resend {
+  font-size: 1.25rem;
+  margin-left: 1.25rem;
+  background: var(--orange);
+  color: var(--white);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--subheading-font);
 }

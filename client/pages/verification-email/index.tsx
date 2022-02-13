@@ -8,7 +8,10 @@ import Head from 'next/head';
 const VerificationEmail: NextPage = () => {
   const router = useRouter();
 
-  const sendEmail = async (id: string, email: string) => {
+  const sendEmail = async () => {
+    const id = localStorage.getItem("user_id") || "";
+    const email = localStorage.getItem("user_email") || "";
+
     const req = await fetch(backendPath + "/users/sendVerificationEmail", {
       method: 'POST',
       headers: {
@@ -28,21 +31,23 @@ const VerificationEmail: NextPage = () => {
       return;
     }
 
-    sendEmail(userID, email);
+    sendEmail();
   }, []);
   
   return (
     <>
       <Head>
-
+        <title>ScrapBook - Verify your email</title>
+        <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
       </Head>
 
       <Nav loggedIn={false} />
 
       <h1 className={styles.heading}>Verify your email</h1>
-      <p className={styles.info}>We have to make sure that the email you entered is yours!</p>
+      <p className={styles.info}>We have to make sure that the email you signed up with is yours!</p>
       <p className={styles.info}>We sent you an email, inside the email is a link that will verify you, so you can start using ScrapBook!</p>
       <p className={styles.info}>Please check your email</p>
+      <button className={styles.resend} onClick={sendEmail}>Resend Verification Email</button>
     </>
   );
 }

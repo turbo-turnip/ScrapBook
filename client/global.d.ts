@@ -3,6 +3,7 @@ interface Window {
 }
 
 declare const backendPath: string;
+declare const hexToASCII: (hex: string) => string;
 
 declare interface ServerResponse {
   success: boolean;

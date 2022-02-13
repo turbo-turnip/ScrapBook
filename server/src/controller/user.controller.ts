@@ -96,7 +96,7 @@ export const sendVerificationEmail = async (req: Request, res: Response) => {
           <h1>Verify your email for ScrapBook</h1>
           <h3>To get started and use the full potential of ScrapBook, verify your email address you signed up with! (${userEmail})</h4>
           <br/>
-          <a href="http://localhost:/verify/${hexUsername}/${hexCode}">Click this link to verify your email!</a>
+          <a href="http://localhost:3000/verification-email/verify?u=${hexUsername}&c=${hexCode}">Click this link to verify your email!</a>
         `
       });
       
