@@ -1,11 +1,13 @@
 import { NextPage } from "next"
 import { useRouter } from "next/router";
-import { useEffect } from "react";
-import { Nav } from "../../components";
+import React, { useEffect, useState } from "react";
+import { Nav, Popup, PopupType } from "../../components";
 import styles from '../../styles/verificationEmail.module.css';
 import Head from 'next/head';
 
 const VerificationEmail: NextPage = () => {
+  const [successPopups, setSuccessPopups] = useState<Array<{ message?: string }>>([]);
+  const [errorPopups, setErrorPopups] = useState<Array<{ message?: string }>>([]);
   const router = useRouter();
 
   const sendEmail = async () => {
@@ -20,7 +22,13 @@ const VerificationEmail: NextPage = () => {
       body: JSON.stringify({ id, email })
     });
     const res: ServerResponse = await req.json();
-    console.log(res);
+    if (res.success) {
+      setSuccessPopups(prevState => [...prevState, { message: res?.message || "Verification email sent" }]);
+      return;
+    } else {
+      setErrorPopups(prevState => [...prevState, { message: res?.error || "An error occurred sending the verification email. Please refresh the page" }]);
+      return;
+    }
   }
 
   useEffect(() => {
@@ -42,6 +50,25 @@ const VerificationEmail: NextPage = () => {
       </Head>
 
       <Nav loggedIn={false} />
+
+      {errorPopups.map((errorPopup, i) =>
+        (
+          <Popup
+            key={i}
+            message={errorPopup.message || "An error occurred. Please refresh the page"}
+            type={PopupType.ERROR}
+          />
+        )
+      )}
+      {successPopups.map((successPopup, i) =>
+        (
+          <Popup
+            key={i}
+            message={successPopup.message || "An error occurred. Please refresh the page"}
+            type={PopupType.SUCCESS}
+          />
+        )
+      )}
 
       <h1 className={styles.heading}>Verify your email</h1>
       <p className={styles.info}>We have to make sure that the email you signed up with is yours!</p>
