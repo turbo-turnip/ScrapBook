@@ -3,12 +3,12 @@ import { PrismaClient } from '@prisma/client';
 import { log, LogType } from '../util/log.util';
 import { hash, verify } from 'argon2';
 import { email } from '../util/email.util';
-import { getUserByID, userExistsID } from '../service';
+import { userExists, getUser } from '../service';
 import { hashEmailCode } from '../util/hashCode.util';
 
 const prisma = new PrismaClient();
 
-// POST :8080s/user
+// POST :8080/user
 // Create a new user in the database
 export const addUser = async (req: Request, res: Response) => {
   const name: string = req.body.name;
@@ -82,11 +82,11 @@ export const sendVerificationEmail = async (req: Request, res: Response) => {
     return;
   }
 
-  const exists = await userExistsID(req.body?.id || "");
+  const exists = await userExists("id", req.body?.id || "");
   if (exists) {
-    const user = await getUserByID(req.body?.id || "");
+    const user = await getUser("id", req.body?.id || "");
     const hexUsername = Buffer.from(user.name, "utf8").toString("hex");
-    const hexCode = Buffer.from(hashEmailCode(userEmail).join("_"), "utf8").toString("hex");
+    const hexCode = Buffer.from(hashEmailCode(user.email).join("_"), "utf8").toString("hex");
     try {
 
       const emailRes = await email({
@@ -105,5 +105,42 @@ export const sendVerificationEmail = async (req: Request, res: Response) => {
     } catch (err) {
       res.status(500).json({ success: false, error: err });
     }
+  }
+}
+
+// POST :8080/users/verify
+// Verify a user's email
+export const verifyUser = async (req: Request, res: Response) => {
+  const exists = await getUser("name", req.body?.username || "");
+  if (!exists) {
+    res.status(400).json({ success: false, error: "Invalid username" });
+    return;
+  } else if (exists && exists.verified) {
+    res.status(304).json({ success: true, message: "You're already verified" });
+    return;
+  } 
+
+  const passwordCorrect = await verify(exists.password, req.body?.password || "");
+  if (!passwordCorrect) {
+    res.status(403).json({ success: false, error: "Invalid password" });
+    return;
+  }
+  
+  const validEmail = hashEmailCode(exists.email).join('_') === req.body?.code;
+  if (!validEmail) {
+    res.status(403).json({ success: false, error: "Invalid verification code" });
+    return;
+  }
+
+  try {
+    await prisma.user.update({
+      where: { id: exists.id },
+      data: { verified: true }
+    });
+
+    res.status(200).json({ success: true, message: "Successfully verified user" });
+  } catch (err: any) {
+    log(LogType.ERROR, err);
+    res.status(500).json({ success: false, error: "An error occurred. Please refresh the page" });
   }
 }
