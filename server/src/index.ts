@@ -1,7 +1,8 @@
-import { LogType, log, flush, logsPath } from './util/log.util';
-import express, { Application, Request, Response, json } from 'express';
+import { LogType, log } from './util/log.util';
+import express, { Application, json } from 'express';
 import { UserRouter } from './routes';
 import cors from "cors";
+import { AuthRouter } from './routes/auth.route';
 
 const app: Application = express();
 
@@ -10,6 +11,7 @@ const app: Application = express();
     app.use(json({ limit: '5kb' }));
     app.use(cors({ origin: "http://localhost:3000" }));
     app.use('/users', UserRouter);
+    app.use('/auth', AuthRouter);
     app.listen(port, () => log(LogType.INIT, `Server started on port ${port}`));
   }
 

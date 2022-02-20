@@ -1,4 +1,4 @@
-import express, { Router, Request, Response } from 'express';
+import express, { Router } from 'express';
 import { addUser, sendVerificationEmail, verifyUser } from '../controller/user.controller';
 
 export const UserRouter = Router();
