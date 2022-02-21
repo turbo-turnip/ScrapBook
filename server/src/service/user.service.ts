@@ -43,8 +43,10 @@ export const getUserByEmail = (value: string) => {
     const users = await prisma.user.findMany();
     for (let i = 0; i < users.length; i++) {
       const emailMatches = await verify(users[i].email, value);
-      if (emailMatches)
+      if (emailMatches) {
         res((users[i] as any) as UserType);
+        return;
+      }
     }
 
     rej();
