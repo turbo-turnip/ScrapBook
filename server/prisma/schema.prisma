@@ -129,7 +129,7 @@ model Video {
 
 model Interest {
   id    String @id @default(cuid())
-  name  String @db.VarChar(35)
+  name  String @unique @db.VarChar(35)
   users User[]
 
   @@map("interest")

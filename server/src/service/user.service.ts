@@ -3,11 +3,17 @@ import { verify } from "argon2";
 
 const prisma = new PrismaClient();
 
-type UserType = {
+export type UserType = {
   id: string,
   name: string,
   email: string,
-  [key: string]: string
+  password: string,
+  details?: string,
+  avatar?: string,
+  activity?: string,
+  likes?: number,
+  suggestions?: boolean,
+  verified?: boolean
 }
 
 // Check if user exists by a specific property `prop`

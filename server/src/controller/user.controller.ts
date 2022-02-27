@@ -15,6 +15,7 @@ export const addUser = async (req: Request, res: Response) => {
   const email: string = req.body.email;
   const password: string = req.body.password;
   const suggestions: boolean = !!req.body.suggestions;
+  const interests: Array<string> = req.body.interests;
 
   if (!name || !email || !password) {
     // Gets the variable name of the null value out of `name`, `email`, and `password`
@@ -48,7 +49,11 @@ export const addUser = async (req: Request, res: Response) => {
         name, 
         email: hashedEmail, 
         password: hashedPassword, 
-        suggestions 
+        suggestions,
+        // Create interests and add them to user if they don't already exist in the interest table
+        interests: {
+          connectOrCreate: interests.map(interest => ({ create: { name: interest }, where: { name: interest } }))
+        }
       }
     });
 
@@ -120,12 +125,14 @@ export const verifyUser = async (req: Request, res: Response) => {
     return;
   } 
 
+  // Check if password is correct
   const passwordCorrect = await verify(exists.password, req.body?.password || "");
   if (!passwordCorrect) {
     res.status(403).json({ success: false, error: "Invalid password" });
     return;
   }
   
+  // Check if email matches the email hash code
   const validEmail = hashEmailCode(exists.email).join('_') === req.body?.code;
   if (!validEmail) {
     res.status(403).json({ success: false, error: "Invalid verification code" });
@@ -133,6 +140,7 @@ export const verifyUser = async (req: Request, res: Response) => {
   }
 
   try {
+    // Verify user by updating verified field in user table
     await prisma.user.update({
       where: { id: exists.id },
       data: { verified: true }

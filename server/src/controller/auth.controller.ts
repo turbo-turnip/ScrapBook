@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { generateTokens, getUserByEmail } from '../service';
+import { generateTokens, getUserByEmail, UserType } from '../service';
 import { PrismaClient } from '@prisma/client';
 import { verify } from 'argon2';
 import { sign } from 'jsonwebtoken';
@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
 export const login = async (req: Request, res: Response) => {
   const email: string = req.body?.email || "";
   const password: string = req.body?.password || "";
-  let user;
+  let user: UserType;
 
   try {
     user = await getUserByEmail(email);

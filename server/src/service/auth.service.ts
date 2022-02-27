@@ -1,12 +1,6 @@
 import { sign } from 'jsonwebtoken';
 import env from '../config/env.config';
-
-type UserType = {
-  id: string,
-  name: string,
-  email: string,
-  [key: string]: string
-}
+import { UserType } from './user.service';
 
 // Generate access and refresh tokens
 export const generateTokens = (user: UserType) => {
