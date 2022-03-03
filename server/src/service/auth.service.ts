@@ -1,6 +1,9 @@
+import { PrismaClient } from '@prisma/client';
 import { sign } from 'jsonwebtoken';
 import env from '../config/env.config';
 import { UserType } from './user.service';
+
+const prisma = new PrismaClient();
 
 // Generate access and refresh tokens
 export const generateTokens = (user: UserType) => {
@@ -15,5 +18,25 @@ export const generateTokens = (user: UserType) => {
     });
 
     res([accessToken, refreshToken]);
+  });
+}
+
+// Returns a [Promise] boolean wether the refresh token is in the banned table or not
+export const refreshTokenIsBanned = (refreshToken: string) => {
+  return new Promise<boolean>(async res => {
+    // Find first refresh token that matches parameter
+    const refreshTokenExists = await prisma.bannedRefreshTokens.findFirst({ where: { refreshToken } });
+    res(refreshTokenExists != null);
+  });
+}
+
+// Insert a refresh token into the banned refresh token list
+export const banRefreshToken = (refreshToken: string) => {
+  return new Promise<void>(async (res) => {
+    await prisma.bannedRefreshTokens.create({
+      data: { refreshToken }
+    });
+
+    res();
   });
 }

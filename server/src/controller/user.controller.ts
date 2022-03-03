@@ -50,6 +50,8 @@ export const addUser = async (req: Request, res: Response) => {
         email: hashedEmail, 
         password: hashedPassword, 
         suggestions,
+        // Temporary, fix default value bug later - See README.md Bugs
+        avatar: "/default-avatar.svg",
         // Create interests and add them to user if they don't already exist in the interest table
         interests: {
           connectOrCreate: interests.map(interest => ({ create: { name: interest }, where: { name: interest } }))

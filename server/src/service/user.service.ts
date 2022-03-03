@@ -35,7 +35,7 @@ export const getUser = (prop?: string, value?: any) => {
   return new Promise<UserType>(async (res) => {
     let query = {};
     if (prop && value)
-      query = { where: { [prop]: value } };
+      query = { where: { [prop]: value }, include: { interests: true } };
 
     const user = await prisma.user.findFirst(query);
     res((user as any) as UserType);
@@ -46,7 +46,7 @@ export const getUser = (prop?: string, value?: any) => {
 // getUserByEmail("example@example.com") returns the user with that email
 export const getUserByEmail = (value: string) => {
   return new Promise<UserType>(async (res, rej) => {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({ include: { interests: true }});
     for (let i = 0; i < users.length; i++) {
       const emailMatches = await verify(users[i].email, value);
       if (emailMatches) {

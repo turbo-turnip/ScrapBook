@@ -13,7 +13,7 @@ model User {
   email            String            @unique @db.VarChar(512)
   password         String            @db.VarChar(1024)
   details          String            @default("") @db.VarChar(512)
-  avatar           String            @default("/media/default-avatar.svg") @db.VarChar(150)
+  avatar           String            @default("/default-avatar.svg") @db.VarChar(150)
   activity         String            @default("Online") @db.VarChar(25)
   likes            Int               @default(0)
   suggestions      Boolean           @default(false)
@@ -183,4 +183,11 @@ model Reaction {
   @@index([commentID], map: "reaction_commentID_fkey")
   @@index([messageID], map: "reaction_messageID_fkey")
   @@map("reaction")
+}
+
+model BannedRefreshTokens {
+  id           String @id @default(cuid())
+  refreshToken String @unique @db.VarChar(512)
+
+  @@map("banned_refresh_token")
 }
