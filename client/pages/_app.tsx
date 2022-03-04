@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
+import { Router } from "next/router";
 
 global.backendPath = "http://localhost:8080";
 global.hexToASCII = (hex: string): string => {
@@ -11,6 +12,36 @@ global.hexToASCII = (hex: string): string => {
   }
 
   return out;
+}
+global.fetchAccount = (accessToken: string, refreshToken: string) => {
+  return new Promise(async (resolve) => {
+    if (!accessToken || !refreshToken) {
+      resolve({ loggedIn: false, redirect: '/login' });
+      return;
+    }
+
+    const req = await fetch(backendPath + "/auth/account", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        accessToken: localStorage.getItem("at"),
+        refreshToken: localStorage.getItem("rt")
+      })
+    });
+
+    const res: ServerResponse = await req.json();
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken || "");
+        localStorage.setItem("rt", res?.newRefreshToken || "");
+      }
+
+      resolve({ loggedIn: true, account: res.account });
+    } else {
+      resolve({ loggedIn: false, redirect: '/login' });
+      return;
+    }
+  });
 }
 
 function MyApp({ Component, pageProps }: AppProps) {

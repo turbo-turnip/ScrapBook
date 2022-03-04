@@ -1,0 +1,114 @@
+.sidebar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  height: 90vh;
+  width: 50vh;
+  max-width: 200px;
+  border-left: 1px solid var(--border);
+  transition: transform 0.2s ease;
+}
+
+.categoryTitle {
+  font-family: var(--heading-font);
+  font-size: 1.4rem; 
+  margin-left: 1rem;
+  margin-top: 1rem;
+}
+
+.option p {
+  font-size: 1.25rem;
+}
+
+.option {
+  cursor: pointer;
+  width: 100%;
+  padding: 0.25rem 1rem;
+  position: relative;
+}
+
+.option::after {
+  content: attr(data-emoji);
+  position: absolute;
+  top: 50%;
+  left: -10px;
+  transform: translate(-180%, -50%);
+  opacity: 0;
+  animation: bob 3s ease-in infinite;
+  transition: 0.5s;
+  pointer-events: none;
+}
+
+.option:hover {
+  background: var(--orange);
+}
+
+.option:hover::after {
+  opacity: 1;
+  left: 0px;
+}
+
+.collapse {
+  position: absolute;
+  left: 0px;
+  transform: translateX(-100%);
+  cursor: pointer;
+  opacity: 0;
+  transition: 0.2s;
+}
+
+.collapse::after {
+  content: "Hide sidebar ⛔️";
+  position: absolute;
+  background: var(--tooltip-color);
+  left: 0;
+  top: 60%;
+  width: max-content;
+  padding-right: 1rem;
+  padding: 0.25rem 1rem;
+  border-radius: 5px;
+  transform: translate(-110%, -50%);
+  color: var(--white);
+  opacity: 0;
+  transition: 0.2s;
+  pointer-events: none;
+}
+
+.sidebar:hover .collapse {
+  left: 6px;
+  opacity: 1;
+}
+
+.sidebar:hover .collapse:hover::after {
+  opacity: 1;
+  top: 70%;
+}
+
+.collapsed {
+  transform: translateX(91%);
+}
+
+.collapsed .collapse {
+  opacity: 1;
+  left: 6px;
+}
+
+.collapsed .collapse:hover {
+  left: 0px;
+}
+
+.collapsed .collapse::after {
+  content: "Show sidebar 👀";
+}
+
+@keyframes bob {
+  0% {
+		transform: translate(-180%, calc(-50% + 0px));
+	}
+	50% {
+		transform: translate(-180%, calc(-50% + -10px));
+	}
+	100% {
+		transform: translate(-180%, calc(-50% + 0px));
+	}
+}

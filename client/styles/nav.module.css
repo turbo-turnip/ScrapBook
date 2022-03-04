@@ -1,3 +1,7 @@
+.avatar {
+  height: 60%;
+}
+
 .nav {
   position: fixed;
   top: 0;
@@ -37,9 +41,11 @@
 }
 
 .right {
+  height: 100%;
   width: 50%;
   min-width: 400px;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   column-gap: 1rem;
 }

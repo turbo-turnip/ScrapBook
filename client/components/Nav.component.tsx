@@ -4,7 +4,7 @@ import styles from '../styles/nav.module.css';
 
 interface NavProps {
   loggedIn: boolean;
-  account?: { [key: string]: any };
+  account?: { [key: string]: any }|null;
 }
 
 export const Nav: FC<NavProps> = ({ loggedIn, account }) => {
@@ -18,12 +18,21 @@ export const Nav: FC<NavProps> = ({ loggedIn, account }) => {
 
         <div className={styles.right}>
           <input type="text" placeholder="🔎 Search" className={styles.search} />
-          <button className={styles.btn}>
-            <Link href="/login">Login</Link>
-          </button>
-          <button className={styles.btn}>
-            <Link href="/signup">Sign Up</Link>
-          </button>
+          {!loggedIn ? 
+            <>
+              <button className={styles.btn}>
+                <Link href="/login">Login</Link>
+              </button>
+              <button className={styles.btn}>
+                <Link href="/signup">Sign Up</Link>
+              </button>
+            </> :
+            account && 
+            <>
+              <img src={account.avatar} className={styles.avatar} />
+              <h4 className={styles.name}>{account.name}</h4>
+            </>
+          }
         </div>
       </div>
     </nav>

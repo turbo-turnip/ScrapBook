@@ -20,6 +20,7 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 ## Development Roadmap
 
 - Work on frontend and backend for auth with JWTs
+- Add interests for users
 - Store communities in Prisma 2 MySQL database and push when new community is created
 - View/follow user profiles and manage user settings
 - Create, add/remove \[group] DMs with other followers
@@ -28,6 +29,11 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 - Create XP pets and customization options for them
 - Add levels and gifting for XP pets and customizations
 - Add UI animations to frontend
+- Add reCAPTCHA to submission forms
+
+## Bugs
+
+- Creating user avatar field uses old default value
 
 ## Support
 

@@ -1,15 +1,25 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { AuthForm, FieldType, Nav, Popup, PopupType } from "../components";
+import { queryInterests } from "../util/interests.util";
+
+const useForceUpdate = () => {
+  const [ _, setValue ] = useState(0);
+  return () => setValue(value => value + 1);
+}
 
 const SignUp: NextPage = () => {
   const [successPopup, setSuccessPopup] = useState<{ message?: string; show: boolean }>({ message: "", show: false });
   const [errorPopups, setErrorPopups] = useState<Array<{ message?: string }>>([]);
+  const [showInterests, setShowInterests] = useState(false);
+  const [relatedInterests, setRelatedInterests] = useState<Array<string>>([]);
+  const [interests, setInterests] = useState<Array<string>>([]);
+  const forceUpdate = useForceUpdate();
   const router = useRouter();
 
-  const signUpHandler = async (inputs: Array<any>) => {
+  const signUpHandler = async (inputs: Array<any>, tags?: Array<any>) => {
     const [name, email, password, suggestions]: Array<string> = inputs;
 
     const req = await fetch(backendPath + "/users", {
@@ -17,20 +27,20 @@ const SignUp: NextPage = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, email, password, suggestions }),
+      body: JSON.stringify({ name, email, password, suggestions, interests: tags ? tags : [] }),
     });
 
     const res: ServerResponse = await req.json();
     if (res.success) {
+      localStorage.setItem("user_id", res?.id || "");
+      localStorage.setItem("user_email", email);
       setSuccessPopup({ message: res?.message || "Successfully signed up!", show: true });
       setTimeout(() => {
-        localStorage.setItem("user_id", res?.id || "");
-        localStorage.setItem("user_email", email);
         router.push('/verification-email');
       }, 6000);
     } else
       setErrorPopups(prevState => [...prevState, { message: res?.error }]);
-  };
+  }
 
   return (
     <>
@@ -98,8 +108,52 @@ const SignUp: NextPage = () => {
           {
             label: "Opt-In To ScrapBook Suggestions",
             type: FieldType.CHECKBOX,
+            onChange: (event) => { 
+              const target: HTMLInputElement = event.target as any;
+              setShowInterests(target.checked);
+            }
           },
+          showInterests ?
+          {
+            label: "What are you interested in?",
+            type: FieldType.INPUT,
+            placeholder: "Enter a hobby/interest you have",
+            required: true,
+            max: 255,
+            onChange: (event) => { 
+              const target: HTMLInputElement = event.target as any;
+              const empty = !target.value || target.value == "";
+              empty ? setRelatedInterests([]) : setRelatedInterests(queryInterests(target.value.toLowerCase()));
+            }
+          } : { skip: true }
         ]}
+        tags={(showInterests) ? 
+          [
+            ...relatedInterests.map((interest, i) => (
+              { 
+                value: interest, 
+                active: false, 
+                onClick: () => {
+                  setRelatedInterests([]);
+                  if (!interests.includes(interest)) {
+                    setInterests(prevState => [...prevState, interest]); 
+                  }
+                  forceUpdate();
+                }
+              }
+            )),
+            ...interests.map((interest) => (
+              {
+                value: interest,
+                active: true,
+                onRemove: () => {
+                  const newInterests = interests.filter(i => i != interest);
+                  setInterests(newInterests);
+                  forceUpdate();
+                }
+              }
+            ))
+          ] : []}
       />
     </>
   );

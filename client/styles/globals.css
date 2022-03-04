@@ -8,9 +8,11 @@
   --text-font: 'Hind';
   --blue: rgb(52, 138, 167);
   --darker-blue: rgb(38, 96, 116);
+  --lighter-blue: rgb(173, 207, 219);
   --orange: rgb(255, 157, 87);
   --white: rgb(255, 255, 255);
   --border: rgb(224, 224, 224);
+  --tooltip-color: rgb(100, 100, 100);
 }
 
 * {

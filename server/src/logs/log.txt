@@ -299,3 +299,4 @@
 [INIT] Server started on port 8080 [PM 17:22:39:848-3/2/2022]
 [ADDED] Successfully created user [PM 17:24:53:384-3/2/2022]
 [SUCCESS] Successfully sent verification email. Info: 250 2.0.0 OK  1646270601 x9-20020a05620a01e900b00508a7bf4897sm327543qkn.130 - gsmtp [PM 17:25:2:660-3/2/2022]
+[INIT] Server started on port 8080 [PM 18:39:1:235-3/2/2022]

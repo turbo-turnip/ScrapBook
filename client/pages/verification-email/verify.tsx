@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import Head from "next/head";
 import { Nav, AuthForm, FieldType, PopupType, Popup } from "../../components";
 
 
@@ -32,7 +33,7 @@ const Verify: NextPage = () => {
       const res: ServerResponse = await req.json();
       if (res.success) {
         setSuccessPopups(prevState => [...prevState, { message: res?.message || "Successfully verified email" }]);
-        setTimeout(() => router.push('/home'), 5500);
+        setTimeout(() => router.push('/login'), 5500);
         return;
       } else {
         setErrorPopups(prevState => [...prevState, { message: res?.error || "An error occurred. Please refresh the page" }]);
@@ -53,6 +54,11 @@ const Verify: NextPage = () => {
   return (
     <>
       <Nav loggedIn={false} />
+
+      <Head>
+        <title>ScrapBook - Verify</title>
+        <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
+      </Head>
 
       {errorPopups.map((errorPopup, i) =>
         (

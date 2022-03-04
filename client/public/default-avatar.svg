@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="101.57732mm"
+   height="101.57732mm"
+   viewBox="0 0 101.57732 101.57732"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1 (c4e8f9e, 2021-05-24)"
+   sodipodi:docname="default-avatar.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.0128352"
+     inkscape:cx="478.36016"
+     inkscape:cy="276.94535"
+     inkscape:window-width="1312"
+     inkscape:window-height="1027"
+     inkscape:window-x="257"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-53.994843,-78.829903)">
+    <path
+       id="path172"
+       style="fill:#ff9d57;stroke:#ff9d57;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 152.07216,129.61856 A 47.288658,47.288658 0 0 1 104.7835,176.90722 47.288658,47.288658 0 0 1 57.494843,129.61856 47.288658,47.288658 0 0 1 104.7835,82.329903 47.288658,47.288658 0 0 1 152.07216,129.61856 Z" />
+    <path
+       id="path31"
+       style="fill:#3482a7;fill-opacity:1;stroke:#ff9d57;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 407.25195,505.18359 c -86.7367,-0.78737 -156.87602,41.85248 -175.66992,54.41993 A 178.72879,178.72879 0 0 0 396.03125,668.625 178.72879,178.72879 0 0 0 560.57617,559.64062 C 508.56002,519.57833 455.41761,505.62083 407.25195,505.18359 Z"
+       transform="scale(0.26458333)" />
+    <circle
+       style="fill:#3482a7;fill-opacity:1;stroke:#ff9d57;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path2020"
+       cx="104.7835"
+       cy="119.70825"
+       r="22.503096" />
+  </g>
+</svg>
