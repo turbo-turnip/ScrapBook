@@ -27,6 +27,10 @@
   position: relative;
 }
 
+.option[data-selected="true"] {
+  background: var(--orange);
+}
+
 .option::after {
   content: attr(data-emoji);
   position: absolute;

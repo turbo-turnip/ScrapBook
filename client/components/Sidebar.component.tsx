@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
 import styles from '../styles/sidebar.module.css';
 
@@ -7,6 +8,8 @@ interface SidebarProps {
       title: string;
       tooltip: string;
       emoji: string;
+      link?: string;
+      selected?: boolean;
     }>;
     title: string;
   }>;
@@ -14,8 +17,10 @@ interface SidebarProps {
 
 export const Sidebar: FC<SidebarProps> = ({ categories }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
+    console.log(categories);
     window.onresize = () => {
       setCollapsed(window.matchMedia("(max-width: 500px)").matches);
     }
@@ -31,7 +36,13 @@ export const Sidebar: FC<SidebarProps> = ({ categories }) => {
           <div className={styles.category} key={ci}>
             <h4 className={styles.categoryTitle}>{category.title}</h4>
             {category.options.map((option, oi) => 
-              <div className={styles.option} key={oi} data-selected={(ci === 0 && oi === 0)} data-tooltip={`${option.tooltip} ${option.emoji}`} data-emoji={option.emoji}>
+              <div 
+                className={styles.option} 
+                key={oi} 
+                data-selected={option.hasOwnProperty('selected') ? option.selected : (ci === 0 && oi === 0)} 
+                data-tooltip={`${option.tooltip} ${option.emoji}`} 
+                data-emoji={option.emoji} 
+                onClick={option?.link ? () => { router.push(option?.link || "/home") } : () => {}}>
                 <p>{option.title}</p>
               </div>)}  
           </div>)}

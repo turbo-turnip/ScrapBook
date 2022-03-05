@@ -1,12 +1,12 @@
 import { NextPage } from "next";
+import { Nav, Sidebar } from "../components";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Head from "next/head";
-import { Nav, Sidebar } from "../components";
 import { UserType } from "../util/userType.util";
-import { homeSidebarProps } from "../util/homeSidebarProps.util";
+import { getSidebarPropsWithOption } from "../util/homeSidebarProps.util";
 
-const Home: NextPage = () => {
+const Communities: NextPage = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [account, setAccount] = useState<UserType|null>(null);
   const router = useRouter();
@@ -37,11 +37,10 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
       </Head>
 
+      <Sidebar categories={getSidebarPropsWithOption("Communities")} />
       <Nav loggedIn={loggedIn} account={loggedIn ? account : null} /> 
-
-      <Sidebar categories={homeSidebarProps} />
     </>
   );
 }
 
-export default Home;
+export default Communities;
