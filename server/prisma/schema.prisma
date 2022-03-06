@@ -27,7 +27,7 @@ model User {
   messages         Message[]
   posts            Post[]
   openDMs          DM[]
-  interests        Interest[]
+  interests        UserInterest[]
 
   @@map("user")
 }
@@ -64,8 +64,9 @@ model CommunityMember {
   nickname    String?
   communityID String
   userID      String
-  community   Community @relation(fields: [communityID], references: [id])
   user        User      @relation(fields: [userID], references: [id])
+  community   Community @relation(fields: [communityID], references: [id])
+  owner       Boolean
 
   @@index([communityID], map: "community_member_communityID_fkey")
   @@index([userID], map: "community_member_userID_fkey")
@@ -73,13 +74,14 @@ model CommunityMember {
 }
 
 model Community {
-  id       String            @id @default(cuid())
-  title    String            @unique @db.VarChar(35)
-  details  String            @db.VarChar(512)
-  memberID String?
-  member   User?             @relation(fields: [memberID], references: [id])
-  members  CommunityMember[]
-  posts    Post[]
+  id          String            @id @default(cuid())
+  title       String            @unique @db.VarChar(35)
+  details     String            @db.VarChar(512)
+  memberID    String?
+  membersUser User[]
+  members     CommunityMember[]
+  interests   CommunityInterest[]
+  posts       Post[]         
 
   @@index([memberID], map: "community_memberID_fkey")
   @@map("community")
@@ -127,12 +129,20 @@ model Video {
   @@map("video")
 }
 
-model Interest {
-  id    String @id @default(cuid())
-  name  String @unique @db.VarChar(35)
-  users User[]
+model UserInterest {
+  id          String      @id @default(cuid())
+  name        String      @unique @db.VarChar(35)
+  users       User[]
 
-  @@map("interest")
+  @@map("user_interest")
+}
+
+model CommunityInterest {
+  id          String      @id @default(cuid())
+  name        String      @unique @db.VarChar(35)
+  communities Community[]
+
+  @@map("community_interest")
 }
 
 model DM {
