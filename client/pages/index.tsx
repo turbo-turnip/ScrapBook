@@ -4,9 +4,29 @@ import Link from "next/link";
 import styles from "../styles/Home.module.css";
 import { LockModel, Nav } from "../components";
 import { Canvas } from "@react-three/fiber";
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
+import { UserType } from "../util/userType.util";
 
 const Home: NextPage = () => {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [account, setAccount] = useState<UserType|null>(null);
+
+  const auth = async () => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const res = await fetchAccount(accessToken, refreshToken);
+    if (res.loggedIn) {
+      setLoggedIn(true)
+      setAccount(res.account);
+      return;
+    } else return;
+  }
+
+  useEffect(() => {
+    auth();
+  }, []);
+
   return (
     <>
       <Head>
@@ -14,7 +34,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
       </Head>
 
-      <Nav loggedIn={false} />
+      <Nav loggedIn={loggedIn} account={loggedIn ? account : null} /> 
 
       <main className={styles.banner}>
         <div className={styles.content}>

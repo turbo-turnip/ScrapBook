@@ -7,6 +7,8 @@
   max-width: 200px;
   border-left: 1px solid var(--border);
   transition: transform 0.2s ease;
+  z-index: 1000;
+  background: var(--white);
 }
 
 .categoryTitle {
@@ -90,6 +92,10 @@
 
 .collapsed {
   transform: translateX(91%);
+}
+
+.collapsed .option {
+  pointer-events: none;
 }
 
 .collapsed .collapse {

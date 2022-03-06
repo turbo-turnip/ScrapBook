@@ -13,22 +13,28 @@ interface SidebarProps {
     }>;
     title: string;
   }>;
+  onToggle?: (value: boolean) => void;
 }
 
-export const Sidebar: FC<SidebarProps> = ({ categories }) => {
+export const Sidebar: FC<SidebarProps> = ({ categories, onToggle }) => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     console.log(categories);
     window.onresize = () => {
-      setCollapsed(window.matchMedia("(max-width: 500px)").matches);
+      const query = window.matchMedia("(max-width: 500px)").matches;
+      setCollapsed(query);
+      onToggle && onToggle(query);
     }
   }, []);
 
   return (
     <div className={`${styles.sidebar} ${collapsed ? styles.collapsed : ""}`}>
-      <span className={styles.collapse} onClick={() => setCollapsed(prevState => !prevState)}>
+      <span className={styles.collapse} onClick={() => {
+        setCollapsed(prevState => !prevState);
+        onToggle && onToggle(!collapsed);
+      }}>
         {collapsed ? "⬅️" : "➡️"}
       </span>
       <div className={styles.categories}>

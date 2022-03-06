@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
-import { Nav, AuthForm, FieldType, PopupType, Popup } from "../../components";
+import { Nav, Form, FieldType, PopupType, Popup } from "../../components";
 
 
 const Verify: NextPage = () => {
@@ -79,7 +79,7 @@ const Verify: NextPage = () => {
         )
       )}
 
-      <AuthForm heading="Verify" fields={[
+      <Form heading="Verify" fields={[
         { label: "Password", placeholder: "Please enter your password", required: true, type: FieldType.PASS, max: 512 }
       ]} links={[]} submitHandler={verifyUser} />
     </>

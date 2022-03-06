@@ -1,5 +1,5 @@
 .form {
-  width: 85vw;
+  width: 85%;
   max-width: 350px;
   height: fit-content;
   position: relative;
@@ -18,8 +18,10 @@
 }
 
 .heading {
+  font-size: 1.9rem;
   font-family: var(--subheading-font);
   color: var(--darker-blue);
+  margin-bottom: 0.75rem;
 }
 
 .field {

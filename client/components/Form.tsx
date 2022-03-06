@@ -1,4 +1,4 @@
-import styles from '../styles/authform.module.css';
+import styles from '../styles/form.module.css';
 import Link from 'next/link';
 import { ChangeEvent, ChangeEventHandler, FC, MouseEventHandler } from "react";
 
@@ -10,7 +10,7 @@ export enum FieldType {
   SLIDER = "range"
 }
 
-interface AuthFormProps {
+interface FormProps {
   heading?: string;
   submitHandler: (inputs: Array<any>, tags?: Array<any>) => void;
   fields: Array<{
@@ -34,7 +34,7 @@ interface AuthFormProps {
   }>;
 }
 
-export const AuthForm: FC<AuthFormProps> = ({ submitHandler, heading, fields, links, tags }) => {
+export const Form: FC<FormProps> = ({ submitHandler, heading, fields, links, tags }) => {
   return (
     <form className={styles.form} onSubmit={(event) => {
       event.preventDefault();

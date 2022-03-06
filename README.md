@@ -19,21 +19,26 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 
 ## Development Roadmap
 
-- Work on frontend and backend for auth with JWTs
-- Add interests for users
-- Store communities in Prisma 2 MySQL database and push when new community is created
-- View/follow user profiles and manage user settings
-- Create, add/remove \[group] DMs with other followers
-- Create posts and discussions in communities
-- Add functionality for hearts, comments, and reactions on posts
-- Create XP pets and customization options for them
-- Add levels and gifting for XP pets and customizations
-- Add UI animations to frontend
-- Add reCAPTCHA to submission forms
+| Task                                                                                | Completed |
+|-------------------------------------------------------------------------------------|-----------|
+| Work on frontend and backend for auth with JWTs                                     | true      |
+| Add interests for users                                                             | true      |
+| Store communities in Prisma 2 MySQL database and push when new community is created | false     |
+| View/follow user profiles and manage user settings                                  | false     |
+| Create, add/remove \[group] DMs with other followers                                | false     |
+| Create posts and discussions in communities                                         | false     |
+| Add functionality for hearts, comments, and reactions on posts                      | false     |
+| Create XP pets and customization options for them                                   | false     |
+| Add levels and gifting for XP pets and customizations                               | false     |
+| Add information pages                                                               | false     |
+| Add UI animations to frontend                                                       | false     |
+| Add reCAPTCHA to submission forms                                                   | false     |
 
 ## Bugs
 
 - Creating user avatar field uses old default value
+- Add limit for user interests and community interests
+- Refine interest search algorithm
 
 ## Support
 

@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
-import { AuthForm, FieldType, Nav, Popup, PopupType } from "../components";
+import { Form, FieldType, Nav, Popup, PopupType } from "../components";
 import { queryInterests } from "../util/interests.util";
 
 const useForceUpdate = () => {
@@ -68,17 +68,17 @@ const SignUp: NextPage = () => {
         )
       )}
 
-      <AuthForm
+      <Form
         heading="Sign Up"
         submitHandler={signUpHandler}
         links={[
           {
             text: "Learn more about ScrapBook Suggestions 😮",
-            href: "/suggestions",
+            href: "/info/suggestions",
           },
           {
             text: "Learn more about ScrapBook's User Privacy 🔒",
-            href: "/privacy",
+            href: "/info/privacy",
           },
           { text: "Go to home page 👈", href: "/" },
           { text: "Already have an account? Log In 📝", href: "/login" },

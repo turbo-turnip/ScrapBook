@@ -1,0 +1,37 @@
+.topBar {
+  position: relative;
+  top: 10vh;
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.topBar button {
+  font-family: var(--subheading-font);
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  background: var(--blue);
+  color: var(--white);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.topBar[data-collapsed="true"],
+.createContainer[data-collapsed="true"] {
+  width: calc(100vw - (200px - (200px * 0.91)));
+}
+
+.topBar[data-collapsed="false"],
+.createContainer[data-collapsed="false"] {
+  width: 50vw;
+}
+
+@media (min-width: 400px) {
+  .topBar[data-collapsed="false"],
+  .createContainer[data-collapsed="false"] {
+    width: calc(100vw - 200px);
+  }
+}

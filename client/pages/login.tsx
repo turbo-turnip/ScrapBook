@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { Nav, AuthForm, FieldType, Popup, PopupType } from '../components';
+import { Nav, Form, FieldType, Popup, PopupType } from '../components';
 import Head from 'next/head';
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -58,13 +58,13 @@ const Login: NextPage = () => {
           />
         )}
 
-      <AuthForm
+      <Form
         heading="Login"
         submitHandler={loginHandler}
         links={[
           {
             text: "Learn more about ScrapBook's User Privacy 🔒",
-            href: "/privacy",
+            href: "/info/privacy",
           },
           { text: "Go to home page 👈", href: "/" },
           { text: "Don't have an account? Sign Up! 📝", href: "/signup" },
