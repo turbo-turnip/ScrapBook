@@ -48,9 +48,14 @@ export const createCommunity = async (req: Request, res: Response) => {
       }
     });
 
-    res.status(200).json({ success: true, community: newCommunity });
+    res.status(200).json({ success: true, community: newCommunity, ...response });
     return;
   } catch (err: any) {
+    if ((err?.code || "") === "P2002") {
+      res.status(400).json({ success: false, error: "That community already exists. Please choose a different name" });
+      return;
+    } 
+
     log(LogType.ERROR, err);
     res.status(500).json({ success: false, error: "An error occurred. Please refresh the page and try again" });
     return;
