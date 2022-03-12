@@ -21,7 +21,6 @@ export const Sidebar: FC<SidebarProps> = ({ categories, onToggle }) => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(categories);
     window.onresize = () => {
       const query = window.matchMedia("(max-width: 500px)").matches;
       setCollapsed(query);

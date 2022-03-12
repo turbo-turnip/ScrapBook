@@ -34,6 +34,7 @@ const SignUp: NextPage = () => {
     if (res.success) {
       localStorage.setItem("user_id", res?.id || "");
       localStorage.setItem("user_email", email);
+
       setSuccessPopup({ message: res?.message || "Successfully signed up!", show: true });
       setTimeout(() => {
         router.push('/verification-email');

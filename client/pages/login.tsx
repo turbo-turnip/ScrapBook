@@ -23,6 +23,7 @@ const Login: NextPage = () => {
     if (res.success) {
       localStorage.setItem("at", res?.accessToken || "");
       localStorage.setItem("rt", res?.refreshToken || "");
+
       setSuccessPopup({ message: "Successfully logged in", show: true  });
       setTimeout(() => {
         router.push('/home');

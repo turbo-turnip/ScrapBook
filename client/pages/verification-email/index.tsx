@@ -34,6 +34,7 @@ const VerificationEmail: NextPage = () => {
   useEffect(() => {
     const userID = localStorage.getItem("user_id") || "";
     const email = localStorage.getItem("user_email") || "";
+    
     if (!userID || !email) {
       router.push('/login');
       return;

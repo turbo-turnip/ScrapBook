@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { Router } from "next/router";
+import { CookiesProvider } from 'react-cookie';
 
 global.backendPath = "http://localhost:8080";
 global.hexToASCII = (hex: string): string => {
@@ -15,7 +15,7 @@ global.hexToASCII = (hex: string): string => {
 }
 global.fetchAccount = (accessToken: string, refreshToken: string) => {
   return new Promise(async (resolve) => {
-    if (!accessToken || !refreshToken) {
+    if (!refreshToken) {
       resolve({ loggedIn: false, redirect: '/login' });
       return;
     }
@@ -24,8 +24,8 @@ global.fetchAccount = (accessToken: string, refreshToken: string) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
-        accessToken: localStorage.getItem("at"),
-        refreshToken: localStorage.getItem("rt")
+        accessToken,
+        refreshToken
       })
     });
 
@@ -45,7 +45,11 @@ global.fetchAccount = (accessToken: string, refreshToken: string) => {
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  return (
+    <CookiesProvider>
+      <Component {...pageProps} />
+    </CookiesProvider>
+  );
 }
 
 export default MyApp;
