@@ -15,7 +15,7 @@ const Home: NextPage = () => {
     const accessToken = localStorage.getItem("at") || "";
     const refreshToken = localStorage.getItem("rt") || "";
 
-    const res = await fetchAccount(accessToken, refreshToken);
+    const res = await fetchAccount(localStorage, accessToken, refreshToken);
     if (res.loggedIn) {
       setLoggedIn(true)
       setAccount(res.account);

@@ -21,7 +21,7 @@ const Communities: NextPage = () => {
     const accessToken = localStorage.getItem("at") || "";
     const refreshToken = localStorage.getItem("rt") || "";
 
-    const res = await fetchAccount(accessToken, refreshToken);
+    const res = await fetchAccount(localStorage, accessToken, refreshToken);
     if (res.loggedIn) {
       setLoggedIn(true)
       setAccount(res.account);
@@ -44,16 +44,15 @@ const Communities: NextPage = () => {
       body: JSON.stringify({ accessToken, refreshToken })
     });
     const res = await req.json();
+    setCommunitiesLoading(false);
     if (res.success) {
       if (res?.generateNewTokens) {
         console.log('setting new tokens:', res?.newAccessToken, res?.newRefreshToken);
         localStorage.setItem("at", res?.newAccessToken || "");
         localStorage.setItem("rt", res?.newRefreshToken || "");
       }
-      
-      setCommunitiesLoading(false);
-      setCommunities(res.communities);
 
+      setCommunities(res.communities);
       return;
     } else {
       router.push('/login');
@@ -66,14 +65,15 @@ const Communities: NextPage = () => {
   }, []);
 
   useEffect(() => {
+    // Fix this later
     if (loggedIn)
-      fetchCommunities();
+      setTimeout(fetchCommunities, 500);
   }, [loggedIn]);
 
   return (
     <>
       <Head>
-        <title>ScrapBook - Home</title>
+        <title>ScrapBook - Feed</title>
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
       </Head>
 

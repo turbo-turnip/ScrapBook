@@ -56,7 +56,7 @@ const Create: NextPage = () => {
     const accessToken = localStorage.getItem("at") || "";
     const refreshToken = localStorage.getItem("rt") || "";
 
-    const res = await fetchAccount(accessToken, refreshToken);
+    const res = await fetchAccount(localStorage, accessToken, refreshToken);
     if (res.loggedIn) {
       setLoggedIn(true)
       setAccount(res.account);
@@ -74,7 +74,7 @@ const Create: NextPage = () => {
   return (
     <>
       <Head>
-        <title>ScrapBook - Home</title>
+        <title>ScrapBook - Create a Community</title>
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
       </Head>
 

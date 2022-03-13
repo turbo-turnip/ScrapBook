@@ -13,7 +13,7 @@ global.hexToASCII = (hex: string): string => {
 
   return out;
 }
-global.fetchAccount = (accessToken: string, refreshToken: string) => {
+global.fetchAccount = (localStorage: Storage, accessToken: string, refreshToken: string) => {
   return new Promise(async (resolve) => {
     if (!refreshToken) {
       resolve({ loggedIn: false, redirect: '/login' });
@@ -30,6 +30,7 @@ global.fetchAccount = (accessToken: string, refreshToken: string) => {
     });
 
     const res: ServerResponse = await req.json();
+    console.log(res);
     if (res.success) {
       if (res.generateNewTokens) {
         localStorage.setItem("at", res?.newAccessToken || "");
@@ -37,6 +38,7 @@ global.fetchAccount = (accessToken: string, refreshToken: string) => {
       }
 
       resolve({ loggedIn: true, account: res.account });
+      return;
     } else {
       resolve({ loggedIn: false, redirect: '/login' });
       return;
