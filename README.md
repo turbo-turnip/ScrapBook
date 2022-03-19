@@ -34,11 +34,14 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 | Add UI animations to frontend                                                       | false     |
 | Add reCAPTCHA to submission forms                                                   | false     |
 
-## Bugs
+## Bugs / Things to fix
 
 - Creating user avatar field uses old default value
 - Add limit for user interests and community interests
 - Refine interest search algorithm
+- Use getStaticProps for auth and page fetches
+- Use getStaticPaths for communities and messages pages
+- Banned refresh token duplicate insert errors
 
 ## Support
 

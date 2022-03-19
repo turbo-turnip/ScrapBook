@@ -15,6 +15,9 @@ const Communities: NextPage = () => {
   const topBarRef = useRef<HTMLDivElement|null>(null);
   const [communities, setCommunities] = useState<Array<CommunityType>>([]);
   const [communitiesLoading, setCommunitiesLoading] = useState(true);
+  const [showFind, setShowFind] = useState(false);
+  const [searchedCommunities, setSearchedCommunities] = useState<Array<CommunityType>|null>();
+  const [searchCommunitiesLoading, setSearchCommunitiesLoading] = useState(false);
   const router = useRouter(); 
 
   const auth = async () => {
@@ -60,6 +63,42 @@ const Communities: NextPage = () => {
     }
   }
 
+  const findCommunity = async (searchTitle: string) => {
+    setSearchCommunitiesLoading(true);
+    const req = await fetch(backendPath + "/communities/search", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ query: searchTitle })
+    });
+    const res = await req.json();
+
+    if (res.success) {
+      setSearchCommunitiesLoading(false);
+      setSearchedCommunities(res?.communities || []);
+      return;
+    } 
+  }
+
+  const joinCommunity = async (communityID: string) => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/communities/join", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        communityID,
+        accessToken, refreshToken
+      })
+    });
+    const res = await req.json();
+    console.log(res);
+  }
+
   useEffect(() => {
     auth();
   }, []);
@@ -81,7 +120,7 @@ const Communities: NextPage = () => {
       <Nav loggedIn={loggedIn} account={loggedIn ? account : null} /> 
 
       <div className={styles.topBar} data-collapsed={sidebarCollapsed} ref={topBarRef}>
-        <button>Find Community 🧐</button>
+        <button onClick={() => setShowFind(prev => !prev)}>{showFind ? "View joined communities 🗒" : "Find Community 🧐"}</button>
         <button onClick={() => router.push('/communities/create')}>Create Community ➕</button>
       </div>
 
@@ -90,8 +129,35 @@ const Communities: NextPage = () => {
         top: topBarRef?.current ? topBarRef?.current.getBoundingClientRect().top : "20vh"
       }}>
         {communitiesLoading ? <h1 className={styles.info}>Loading...</h1> : null}
-        {(!communitiesLoading && communities.length === 0) ? <h1 className={styles.info}>Hmm, you don't seem to be in any communities...🤔</h1> : null}
-        {(!communitiesLoading && communities.length > 0) && 
+        {(!showFind && !communitiesLoading && communities.length === 0) && <h1 className={styles.info}>Hmm, you don't seem to be in any communities...🤔</h1>}
+
+        {showFind &&
+          <>
+            <form className={styles.findInput} onSubmit={(event) => {
+              event.preventDefault();
+              const target = event.target as HTMLFormElement;
+              findCommunity((target.querySelector("input") as HTMLInputElement).value);
+            }}>
+              <input placeholder="Search for a community 🔎" />
+              <button>Go 🧐</button>
+            </form>
+
+            {searchCommunitiesLoading && <h1 className={styles.info}>Loading...</h1>}
+            {(!searchCommunitiesLoading && (searchedCommunities || []).length === 0) && <h1 className={styles.info}>Hmm, there aren't any communities that match that name. Try a different name 😐</h1>}
+            {(!searchCommunitiesLoading && (searchedCommunities || []).length > 0) && 
+              searchedCommunities?.map((community, i) => 
+                <div className={styles.searchedCommunity} key={i}>
+                  <h1>{community.title}{(account && !(community?.membersUser || []).find(m => m.id === account.id)) && <button className={styles.joinCommunityBtn} onClick={() => joinCommunity(community.id)}>Join Community</button>}</h1>
+                  <p>{community.details}</p>
+                  <div className={styles.searchedCommunityInterests}>{community.interests.map(i => i.name).join(' • ')}{community.interests.length === 0 && "None 🤷🏾‍♀️"}</div>
+                  <div className={styles.userCount} data-user-count={community.members.length}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM20.59 22c0-3.87-3.85-7-8.59-7s-8.59 3.13-8.59 7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                  </div>
+                </div>)}
+          </>}
+        {(!communitiesLoading && communities.length > 0 && !showFind) && 
           <>
             {communities.map((community, i) =>
               <div className={styles.community} key={i} onClick={() => router.push(`/communities/${community.title}`)}>

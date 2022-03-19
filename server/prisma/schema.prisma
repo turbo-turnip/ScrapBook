@@ -63,7 +63,7 @@ model CommunityMember {
   id          String    @id @default(cuid())
   nickname    String?
   communityID String
-  userID      String
+  userID      String    @unique
   user        User      @relation(fields: [userID], references: [id])
   community   Community @relation(fields: [communityID], references: [id])
   owner       Boolean
@@ -74,14 +74,14 @@ model CommunityMember {
 }
 
 model Community {
-  id          String            @id @default(cuid())
-  title       String            @unique @db.VarChar(35)
-  details     String            @db.VarChar(512)
+  id          String              @id @default(cuid())
+  title       String              @unique @db.VarChar(35)
+  details     String              @db.VarChar(512)
   memberID    String?
   membersUser User[]
   members     CommunityMember[]
   interests   CommunityInterest[]
-  posts       Post[]         
+  posts       Post[]
 
   @@index([memberID], map: "community_memberID_fkey")
   @@map("community")
@@ -130,9 +130,9 @@ model Video {
 }
 
 model UserInterest {
-  id          String      @id @default(cuid())
-  name        String      @unique @db.VarChar(35)
-  users       User[]
+  id    String @id @default(cuid())
+  name  String @unique @db.VarChar(35)
+  users User[]
 
   @@map("user_interest")
 }

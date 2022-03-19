@@ -39,6 +39,7 @@ export const getAccount = async (req: Request, res: Response) => {
   const accessToken: string = req.body?.accessToken || "";
   const refreshToken: string = req.body?.refreshToken || "";
 
+
   const { success, response } = await authenticateUser(accessToken, refreshToken);
   if (success) {
     res.status(200).json({ success, ...response });

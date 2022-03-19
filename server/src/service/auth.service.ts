@@ -4,6 +4,7 @@ import env from '../config/env.config';
 import { getUser, UserType } from './user.service';
 import { verify as verifyToken } from 'jsonwebtoken';
 import { userExists } from './';
+import { log, LogType } from '../util/log.util';
 
 const prisma = new PrismaClient();
 
@@ -12,6 +13,7 @@ export const authenticateUser = (accessToken: string, refreshToken: string) => {
   return new Promise<{ success: boolean, response: any }>(async (res, rej) => {
     try {
       const decodedAccessToken = await verifyToken(accessToken, env.AT_SECRET as string) as JwtPayload;
+      console.log(decodedAccessToken);
       const accountExists = await userExists("id", decodedAccessToken?.id || "");
       if (!accountExists) {
         res({ success: false, response: "Invalid access token" });
@@ -21,7 +23,7 @@ export const authenticateUser = (accessToken: string, refreshToken: string) => {
       res({ success: true, response: { generateNewTokens: false, account: decodedAccessToken } });
     } catch (err: any) {
       if (err instanceof JsonWebTokenError) {
-        if (err instanceof TokenExpiredError) {
+        if (err instanceof TokenExpiredError || err.message === "jwt must be provided") {
           try {
             // Stores the user ID
             const decodedRefreshToken = await verifyToken(refreshToken, env.RT_SECRET as string) as { id: string, [key: string]: any };
@@ -78,13 +80,16 @@ export const refreshTokenIsBanned = (refreshToken: string) => {
   return new Promise<boolean>(async res => {
     // Find first refresh token that matches parameter
     const refreshTokenExists = await prisma.bannedRefreshTokens.findFirst({ where: { refreshToken } });
-    res(refreshTokenExists != null);
+    console.log(refreshTokenExists, 'refresh token exists');
+    console.log("passed rt: ", refreshToken);
+    res(refreshTokenExists?.id != null);
   });
 }
 
 // Insert a refresh token into the banned refresh token list
 export const banRefreshToken = (refreshToken: string) => {
   return new Promise<void>(async (res) => {
+    log(LogType.ADDED, `Banishing refresh token: ${refreshToken}`);
     await prisma.bannedRefreshTokens.create({
       data: { refreshToken }
     });
