@@ -34,7 +34,7 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 | Add UI animations to frontend                                                       | false     |
 | Add reCAPTCHA to submission forms                                                   | false     |
 
-## Bugs / Things to fix
+## Known Bugs / Things to fix
 
 - Creating user avatar field uses old default value
 - Add limit for user interests and community interests
@@ -42,6 +42,8 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 - Use getStaticProps for auth and page fetches
 - Use getStaticPaths for communities and messages pages
 - Banned refresh token duplicate insert errors
+- Establish useEffect cleanup
+- Fix memory leaks on page switches
 
 ## Support
 

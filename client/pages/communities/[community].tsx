@@ -65,7 +65,8 @@ const Community: NextPage = () => {
   return (
     <>
       <Head>
-        <title>ScrapBook - Feed</title>
+        <title>ScrapBook - Community</title>
+
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
       </Head>
 

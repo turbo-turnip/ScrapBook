@@ -86,7 +86,7 @@ export const communitiesForUser = async (req: Request, res: Response) => {
     const userCommunities = await prisma.community.findMany({
       where: {
         members: {
-          every: {
+          some: {
             userID: response?.account?.id || ""
           },
         }
@@ -199,21 +199,47 @@ export const joinCommunity = async (req: Request, res: Response) => {
     return;
   }
 
+  const alreadyJoined = await prisma.communityMember.findFirst({
+    where: {
+      userID: response.account.id,
+      communityID
+    }
+  });
+  if (alreadyJoined?.id) {
+    res.status(400).json({ success: false, error: "You've already joined this community!" });
+    return;
+  }
+
   try {
-    await prisma.communityMember.upsert({
-      where: {
-        userID: response.account.id
-      },
-      update: {},
-      create: {
+    await prisma.communityMember.create({
+      data: {
         nickname: response.account.name,
         user: {
-          connect: { id: response.id }
+          connect: { id: response.account.id }
         },
         community: {
           connect: { id: communityID }
         },
         owner: false
+      }
+    });
+
+    const communityMembersUser = await prisma.community.findUnique({
+      where: { id: communityID },
+      select: { membersUser: true }
+    });
+
+    await prisma.community.update({
+      where: {
+        id: communityID
+      },
+      data: {
+        membersUser: {
+          connect: [
+            ...((communityMembersUser?.membersUser || []).map((member) => ({ id: member.id }))),
+            { id: response.account.id }
+          ]
+        }
       }
     });
 
@@ -227,7 +253,7 @@ export const joinCommunity = async (req: Request, res: Response) => {
       }
     });
 
-    res.status(200).json({ success: true, community: updatedCommunity, ...response });
+    res.status(200).json({ success: true, community: updatedCommunity || { name: "Error! Refresh the page 🤖" }, ...response });
     return;
   } catch (err: any) {
     log(LogType.ERROR, err);

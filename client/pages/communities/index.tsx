@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { Nav, Sidebar } from "../../components";
+import { Nav, Sidebar, Popup, PopupType } from "../../components";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
@@ -7,6 +7,7 @@ import { UserType } from "../../util/userType.util";
 import { getSidebarPropsWithOption } from "../../util/homeSidebarProps.util";
 import styles from '../../styles/communities.module.css';
 import { CommunityType } from "../../util/communityType.util";
+import { kMaxLength } from "buffer";
 
 const Communities: NextPage = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -18,6 +19,8 @@ const Communities: NextPage = () => {
   const [showFind, setShowFind] = useState(false);
   const [searchedCommunities, setSearchedCommunities] = useState<Array<CommunityType>|null>();
   const [searchCommunitiesLoading, setSearchCommunitiesLoading] = useState(false);
+  const [showSearchedCommunityJoinSuccessPopup, setShowSearchedCommunityJoinSuccessPopup] = useState(false);
+  const [searchedCommunityJoinErrorPopups, setSearchedCommunityJoinErrorPopups] = useState<Array<string>>([]);
   const router = useRouter(); 
 
   const auth = async () => {
@@ -96,7 +99,28 @@ const Communities: NextPage = () => {
       })
     });
     const res = await req.json();
-    console.log(res);
+    
+    if (res.success) {
+      if (res?.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken || "");
+        localStorage.setItem("rt", res?.newRefreshToken || "");
+      } 
+
+      setSearchedCommunities((prevState) => {
+        return prevState?.map(community => {
+          return community.id === communityID ? res?.community || community : community;
+        });
+      });
+      console.log(res);
+      setShowSearchedCommunityJoinSuccessPopup(true);
+      setTimeout(() => {
+        setShowSearchedCommunityJoinSuccessPopup(false)
+        router.push(`/community/${res.community?.title || ""}`);
+      }, 5500);
+      return; 
+    } else {
+
+    }
   }
 
   useEffect(() => {
@@ -112,9 +136,24 @@ const Communities: NextPage = () => {
   return (
     <>
       <Head>
-        <title>ScrapBook - Feed</title>
+        <title>ScrapBook - Communities</title>
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
       </Head>
+
+      {searchedCommunityJoinErrorPopups.map((errorPopup, i) =>
+        (
+          <Popup
+            key={i}
+            message={errorPopup || "An error occurred. Please refresh the page"}
+            type={PopupType.ERROR}
+          />
+        )
+      )}
+      {showSearchedCommunityJoinSuccessPopup &&
+        <Popup
+          message="Successfully joined community!"
+          type={PopupType.SUCCESS}
+        />}
 
       <Sidebar categories={getSidebarPropsWithOption("Communities")} onToggle={(value) => setSidebarCollapsed(value)} />
       <Nav loggedIn={loggedIn} account={loggedIn ? account : null} /> 
@@ -149,10 +188,10 @@ const Communities: NextPage = () => {
                 <div className={styles.searchedCommunity} key={i}>
                   <h1>{community.title}{(account && !(community?.membersUser || []).find(m => m.id === account.id)) && <button className={styles.joinCommunityBtn} onClick={() => joinCommunity(community.id)}>Join Community</button>}</h1>
                   <p>{community.details}</p>
-                  <div className={styles.searchedCommunityInterests}>{community.interests.map(i => i.name).join(' • ')}{community.interests.length === 0 && "None 🤷🏾‍♀️"}</div>
+                  <div className={styles.searchedCommunityInterests}>{community.interests.map(i => i.name).join(' • ')}{community.interests.length === 0 && "No community interests 🤷🏾‍♀️"}</div>
                   <div className={styles.userCount} data-user-count={community.members.length}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none">
-                      <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM20.59 22c0-3.87-3.85-7-8.59-7s-8.59 3.13-8.59 7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                      <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM20.59 22c0-3.87-3.85-7-8.59-7s-8.59 3.13-8.59 7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
                     </svg>
                   </div>
                 </div>)}
