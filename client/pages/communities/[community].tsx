@@ -2,7 +2,7 @@ import { NextPage } from "next"
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import Head from "next/head";
-import { Sidebar, Nav } from "../../components";
+import { Sidebar, Nav, Alert } from "../../components";
 import styles from '../../styles/communities.module.css';
 import { CommunityType } from "../../util/communityType.util";
 import { UserType } from "../../util/userType.util";
@@ -74,12 +74,14 @@ const Community: NextPage = () => {
       <Nav loggedIn={loggedIn} account={loggedIn ? account : null} /> 
 
       <div className={styles.communityContainer} data-collapsed={sidebarCollapsed}>
+
         {communityLoading ? <h1 className={styles.info}>Loading...</h1> : null}
         {(!communityLoading && invalidCommunity) ? <h1 className={styles.info}>Hmm... That community doesn't exist 👁👄👁</h1> : null}
 
         {(!communityLoading && !invalidCommunity && community) &&
           <div className={styles.banner} data-title={community.title}>
             <div className={styles.bannerCenter}>
+              <div className={styles.leaveCommunity}>➡️</div>
               <h1>{community.title}</h1>
               <p>{community.details}</p>
             </div>

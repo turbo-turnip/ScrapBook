@@ -111,7 +111,6 @@ const Communities: NextPage = () => {
           return community.id === communityID ? res?.community || community : community;
         });
       });
-      console.log(res);
       setShowSearchedCommunityJoinSuccessPopup(true);
       setTimeout(() => {
         setShowSearchedCommunityJoinSuccessPopup(false)
@@ -186,7 +185,7 @@ const Communities: NextPage = () => {
             {(!searchCommunitiesLoading && (searchedCommunities || []).length > 0) && 
               searchedCommunities?.map((community, i) => 
                 <div className={styles.searchedCommunity} key={i}>
-                  <h1>{community.title}{(account && !(community?.membersUser || []).find(m => m.id === account.id)) && <button className={styles.joinCommunityBtn} onClick={() => joinCommunity(community.id)}>Join Community</button>}</h1>
+                  <h1 onClick={() => router.push(`/community/${community?.title || ""}`)}>{community.title}{(account && !(community?.membersUser || []).find(m => m.id === account.id)) && <button className={styles.joinCommunityBtn} onClick={() => joinCommunity(community.id)}>Join Community</button>}</h1>
                   <p>{community.details}</p>
                   <div className={styles.searchedCommunityInterests}>{community.interests.map(i => i.name).join(' • ')}{community.interests.length === 0 && "No community interests 🤷🏾‍♀️"}</div>
                   <div className={styles.userCount} data-user-count={community.members.length}>

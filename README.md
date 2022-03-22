@@ -44,6 +44,7 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 - Banned refresh token duplicate insert errors
 - Establish useEffect cleanup
 - Fix memory leaks on page switches
+- Fix prisma schema unique constraint on community member communityID and userID
 
 ## Support
 

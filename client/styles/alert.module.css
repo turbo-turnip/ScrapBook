@@ -1,0 +1,36 @@
+.alert {
+  width: 90vw;
+  max-width: 400px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -80%);
+  opacity: 0;
+  background: var(--white);
+  box-shadow: 0 0 0 200vw #000c;
+  z-index: 1000000000000000;
+  border-radius: 20px;
+  padding: 1rem;
+  transition: 0.5s;
+}
+
+.message {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.btns {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  column-gap: 1.5rem;
+}
+
+.btn {
+  flex: 1;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  color: var(--white);
+}
