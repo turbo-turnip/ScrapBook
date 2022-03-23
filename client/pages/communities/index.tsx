@@ -21,6 +21,7 @@ const Communities: NextPage = () => {
   const [searchCommunitiesLoading, setSearchCommunitiesLoading] = useState(false);
   const [showSearchedCommunityJoinSuccessPopup, setShowSearchedCommunityJoinSuccessPopup] = useState(false);
   const [searchedCommunityJoinErrorPopups, setSearchedCommunityJoinErrorPopups] = useState<Array<string>>([]);
+  const [errorPopups, setErrorPopups] = useState<Array<string>>([]);
   const router = useRouter(); 
 
   const auth = async () => {
@@ -81,7 +82,10 @@ const Communities: NextPage = () => {
       setSearchCommunitiesLoading(false);
       setSearchedCommunities(res?.communities || []);
       return;
-    } 
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
+      return;
+    }
   }
 
   const joinCommunity = async (communityID: string) => {
@@ -118,7 +122,8 @@ const Communities: NextPage = () => {
       }, 5500);
       return; 
     } else {
-
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
+      return;
     }
   }
 
@@ -139,15 +144,12 @@ const Communities: NextPage = () => {
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
       </Head>
 
-      {searchedCommunityJoinErrorPopups.map((errorPopup, i) =>
-        (
-          <Popup
-            key={i}
-            message={errorPopup || "An error occurred. Please refresh the page"}
-            type={PopupType.ERROR}
-          />
-        )
-      )}
+      {errorPopups.map((errorPopup, i) =>
+        <Popup 
+          key={i}
+          message={errorPopup || "An error occurred. Please refresh the page"}
+          type={PopupType.ERROR}
+          />)}
       {showSearchedCommunityJoinSuccessPopup &&
         <Popup
           message="Successfully joined community!"

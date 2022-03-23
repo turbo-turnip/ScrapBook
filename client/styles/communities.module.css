@@ -214,6 +214,17 @@
   overflow: hidden;
 }
 
+.bannerStats .joinCommunity {
+  font-size: 1rem;
+  background: var(--orange);
+  border-radius: 20px;
+  padding: 0 0.5rem;
+  position: relative;
+  right: 12px;
+  cursor: pointer;
+  color: var(--white);
+}
+
 .bannerCenter .leaveCommunity:hover {
   transform: scale(1);
 }

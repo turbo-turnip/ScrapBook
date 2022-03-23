@@ -5,7 +5,7 @@ interface AlertProps {
   message: string;
   buttons: Array<{
     message: string;
-    onClick: () => void;
+    onClick?: () => any;
     color?: string;
   }>;
 }
@@ -36,6 +36,9 @@ export const Alert: FC<AlertProps> = ({ message, buttons }) => {
                 alert.style.display = "none";
               }, 500);
             }
+
+            if (btn?.onClick)
+              btn.onClick();
           }} style={{
             background: btn?.color || "var(--blue)"
           }}>

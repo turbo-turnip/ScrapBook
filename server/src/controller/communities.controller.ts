@@ -1,4 +1,5 @@
 import { PrismaClient } from '.prisma/client';
+import { Prisma } from '@prisma/client';
 import { log } from 'console';
 import { Request, Response } from 'express';
 import { authenticateUser, communityExists } from '../service';
@@ -239,6 +240,71 @@ export const joinCommunity = async (req: Request, res: Response) => {
             ...((communityMembersUser?.membersUser || []).map((member) => ({ id: member.id }))),
             { id: response.account.id }
           ]
+        }
+      }
+    });
+
+    const updatedCommunity = await prisma.community.findUnique({
+      where: { id: communityID },
+      include: {
+        membersUser: true,
+        members: true,
+        interests: true,
+        posts: true
+      }
+    });
+
+    res.status(200).json({ success: true, community: updatedCommunity || { name: "Error! Refresh the page 🤖" }, ...response });
+    return;
+  } catch (err: any) {
+    log(LogType.ERROR, err);
+    res.status(500).json({ success: false, error: "An error occurred. Please refresh the page and try again" });
+    return;
+  }
+}
+
+// POST :8080/communities/leave
+// Remove a user from a community
+export const leaveCommunity = async (req: Request, res: Response) => {
+  const communityID: string = req.body?.communityID;
+  const accessToken: string = req.body?.accessToken || "";
+  const refreshToken: string = req.body?.refreshToken || "";
+  const { success, response } = await authenticateUser(accessToken, refreshToken);
+  if (!success) {
+    log(LogType.ERROR, JSON.stringify(response));
+    res.status(400).json({ success, error: "Invalid account" });
+    return;
+  }
+
+  const doesCommunityExist = await communityExists("id", communityID);
+  if (!doesCommunityExist) {
+    res.status(400).json({ success: false, error: "That community doesn't exist" });
+    return;
+  }
+
+  try {
+    await prisma.communityMember.deleteMany({
+      where: {
+        userID: response.account.id,
+        communityID
+      }
+    });
+
+    const userCommunities = await prisma.community.findMany({
+      where: {
+        membersUser: {
+          some: {
+            id: response.account.id
+          }
+        }
+      }
+    });
+
+    await prisma.user.update({
+      where: { id: response.account.id },
+      data: {
+        communities: {
+          set: userCommunities?.filter(community => community.id != communityID)
         }
       }
     });
