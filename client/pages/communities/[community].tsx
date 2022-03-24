@@ -215,7 +215,7 @@ const Community: NextPage = () => {
                 postBarContainer?.classList.add(styles.postBarOpen);
               }} onSubmit={(event) => {
                 event.preventDefault();
-                submitPost(editorText);
+                submitPost(editorText, community?.id || "");
               }}>
                 {postBoxOpen && <button className={styles.postSubmit}>Submit Post</button>}
                 {postBoxOpen && <div className={styles.postBoxExit} onClick={() => {

@@ -1,17 +1,18 @@
 import { LogType, log } from './util/log.util';
 import express, { Application, json } from 'express';
-import { UserRouter, AuthRouter, CommunitiesRouter } from './routes';
+import { UserRouter, AuthRouter, CommunitiesRouter, PostRouter } from './routes';
 import cors from "cors";
 
 const app: Application = express();
 
 (async () => {
   async function main(port: number) {
-    app.use(json({ limit: '5kb' }));
+    app.use(json({ limit: '2.5mb' }));
     app.use(cors({ origin: "http://localhost:3000" }));
     app.use('/users', UserRouter);
     app.use('/auth', AuthRouter);
     app.use('/communities', CommunitiesRouter);
+    app.use('/posts', PostRouter);
     app.listen(port, () => log(LogType.INIT, `Server started on port ${port}`));
   }
 

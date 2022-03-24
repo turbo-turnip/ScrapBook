@@ -13,7 +13,6 @@ export const authenticateUser = (accessToken: string, refreshToken: string) => {
   return new Promise<{ success: boolean, response: any }>(async (res, rej) => {
     try {
       const decodedAccessToken = await verifyToken(accessToken, env.AT_SECRET as string) as JwtPayload;
-      console.log(decodedAccessToken);
       const accountExists = await userExists("id", decodedAccessToken?.id || "");
       if (!accountExists) {
         res({ success: false, response: "Invalid access token" });

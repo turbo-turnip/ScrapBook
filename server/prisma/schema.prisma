@@ -86,7 +86,6 @@ model Community {
 
 model Post {
   id          String    @id @default(cuid())
-  title       String    @db.VarChar(150)
   body        String?   @db.VarChar(800)
   likes       Int
   userID      String
@@ -105,8 +104,6 @@ model Post {
 model Image {
   id      String  @id @default(cuid())
   url     String? @db.VarChar(255)
-  caption String? @db.VarChar(150)
-  alt     String? @db.VarChar(150)
   postID  String?
   post    Post?   @relation(fields: [postID], references: [id])
 
