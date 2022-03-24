@@ -1,6 +1,5 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { CookiesProvider } from 'react-cookie';
 
 global.backendPath = "http://localhost:8080";
 global.hexToASCII = (hex: string): string => {
@@ -48,9 +47,7 @@ global.fetchAccount = (localStorage: Storage, accessToken: string, refreshToken:
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <CookiesProvider>
-      <Component {...pageProps} />
-    </CookiesProvider>
+    <Component {...pageProps} />
   );
 }
 

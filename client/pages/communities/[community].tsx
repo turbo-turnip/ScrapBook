@@ -7,6 +7,8 @@ import styles from '../../styles/communities.module.css';
 import { CommunityType } from "../../util/communityType.util";
 import { UserType } from "../../util/userType.util";
 import { getSidebarPropsWithOption } from "../../util/homeSidebarProps.util";
+const ReactQuill = typeof window === 'object' && require('react-quill');
+require('react-quill/dist/quill.snow.css');
 
 const Community: NextPage = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -17,6 +19,9 @@ const Community: NextPage = () => {
   const [invalidCommunity, setInvalidCommunity] = useState(false);
   const [alerts, setAlerts] = useState<Array<{ message: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }> }>>([]);
   const [errorPopups, setErrorPopups] = useState<Array<string>>([]);
+  const [postBoxOpen, setPostBoxOpen] = useState(false);
+  const postBarContainerRef = useRef<HTMLDivElement|null>(null);
+  const [editorText, setEditorText] = useState("");
   const router = useRouter(); 
 
   const auth = async () => {
@@ -53,6 +58,7 @@ const Community: NextPage = () => {
       return;
     }
   }
+
 
   const joinCommunity = async (communityID: string) => {
     const accessToken = localStorage.getItem("at") || "";
@@ -112,6 +118,25 @@ const Community: NextPage = () => {
       setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
       return;
     }
+  }
+
+  const submitPost = async (content: string, communityID: string) => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/posts", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        communityID,
+        content
+      })
+    });
+    const res = await req.json();
+    console.log(res);
   }
 
   useEffect(() => {
@@ -182,6 +207,50 @@ const Community: NextPage = () => {
               {community.members.length} Member{community.members.length != 1 ? "s" : null} • {community.posts.length} Post{community.posts.length != 1 ? "s" : null}  
             </div>  
           </div>}
+          {(loggedIn && community) &&
+            <div className={styles.postBarContainer} data-collapsed={sidebarCollapsed} ref={postBarContainerRef}>
+              <form className={styles.postBar} onFocus={() => {
+                setPostBoxOpen(true);
+                const postBarContainer = postBarContainerRef?.current;
+                postBarContainer?.classList.add(styles.postBarOpen);
+              }} onSubmit={(event) => {
+                event.preventDefault();
+                submitPost(editorText);
+              }}>
+                {postBoxOpen && <button className={styles.postSubmit}>Submit Post</button>}
+                {postBoxOpen && <div className={styles.postBoxExit} onClick={() => {
+                  setPostBoxOpen(false);
+                  const postBarContainer = postBarContainerRef?.current;
+                  postBarContainer?.classList.remove(styles.postBarOpen);
+                }}>&times;</div>}
+                {!postBoxOpen && <textarea className={styles.postInput} placeholder={`Post to ${community?.title || "this community"}`}></textarea>}
+                {postBoxOpen && 
+                  <ReactQuill
+                    style={{
+                      height: "100%"
+                    }}
+                    theme="snow" 
+                    placeholder={`Post to ${community?.title || "this community"}`} 
+                    onChange={setEditorText}
+                    formats={[
+                      'size',
+                      'bold', 'italic', 'underline', 'blockquote',
+                      'list', 'bullet',
+                      'link', 'image', 'video'
+                    ]} 
+                    modules={{
+                      toolbar: [
+                        [{ size: [] }],
+                        ['bold', 'italic', 'underline', 'blockquote'],
+                        [{'list': 'ordered'}, {'list': 'bullet'}],
+                        ['link', 'image', 'video']
+                      ],
+                      clipboard: {
+                        matchVisual: true
+                      }
+                    }} />}
+              </form>
+            </div>}
       </div>
     </>
   );

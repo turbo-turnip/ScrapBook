@@ -335,13 +335,119 @@
   cursor: pointer;
 }
 
+.postBarContainer {
+  width: 100%;
+  height: 9vh;
+  position: fixed;
+  bottom: 0;
+  transition: 0.5s;
+}
+
+.postBar {
+  width: 100%;
+  height: 100%;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-top: 1px solid var(--darker-border);
+  background: var(--border);
+  padding: 0.7rem;
+  border-radius: 20px 20px 0 0;
+  max-width: 600px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.postInput {
+  flex: 1;
+  height: 100%;
+  font-size: 1.5rem;
+  padding: 0.25rem 0.8rem;
+  border-radius: 12px;
+  overflow: hidden;
+  resize: none;
+  border: 1px solid var(--darker-border);
+}
+
+.postBoxExit {
+  font-size: 3rem;
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 0;
+}
+
+.postBarOpen {
+  height: 500px !important;
+  bottom: 0;
+}
+
+.postBarOpen form:first-of-type {
+  height: 500px;
+  box-shadow: 0 0 0 150vh #000c;
+}
+
+.postBarOpen form > div > div > div > p,
+.postBarOpen form > div > div > div > p * {
+  font-family: arial !important;
+  font-size: 1rem;
+}
+
+.postBarOpen form > div > div > div > p u {
+  text-decoration: underline;
+}
+
+.postBarOpen form > div > div:first-of-type {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.postBarOpen form > div > div:first-of-type > * > * {
+  padding: 0.1rem;
+  margin: 0 0.1rem;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  transition: 0.2s;
+}
+
+.postBarOpen form > div > div:first-of-type > * > *:hover {
+  background: var(--darker-border);
+}
+
+.postBarOpen form > div > div > div > p strong {
+  font-weight: bold;
+}
+
+.postBarOpen form > div:not(.postBoxExit) {
+  width: 100%;
+}
+
+.postBarOpen form > div:not(.postBoxExit) * {
+  border: none !important;
+}
+
+.postSubmit {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  font-size: 1.2rem;
+  transform: translate(-50%, -70%);
+  background: var(--orange);
+  padding: 0.2rem 0.8rem;
+  color: var(--white);
+  border-radius: 20px;
+  cursor: pointer;
+  border: 3px solid var(--border);
+}
+
 @media (min-width: 400px) {
   .topBar[data-collapsed="false"],
   .createContainer[data-collapsed="false"],
-  .communityContainer[data-collapsed="false"] {
-    width: calc(100vw - 200px);
-  }
-
+  .communityContainer[data-collapsed="false"],
+  .postBarContainer[data-collapsed="false"],
   .communities[data-collapsed="false"] {
     width: calc(100vw - 200px);
   }
