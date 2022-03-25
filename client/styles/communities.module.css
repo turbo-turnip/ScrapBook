@@ -445,7 +445,7 @@
 
 .postsContainer {
   width: 100%;
-  padding: 2.5rem 1.5rem;
+  padding: 2.5rem 2.5rem 8rem 1.5rem;
 }
 
 .post {
@@ -453,6 +453,22 @@
   margin-bottom: 1rem;
   border-radius: 16px;
   padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  column-gap: 2rem;
+  position: relative;
+  max-width: 600px;
+}
+
+.post::before {
+  content: attr(data-posted-by);
+  position: absolute;
+  top: 0;
+  left: 10%;
+  transform: translateY(-50%);
+  background: var(--white);
+  padding: 0 0.5rem;
+  color: var(--blue);
 }
 
 .postImage {
@@ -464,6 +480,63 @@
 
 .postsContainer .post li {
   margin-left: 1.8rem;
+}
+
+.postRight {
+  width: 50px;
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.postBody {
+  flex: 1;
+}
+
+.postRight div > * {
+  width: 100%;
+  position: relative;
+}
+
+.postRight > div {
+  position: relative;
+}
+
+.postRight div::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  background: var(--tooltip-color);
+  padding: 0.25rem 1rem;
+  width: max-content;
+  border-radius: 20px;
+  transition: 0.2s;
+  opacity: 0;
+  pointer-events: none;
+  color: var(--white);
+  font-size: 1rem;
+}
+
+.postRight div:hover::after {
+  transform: translate(-50%, -120%);
+  opacity: 1;
+}
+
+.postRight > div {
+  font-size: 2.5rem;
+  cursor: pointer;
+}
+
+.postRight > div {
+  transition: 0.2s;
+}
+
+.postRight > div:hover {
+  transform: scale(1.2);
 }
 
 @media (min-width: 400px) {

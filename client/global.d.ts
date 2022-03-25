@@ -1,5 +1,6 @@
 interface Window {
   backendPath: string;
+  frontendPath: string;
   hexToASCII: (hex: string) => string;
   fetchAccount: (accessToken: string, refreshToken: string) => Promise<ServerResponse>;
 }

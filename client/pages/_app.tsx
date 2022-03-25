@@ -2,6 +2,7 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 
 global.backendPath = "http://localhost:8080";
+global.frontendPath = "http://localhost:3000";
 global.hexToASCII = (hex: string): string => {
   let out = "";
 

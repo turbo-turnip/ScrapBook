@@ -23,6 +23,7 @@ const Community: NextPage = () => {
   const [postBoxOpen, setPostBoxOpen] = useState(false);
   const postBarContainerRef = useRef<HTMLDivElement|null>(null);
   const [editorText, setEditorText] = useState("");
+  const [newPostLoading, setNewPostLoading] = useState(false);
   const router = useRouter(); 
 
   const auth = async () => {
@@ -125,6 +126,7 @@ const Community: NextPage = () => {
     const accessToken = localStorage.getItem("at") || "";
     const refreshToken = localStorage.getItem("rt") || "";
 
+    setNewPostLoading(true);
     const req = await fetch(backendPath + "/posts", {
       method: 'POST',
       headers: {
@@ -137,6 +139,9 @@ const Community: NextPage = () => {
       })
     });
     const res = await req.json();
+    setNewPostLoading(false);
+    setPostBoxOpen(false);
+    postBarContainerRef?.current?.classList.remove(styles.postBarOpen);
     if (res.success) {
       if (res.generateNewTokens) {
         localStorage.setItem("at", res?.newAccessToken);
@@ -144,12 +149,16 @@ const Community: NextPage = () => {
       }
 
       setCommunity(res?.community);
-      setSuccessPopups(prevState => [...prevState, "Successfully published posts"]);
+      setSuccessPopups(prevState => [...prevState, "Successfully created post"]);
       return;
     } else {
       setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
       return;
     }
+  }
+
+  const likePost = (postID: string) => {
+
   }
 
   useEffect(() => {
@@ -175,6 +184,12 @@ const Community: NextPage = () => {
           key={i}
           message={errorPopup || "An error occurred. Please refresh the page"}
           type={PopupType.ERROR}
+          />)}
+      {successPopups.map((successPopup, i) =>
+        <Popup 
+          key={i}
+          message={successPopup || "An error occurred. Please refresh the page"}
+          type={PopupType.SUCCESS}
           />)}
 
       <Sidebar categories={getSidebarPropsWithOption("Communities")} onToggle={(value) => setSidebarCollapsed(value)} />
@@ -224,11 +239,22 @@ const Community: NextPage = () => {
             <div className={styles.postsContainer}>
               {community.posts.length === 0 && <h4 className={styles.info}>There aren't any posts yet...</h4>}
               {community.posts.length > 0 && community.posts.map((post, i) =>
-                <div className={styles.post} key={i}>
-                  <div className={styles.postBody} dangerouslySetInnerHTML={{ __html: post?.body || (post?.images?.length > 0 ? `${post.images.length} Image` : 'No content') }}></div>
-                  {console.log(post)}
-                  {(post?.images || []).map((image, i) => 
-                    <img src={image?.url} alt="Post image" key={i} className={styles.postImage} onClick={() => window.open(image?.url)} />)}
+                <div className={styles.post} key={i} data-posted-by={`Posted by ${post.user.name}`}>
+                  <div>
+                    <div className={styles.postBody} dangerouslySetInnerHTML={{ __html: post?.body || (post?.images?.length > 0 ? `${post.images.length} Image` : 'No content') }}></div>
+                    {(post?.images || []).map((image, i) => 
+                      <img src={image?.url} alt="Post image" key={i} className={styles.postImage} onClick={() => window.open(image?.url)} />)}
+                  </div>
+                  <div className={styles.postRight}>
+                    <div data-tooltip={`Posted by ${post.user.name}`} onClick={() => router.push(`/user/${post.user.name}`)}>
+                      <img className={styles.posterAvatar} src={post.user.avatar} />
+                    </div>
+                    <div data-tooltip="Like" onClick={() => likePost(post.id)}>❤️</div>
+                    <div data-tooltip="Comment">💬</div>
+                    <div data-tooltip="Share" onClick={() => {
+                      navigator.clipboard.writeText(`${frontendPath}/post/${post.id}`);
+                    }}>🔗</div>
+                  </div> 
                 </div>)}
             </div>
           </>}
@@ -249,7 +275,8 @@ const Community: NextPage = () => {
                   postBarContainer?.classList.remove(styles.postBarOpen);
                 }}>&times;</div>}
                 {!postBoxOpen && <textarea className={styles.postInput} placeholder={`Post to ${community?.title || "this community"}`}></textarea>}
-                {postBoxOpen && 
+                {(postBoxOpen && newPostLoading) && <h1 className={styles.info}>Creating post...</h1>}
+                {(postBoxOpen && !newPostLoading) && 
                   <ReactQuill
                     style={{
                       height: "100%"
