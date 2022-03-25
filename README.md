@@ -41,7 +41,7 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 - Refine interest search algorithm
 - Use getStaticProps for auth and page fetches
 - Use getStaticPaths for communities and messages pages
-- Banned refresh token duplicate insert errors
+- Banned refresh token duplicate insert errors - Implement fix: return response fields when requests fail
 - Establish useEffect cleanup
 - Fix memory leaks on page switches
 - Fix prisma schema unique constraint on community member communityID and userID

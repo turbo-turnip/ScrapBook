@@ -157,8 +157,34 @@ const Community: NextPage = () => {
     }
   }
 
-  const likePost = (postID: string) => {
+  const likePost = async (postID: string) => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
 
+    const req = await fetch(backendPath + "/posts/like", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        postID
+      })
+    });
+    const res = await req.json();
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken);
+        localStorage.setItem("rt", res?.newRefreshToken);
+      }
+
+      setCommunity(res?.community);
+      setSuccessPopups(prevState => [...prevState, `You ${res?.option || "like"} this post`]);
+      return;
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
+      return;
+    }
   }
 
   useEffect(() => {
@@ -249,9 +275,11 @@ const Community: NextPage = () => {
                     <div data-tooltip={`Posted by ${post.user.name}`} onClick={() => router.push(`/user/${post.user.name}`)}>
                       <img className={styles.posterAvatar} src={post.user.avatar} />
                     </div>
-                    <div data-tooltip="Like" onClick={() => likePost(post.id)}>❤️</div>
-                    <div data-tooltip="Comment">💬</div>
-                    <div data-tooltip="Share" onClick={() => {
+                    <div data-info={post.likes} data-tooltip={!(post.membersLiked.find(member => member.userID === account?.id)) ? "Like this post?" : "Liked this post"} onClick={() => likePost(post.id)}>
+                      {!(post.membersLiked.find(member => member.userID === account?.id)) ? "🤍" : "❤️"}
+                    </div>
+                    <div data-info={post.comments.length} data-tooltip="Comment">💬</div>
+                    <div data-info="" data-tooltip="Share" onClick={() => {
                       navigator.clipboard.writeText(`${frontendPath}/post/${post.id}`);
                     }}>🔗</div>
                   </div> 

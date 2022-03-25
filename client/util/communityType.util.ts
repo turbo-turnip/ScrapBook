@@ -1,7 +1,7 @@
 import { PostType } from "./postType.util";
 import { UserType } from "./userType.util"
 
-type CommunityMember = {
+export type CommunityMember = {
   id: string,
   nickname?: string,
   communityID?: string,

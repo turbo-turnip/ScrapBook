@@ -67,6 +67,7 @@ model CommunityMember {
   community   Community @relation(fields: [communityID], references: [id])
   user        User      @relation(fields: [userID], references: [id])
   owner       Boolean
+  likedPosts  Post[]
 
   @@map("community_member")
 }
@@ -85,16 +86,17 @@ model Community {
 }
 
 model Post {
-  id          String    @id @default(cuid())
-  body        String?   @db.VarChar(800)
-  likes       Int
-  userID      String
-  communityID String
-  community   Community @relation(fields: [communityID], references: [id])
-  user        User      @relation(fields: [userID], references: [id])
-  comments    Comment[]
-  images      Image[]
-  videos      Video[]
+  id           String            @id @default(cuid())
+  body         String?           @db.VarChar(800)
+  likes        Int
+  membersLiked CommunityMember[]
+  userID       String
+  communityID  String
+  community    Community         @relation(fields: [communityID], references: [id])
+  user         User              @relation(fields: [userID], references: [id])
+  comments     Comment[]
+  images       Image[]
+  videos       Video[]
 
   @@index([communityID], map: "post_communityID_fkey")
   @@index([userID], map: "post_userID_fkey")
@@ -102,10 +104,10 @@ model Post {
 }
 
 model Image {
-  id      String  @id @default(cuid())
-  url     String? @db.VarChar(255)
-  postID  String?
-  post    Post?   @relation(fields: [postID], references: [id])
+  id     String  @id @default(cuid())
+  url    String? @db.VarChar(255)
+  postID String?
+  post   Post?   @relation(fields: [postID], references: [id])
 
   @@index([postID], map: "image_postID_fkey")
   @@map("image")

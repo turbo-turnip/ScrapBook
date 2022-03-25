@@ -526,6 +526,16 @@
   opacity: 1;
 }
 
+.postRight div::before {
+  content: attr(data-info);
+  font-size: 1.5rem;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-200%, -50%);
+  color: var(--orange);
+}
+
 .postRight > div {
   font-size: 2.5rem;
   cursor: pointer;
@@ -537,6 +547,10 @@
 
 .postRight > div:hover {
   transform: scale(1.2);
+}
+
+.postBar .info {
+  width: 100%;
 }
 
 @media (min-width: 400px) {

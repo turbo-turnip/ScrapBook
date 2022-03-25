@@ -125,7 +125,8 @@ export const getCommunity = async (req: Request, res: Response) => {
             user: true,
             comments: true,
             images: true,
-            videos: true
+            videos: true,
+            membersLiked: true
           }
         }
       }

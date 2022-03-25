@@ -1,4 +1,4 @@
-import { CommunityType } from "./communityType.util";
+import { CommunityMember, CommunityType } from "./communityType.util";
 import { UserType } from "./userType.util";
 
 type ImageType = {
@@ -61,6 +61,7 @@ export type PostType = {
   body?: string,
   likes: number,
   userID?: string,
+  membersLiked: Array<CommunityMember>,
   communityID?: string,
   community: CommunityType,
   user: UserType,

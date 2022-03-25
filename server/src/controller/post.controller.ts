@@ -3,7 +3,7 @@ import { authenticateUser, communityExists } from "../service";
 import { LogType, log } from "../util/log.util";
 import { v2 as cloudinary } from "cloudinary";
 import env from "../config/env.config";
-import { acceptableImageSize, getContentImages } from "../service/post.service";
+import { acceptableImageSize, getContentImages, getPost, postExists } from "../service/post.service";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -67,6 +67,9 @@ export const createPost = async (req: Request, res: Response) => {
     data: {
       body: content.replace(/<img src="(.)*">/g, ''),
       likes: 0,
+      membersLiked: {
+        create: []
+      },
       user: {
         connect: { id: response.account.id }
       },
@@ -104,4 +107,64 @@ export const createPost = async (req: Request, res: Response) => {
   });
 
   res.status(200).json({ success: true, post: newPost, community: updatedCommunity, ...response });
+}
+
+// POST :8080/posts/like
+// Like a user's post
+export const likePost = async (req: Request, res: Response) => {
+  const accessToken: string = req.body?.accessToken || "";
+  const refreshToken: string = req.body?.refreshToken || "";
+  const postID: string = req.body?.postID || "";
+  const { success, response } = await authenticateUser(accessToken, refreshToken);
+  if (!success) {
+    log(LogType.ERROR, JSON.stringify(response));
+    res.status(400).json({ success, error: "Invalid account" });
+    return;
+  }
+
+  const post = await getPost("id", postID);
+  if (!post) {
+    res.status(400).json({ success: false, error: "That post doesn't exist" });
+    return;
+  }
+
+  const userInPostCommunity = !!(post.community.membersUser.find(user => user.id === response.account.id)?.id);
+  if (!userInPostCommunity) {
+    res.status(403).json({ success: false, error: "You need to join this community before you can like it's posts" });
+    return;
+  }
+
+  const userAlreadyLiked = !!(post.membersLiked.find(member => member.userID === response.account.id));
+  const communityMember = post.community.members.find(member => member.userID === response.account.id);
+  const membersLikedPost = post.membersLiked;
+
+  await prisma.post.update({
+    where: { id: postID },
+    data: {
+      likes: { increment: userAlreadyLiked ? -1 : 1 },
+      membersLiked: {
+        [userAlreadyLiked ? "set" : "connect"]: userAlreadyLiked ? membersLikedPost.filter(member => member.userID != response.account.id) : { id: communityMember?.id || "" }
+      }
+    }
+  });
+
+  const updatedCommunity = await prisma.community.findUnique({
+    where: { id: post.community.id },
+    include: {
+      membersUser: true,
+      members: true,
+      interests: true,
+      posts: {
+        include: {
+          user: true,
+          comments: true,
+          images: true,
+          videos: true,
+          membersLiked: true
+        }
+      }
+    }
+  });
+
+  res.status(200).json({ success: true, community: updatedCommunity, option: userAlreadyLiked ? "dislike" : "like", ...response });
 }
