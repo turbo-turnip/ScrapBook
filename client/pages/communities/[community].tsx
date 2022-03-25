@@ -19,6 +19,7 @@ const Community: NextPage = () => {
   const [invalidCommunity, setInvalidCommunity] = useState(false);
   const [alerts, setAlerts] = useState<Array<{ message: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }> }>>([]);
   const [errorPopups, setErrorPopups] = useState<Array<string>>([]);
+  const [successPopups, setSuccessPopups] = useState<Array<string>>([]);
   const [postBoxOpen, setPostBoxOpen] = useState(false);
   const postBarContainerRef = useRef<HTMLDivElement|null>(null);
   const [editorText, setEditorText] = useState("");
@@ -136,7 +137,19 @@ const Community: NextPage = () => {
       })
     });
     const res = await req.json();
-    console.log(res);
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken);
+        localStorage.setItem("rt", res?.newRefreshToken);
+      }
+
+      setCommunity(res?.community);
+      setSuccessPopups(prevState => [...prevState, "Successfully published posts"]);
+      return;
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
+      return;
+    }
   }
 
   useEffect(() => {
@@ -174,39 +187,51 @@ const Community: NextPage = () => {
         {(!communityLoading && invalidCommunity) ? <h1 className={styles.info}>Hmm... That community doesn't exist 👁👄👁</h1> : null}
 
         {(!communityLoading && !invalidCommunity && community) &&
-          <div className={styles.banner} data-title={community.title}>
-            <div className={styles.bannerCenter}>
-              {(account && !!community?.membersUser?.find(u => u?.id === account.id)) && <div className={styles.leaveCommunity} onClick={() => {
-                setAlerts(prevState => 
-                  [
-                    ...prevState, 
-                    { 
-                      message: `Are you sure you want to leave ${community?.title || "this community"}?`,
-                      buttons: [
-                        { 
-                          message: "Yes 👋", 
-                          color: "var(--blue)",
-                          onClick: () => {
-                            leaveCommunity(community?.id || ""); 
+          <>
+            <div className={styles.banner} data-title={community.title}>
+              <div className={styles.bannerCenter}>
+                {(account && !!community?.membersUser?.find(u => u?.id === account.id)) && <div className={styles.leaveCommunity} onClick={() => {
+                  setAlerts(prevState => 
+                    [
+                      ...prevState, 
+                      { 
+                        message: `Are you sure you want to leave ${community?.title || "this community"}?`,
+                        buttons: [
+                          { 
+                            message: "Yes 👋", 
+                            color: "var(--blue)",
+                            onClick: () => {
+                              leaveCommunity(community?.id || ""); 
+                            }
+                          },
+                          { 
+                            message: "No ☝️", 
+                            color: "var(--orange)" 
                           }
-                        },
-                        { 
-                          message: "No ☝️", 
-                          color: "var(--orange)" 
-                        }
-                      ]
-                    }
-                  ]
-                );
-              }}>➡️</div>}
-              <h1>{community.title}</h1>
-              <p>{community.details}</p>
+                        ]
+                      }
+                    ]
+                  );
+                }}>➡️</div>}
+                <h1>{community.title}</h1>
+                <p>{community.details}</p>
+              </div>
+              <div className={styles.bannerStats}>
+                {(account && !community?.membersUser?.find(u => u?.id === account.id)) && <button className={styles.joinCommunity} onClick={() => joinCommunity(community?.id || "")}>Join Community</button>}
+                {community.members.length} Member{community.members.length != 1 ? "s" : null} • {community.posts.length} Post{community.posts.length != 1 ? "s" : null}  
+              </div>  
             </div>
-            <div className={styles.bannerStats}>
-              {(account && !community?.membersUser?.find(u => u?.id === account.id)) && <button className={styles.joinCommunity} onClick={() => joinCommunity(community?.id || "")}>Join Community</button>}
-              {community.members.length} Member{community.members.length != 1 ? "s" : null} • {community.posts.length} Post{community.posts.length != 1 ? "s" : null}  
-            </div>  
-          </div>}
+            <div className={styles.postsContainer}>
+              {community.posts.length === 0 && <h4 className={styles.info}>There aren't any posts yet...</h4>}
+              {community.posts.length > 0 && community.posts.map((post, i) =>
+                <div className={styles.post} key={i}>
+                  <div className={styles.postBody} dangerouslySetInnerHTML={{ __html: post?.body || (post?.images?.length > 0 ? `${post.images.length} Image` : 'No content') }}></div>
+                  {console.log(post)}
+                  {(post?.images || []).map((image, i) => 
+                    <img src={image?.url} alt="Post image" key={i} className={styles.postImage} onClick={() => window.open(image?.url)} />)}
+                </div>)}
+            </div>
+          </>}
           {(loggedIn && community) &&
             <div className={styles.postBarContainer} data-collapsed={sidebarCollapsed} ref={postBarContainerRef}>
               <form className={styles.postBar} onFocus={() => {

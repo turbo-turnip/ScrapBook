@@ -86,5 +86,22 @@ export const createPost = async (req: Request, res: Response) => {
     }
   });
 
-  res.status(200).json({ success: true, post: newPost, ...response });
+  const updatedCommunity = await prisma.community.findUnique({
+    where: { id: communityID },
+    include: {
+      membersUser: true,
+      members: true,
+      interests: true,
+      posts: {
+        include: {
+          user: true,
+          comments: true,
+          images: true,
+          videos: true
+        }
+      }
+    }
+  });
+
+  res.status(200).json({ success: true, post: newPost, community: updatedCommunity, ...response });
 }
