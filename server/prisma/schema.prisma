@@ -60,14 +60,15 @@ model Friend {
 }
 
 model CommunityMember {
-  id          String    @id @default(cuid())
-  nickname    String?
-  userID      String
-  communityID String
-  community   Community @relation(fields: [communityID], references: [id])
-  user        User      @relation(fields: [userID], references: [id])
-  owner       Boolean
-  likedPosts  Post[]
+  id            String    @id @default(cuid())
+  nickname      String?
+  userID        String
+  communityID   String
+  community     Community @relation(fields: [communityID], references: [id])
+  user          User      @relation(fields: [userID], references: [id])
+  owner         Boolean
+  likedPosts    Post[]
+  likedComments Comment[]
 
   @@map("community_member")
 }
@@ -150,13 +151,12 @@ model DM {
 }
 
 model Message {
-  id              String     @id @default(cuid())
+  id              String @id @default(cuid())
   userID          String
-  content         String     @db.VarChar(255)
+  content         String @db.VarChar(255)
   directMessageID String
-  directMessage   DM         @relation(fields: [directMessageID], references: [id])
-  user            User       @relation(fields: [userID], references: [id])
-  reactions       Reaction[]
+  directMessage   DM     @relation(fields: [directMessageID], references: [id])
+  user            User   @relation(fields: [userID], references: [id])
 
   @@index([directMessageID], map: "message_directMessageID_fkey")
   @@index([userID], map: "message_userID_fkey")
@@ -164,31 +164,18 @@ model Message {
 }
 
 model Comment {
-  id        String     @id @default(cuid())
-  userID    String
-  content   String     @db.VarChar(255)
-  postID    String
-  post      Post       @relation(fields: [postID], references: [id])
-  user      User       @relation(fields: [userID], references: [id])
-  reactions Reaction[]
+  id          String            @id @default(cuid())
+  userID      String
+  content     String            @db.VarChar(255)
+  postID      String
+  post        Post              @relation(fields: [postID], references: [id])
+  user        User              @relation(fields: [userID], references: [id])
+  likes       Int               @default(0)
+  memberLikes CommunityMember[]
 
   @@index([postID], map: "comment_postID_fkey")
   @@index([userID], map: "comment_userID_fkey")
   @@map("comment")
-}
-
-model Reaction {
-  id        String   @id @default(cuid())
-  name      String
-  count     Int      @default(1)
-  commentID String?
-  messageID String?
-  comment   Comment? @relation(fields: [commentID], references: [id])
-  message   Message? @relation(fields: [messageID], references: [id])
-
-  @@index([commentID], map: "reaction_commentID_fkey")
-  @@index([messageID], map: "reaction_messageID_fkey")
-  @@map("reaction")
 }
 
 model BannedRefreshTokens {

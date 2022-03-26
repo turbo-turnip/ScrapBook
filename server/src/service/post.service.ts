@@ -44,3 +44,27 @@ export const getPost = (prop: string, value: any) => {
     res(post);
   });
 }
+
+// Returns a specific comment by specific property
+export const getComment = (prop: string, value: any) => {
+  return new Promise<(Partial<Comment> & { memberLikes: Array<CommunityMember> } & { post: Partial<Post> & { community: Partial<Community> & { membersUser: Array<User> } & { members: Array<CommunityMember> } } })|null>(async (res) => {
+    const comment = await prisma.comment.findFirst({
+      where: { [prop]: value },
+      include: {
+        memberLikes: true,
+        post: {
+          include: {
+            community: {
+              include: {
+                membersUser: true,
+                members: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    res(comment);
+  });
+}

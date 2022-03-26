@@ -3,14 +3,16 @@ import styles from '../styles/alert.module.css';
 
 interface AlertProps {
   message: string;
+  input?: { placeholder?: string; };
   buttons: Array<{
     message: string;
+    onClickInput?: (input: string) => any;
     onClick?: () => any;
     color?: string;
   }>;
 }
 
-export const Alert: FC<AlertProps> = ({ message, buttons }) => {
+export const Alert: FC<AlertProps> = ({ message, input, buttons }) => {
   const alertRef = useRef<HTMLDivElement|null>(null);
 
   useEffect(() => {
@@ -25,9 +27,10 @@ export const Alert: FC<AlertProps> = ({ message, buttons }) => {
   return (
     <div className={styles.alert} ref={alertRef}>
       <h4 className={styles.message}>{message}</h4>
+      {input && <input className={styles.input} placeholder={input?.placeholder || ""} />}
       <div className={styles.btns}>
         {buttons.map((btn, i) =>
-          <button className={styles.btn} key={i} onClick={() => {
+          <button className={styles.btn} key={i} onClick={(event) => {
             if (alertRef.current) {
               const alert = alertRef.current;
               alert.style.opacity = "0";
@@ -37,8 +40,9 @@ export const Alert: FC<AlertProps> = ({ message, buttons }) => {
               }, 500);
             }
 
-            if (btn?.onClick)
-              btn.onClick();
+            if (input && btn?.onClickInput)
+              btn.onClickInput(((event.target as HTMLButtonElement)?.parentElement?.previousElementSibling as HTMLInputElement)?.value || "");
+            else if (input && btn?.onClick) btn.onClick();
           }} style={{
             background: btn?.color || "var(--blue)"
           }}>

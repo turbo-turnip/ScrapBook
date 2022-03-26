@@ -25,8 +25,9 @@ type CommentType = {
   content: string,
   postID?: string,
   post: PostType,
-  user: UserType,
-  reactions: Array<ReactionType>
+  user: UserType
+  likes: number;
+  memberLikes: Array<CommunityMember>;
 };
 
 type DMType = {
@@ -41,19 +42,8 @@ type MessageType = {
   content: string,
   directMessageID?: string,
   directMessage?: DMType,
-  user: UserType,
-  reactions: Array<ReactionType>
+  user: UserType
 };  
-
-type ReactionType = {
-  id: string,
-  name: string,
-  count: number,
-  commentID?: string,
-  messageID?: string,
-  comment?: CommentType,
-  message?: MessageType
-};
 
 export type PostType = {
   id: string,

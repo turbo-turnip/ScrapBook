@@ -24,6 +24,9 @@ const Community: NextPage = () => {
   const postBarContainerRef = useRef<HTMLDivElement|null>(null);
   const [editorText, setEditorText] = useState("");
   const [newPostLoading, setNewPostLoading] = useState(false);
+  const [showCommentAlert, setShowCommentAlert] = useState(false);
+  const [showComments, setShowComments] = useState<Array<boolean>>([]);
+  const [newCommentPostID, setNewCommentPostID] = useState<string|null>();
   const router = useRouter(); 
 
   const auth = async () => {
@@ -187,9 +190,82 @@ const Community: NextPage = () => {
     }
   }
 
+  const likeComment = async (commentID: string) => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/posts/likeComment", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        commentID
+      })
+    });
+    const res = await req.json();
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken);
+        localStorage.setItem("rt", res?.newRefreshToken);
+      }
+
+      setCommunity(res?.community);
+      setSuccessPopups(prevState => [...prevState, `You ${res?.option || "like"} this comment`]);
+      return;
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
+      return;
+    }
+  }
+
+  const createComment = async (comment: string) => {
+    setTimeout(() => setShowCommentAlert(false), 500);
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/posts/comment", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        comment, 
+        postID: newCommentPostID
+      })
+    });
+    const res = await req.json();
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken);
+        localStorage.setItem("rt", res?.newRefreshToken);
+      }
+
+      setCommunity(res?.community);
+      setSuccessPopups(prevState => [...prevState, "Successfully commented"]);
+      return;
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
+      return;
+    }
+  }
+
   useEffect(() => {
     auth();
   }, []);
+
+  useEffect(() => {
+    if (community && community.posts) 
+      setShowComments(prevState => {
+        const newArray = new Array(community.posts.length).fill(false);
+        prevState.slice(0, prevState.length).forEach((s, i) => {
+          newArray[i] = s;
+        });
+        return newArray;
+      });
+  }, [community]);
 
   useEffect(() => {
     // Fix this later
@@ -205,6 +281,7 @@ const Community: NextPage = () => {
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
       </Head>
 
+      {showCommentAlert && <Alert message="Create a new comment" buttons={[{ message: "Create", color: "var(--orange)", onClickInput: (input) => createComment(input) }, { message: "Cancel", color: "var(--blue)", onClick: () => setTimeout(() => setShowCommentAlert(false), 500) }]} input={{ placeholder: "Your comment goes here..." }} />}
       {errorPopups.map((errorPopup, i) =>
         <Popup 
           key={i}
@@ -266,23 +343,47 @@ const Community: NextPage = () => {
               {community.posts.length === 0 && <h4 className={styles.info}>There aren't any posts yet...</h4>}
               {community.posts.length > 0 && community.posts.map((post, i) =>
                 <div className={styles.post} key={i} data-posted-by={`Posted by ${post.user.name}`}>
-                  <div>
-                    <div className={styles.postBody} dangerouslySetInnerHTML={{ __html: post?.body || (post?.images?.length > 0 ? `${post.images.length} Image` : 'No content') }}></div>
-                    {(post?.images || []).map((image, i) => 
-                      <img src={image?.url} alt="Post image" key={i} className={styles.postImage} onClick={() => window.open(image?.url)} />)}
-                  </div>
-                  <div className={styles.postRight}>
-                    <div data-tooltip={`Posted by ${post.user.name}`} onClick={() => router.push(`/user/${post.user.name}`)}>
-                      <img className={styles.posterAvatar} src={post.user.avatar} />
-                    </div>
-                    <div data-info={post.likes} data-tooltip={!(post.membersLiked.find(member => member.userID === account?.id)) ? "Like this post?" : "Liked this post"} onClick={() => likePost(post.id)}>
-                      {!(post.membersLiked.find(member => member.userID === account?.id)) ? "🤍" : "❤️"}
-                    </div>
-                    <div data-info={post.comments.length} data-tooltip="Comment">💬</div>
-                    <div data-info="" data-tooltip="Share" onClick={() => {
-                      navigator.clipboard.writeText(`${frontendPath}/post/${post.id}`);
-                    }}>🔗</div>
-                  </div> 
+                  {!showComments[i] && 
+                    <>
+                      <div>
+                        <div className={styles.postBody} dangerouslySetInnerHTML={{ __html: post?.body || (post?.images?.length > 0 ? `${post.images.length} Image` : 'No content') }}></div>
+                        {(post?.images || []).map((image, i) => 
+                          <img src={image?.url} alt="Post image" key={i} className={styles.postImage} onClick={() => window.open(image?.url)} />)}
+                      </div>
+                      <div className={styles.postRight}>
+                        <div data-tooltip={`Posted by ${post.user.name}`} onClick={() => router.push(`/user/${post.user.name}`)}>
+                          <img className={styles.posterAvatar} src={post.user.avatar} />
+                        </div>
+                        <div data-info={post.likes} data-tooltip={!(post.membersLiked.find(member => member.userID === account?.id)) ? "Like this post?" : "Liked this post"} onClick={() => likePost(post.id)}>
+                          {!(post.membersLiked.find(member => member.userID === account?.id)) ? "🤍" : "❤️"}
+                        </div>
+                        <div data-info={post.comments.length} data-tooltip="Comments" onClick={() => {
+                          setShowComments(prevState => prevState.map((show, i2) => i2 === i ? true : show));
+                        }}>💬</div>
+                        <div data-info="" data-tooltip="Share" onClick={() => {
+                          navigator.clipboard.writeText(`${frontendPath}/post/${post.id}`);
+                        }}>🔗</div>
+                      </div> 
+                    </>}
+                  {showComments[i] &&
+                    <div className={styles.postComments}>
+                      {loggedIn && <button className={styles.createComment} onClick={() => {
+                        setShowCommentAlert(true);  
+                        setNewCommentPostID(post.id);
+                      }}>Create a comment</button>}
+                      {post.comments.length === 0 && <h4 className={styles.info}>There aren't any comments for this post yet...</h4>}
+                      {post.comments.map((comment, i) =>
+                        <div className={styles.comment} key={i}>
+                          <div className={styles.commentPoster}>
+                            <img src={comment.user.avatar} alt={`${comment.user.name}'s avatar`} />
+                            <p>Posted by {comment.user.name}</p>
+                          </div>
+                          <p>{comment?.content || "No comment"}</p>
+                          <span className={styles.commentLikes} data-likes={comment.likes} onClick={() => likeComment(comment.id)}>
+                            {!(comment.memberLikes.find(member => member.userID === account?.id)) ? "🤍" : "❤️"}
+                          </span>
+                        </div>)}
+                    </div>}
                 </div>)}
             </div>
           </>}

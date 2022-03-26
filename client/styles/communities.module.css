@@ -553,6 +553,71 @@
   width: 100%;
 }
 
+.postComments {
+  padding-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.createComment {
+  font-size: 1.25rem;
+  align-self: center;
+  background: var(--orange);
+  color: var(--white);
+  padding: 0.25rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.comment {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  padding: 1.2rem 1rem 0.5rem 1rem;
+  margin-top: 2rem;
+  position: relative;
+}
+
+.commentPoster {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(20%, -50%);
+  height: 30px;
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+  color: var(--blue);
+  background: var(--white);
+  padding: 0 0.5rem;
+}
+
+.commentPoster img {
+  height: 100%;
+}
+
+.commentLikes {
+  cursor: pointer;
+  position: relative;
+  transition: 0.2s;
+}
+
+.commentLikes:hover {
+  transform: scale(1.2);
+}
+
+.commentLikes::before {
+  content: attr(data-likes);
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-150%, -50%);
+  color: var(--orange);
+}
+
 @media (min-width: 400px) {
   .topBar[data-collapsed="false"],
   .createContainer[data-collapsed="false"],

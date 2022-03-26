@@ -34,3 +34,12 @@
   border: 1px solid var(--border);
   color: var(--white);
 }
+
+.input {
+  font-size: 1.2rem;
+  border: 1px solid var(--border);
+  width: 100%;
+  border-radius: 6px;
+  padding: 0.2rem 0.8rem;
+  margin-bottom: 1rem;
+}
