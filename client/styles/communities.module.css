@@ -504,7 +504,7 @@
   position: relative;
 }
 
-.postRight div::after {
+.postRight > div::after {
   content: attr(data-tooltip);
   position: absolute;
   top: 0;
@@ -521,12 +521,12 @@
   font-size: 1rem;
 }
 
-.postRight div:hover::after {
+.postRight > div:hover::after {
   transform: translate(-50%, -120%);
   opacity: 1;
 }
 
-.postRight div::before {
+.postRight > div::before {
   content: attr(data-info);
   font-size: 1.5rem;
   position: absolute;
@@ -547,6 +547,12 @@
 
 .postRight > div:hover {
   transform: scale(1.2);
+}
+
+.postRight .morePostOptions {
+  font-size: 1.25rem;
+  position: relative; 
+  width: 50px !important;
 }
 
 .postBar .info {
@@ -708,8 +714,35 @@
 
 .comments {
   width: 100%;
+  min-height: 200px;
   max-height: 500px;
   overflow-y: scroll;
+}
+
+.postOptions {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-65%, -20px);
+  opacity: 0;
+  width: max-content !important;
+  text-align: right;
+  background: var(--white);
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.5rem;
+  padding-left: 2rem;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.morePostOptions:hover .postOptions {
+  transform: translate(-65%, 0px);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.postOptions > * {
+  color: var(--blue);
+  cursor: pointer;
 }
 
 @media (min-width: 400px) {

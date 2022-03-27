@@ -94,8 +94,8 @@ model Post {
   membersLiked CommunityMember[]
   userID       String
   communityID  String
-  community    Community         @relation(fields: [communityID], references: [id])
-  user         User              @relation(fields: [userID], references: [id])
+  community    Community         @relation(fields: [communityID], references: [id], onDelete: Cascade)
+  user         User              @relation(fields: [userID], references: [id], onDelete: Cascade)
   comments     Comment[]
   images       Image[]
   videos       Video[]
@@ -108,8 +108,8 @@ model Post {
 model Image {
   id     String  @id @default(cuid())
   url    String? @db.VarChar(255)
-  postID String?
-  post   Post?   @relation(fields: [postID], references: [id])
+  postID String
+  post   Post   @relation(fields: [postID], references: [id], onDelete: Cascade)
 
   @@index([postID], map: "image_postID_fkey")
   @@map("image")
@@ -120,8 +120,8 @@ model Video {
   url     String? @db.VarChar(255)
   caption String? @db.VarChar(150)
   alt     String? @db.VarChar(150)
-  postID  String?
-  post    Post?   @relation(fields: [postID], references: [id])
+  postID  String
+  post    Post   @relation(fields: [postID], references: [id], onDelete: Cascade)
 
   @@index([postID], map: "video_postID_fkey")
   @@map("video")
@@ -156,7 +156,7 @@ model Message {
   userID          String
   content         String @db.VarChar(255)
   directMessageID String
-  directMessage   DM     @relation(fields: [directMessageID], references: [id])
+  directMessage   DM     @relation(fields: [directMessageID], references: [id], onDelete: Cascade)
   user            User   @relation(fields: [userID], references: [id])
 
   @@index([directMessageID], map: "message_directMessageID_fkey")
@@ -170,7 +170,7 @@ model CommentReply {
   userID    String
   user      User    @relation(fields: [userID], references: [id])
   commentID String
-  comment   Comment @relation(fields: [commentID], references: [id])
+  comment   Comment @relation(fields: [commentID], references: [id], onDelete: Cascade)
 }
 
 model Comment {
@@ -178,7 +178,7 @@ model Comment {
   userID      String
   content     String            @db.VarChar(255)
   postID      String
-  post        Post              @relation(fields: [postID], references: [id])
+  post        Post              @relation(fields: [postID], references: [id], onDelete: Cascade)
   user        User              @relation(fields: [userID], references: [id])
   likes       Int               @default(0)
   memberLikes CommunityMember[]

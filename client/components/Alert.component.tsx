@@ -42,7 +42,7 @@ export const Alert: FC<AlertProps> = ({ message, input, buttons }) => {
 
             if (input && btn?.onClickInput)
               btn.onClickInput(((event.target as HTMLButtonElement)?.parentElement?.previousElementSibling as HTMLInputElement)?.value || "");
-            else if (input && btn?.onClick) btn.onClick();
+            else if (btn?.onClick) btn.onClick();
           }} style={{
             background: btn?.color || "var(--blue)"
           }}>

@@ -98,6 +98,7 @@ export const createPost = async (req: Request, res: Response) => {
       posts: {
         include: {
           user: true,
+          membersLiked: true,
           comments: {
             include: {
               user: true,
@@ -167,6 +168,7 @@ export const likePost = async (req: Request, res: Response) => {
       posts: {
         include: {
           user: true,
+          membersLiked: true,
           comments: {
             include: {
               user: true,
@@ -179,8 +181,7 @@ export const likePost = async (req: Request, res: Response) => {
             }
           },
           images: true,
-          videos: true,
-          membersLiked: true,
+          videos: true
         }
       }
     }
@@ -370,6 +371,71 @@ export const replyToComment = async (req: Request, res: Response) => {
 
   const updatedCommunity = await prisma.community.findUnique({
     where: { id: comment.post.community.id },
+    include: {
+      membersUser: true,
+      members: true,
+      interests: true,
+      posts: {
+        include: {
+          user: true,
+          comments: {
+            include: {
+              user: true,
+              memberLikes: true,
+              replies: {
+                include: {
+                  user: true
+                }
+              }
+            }
+          },
+          images: true,
+          videos: true,
+          membersLiked: true
+        }
+      }
+    }
+  });
+
+  res.status(200).json({ success: true, community: updatedCommunity, ...response });
+}
+
+// POST :8080/posts/delete
+// Deletes a post from the database
+export const deletePost = async (req: Request, res: Response) =>{
+  const accessToken: string = req.body?.accessToken || "";
+  const refreshToken: string = req.body?.refreshToken || "";
+  const postID: string = req.body?.postID || "";
+  const { success, response } = await authenticateUser(accessToken, refreshToken);
+  if (!success) {
+    log(LogType.ERROR, JSON.stringify(response));
+    res.status(400).json({ success, error: "Invalid account" });
+    return;
+  }
+
+  const post = await getPost("id", postID);
+  if (!post) {
+    res.status(400).json({ success: false, error: "That post doesn't exist" });
+    return;
+  }
+
+  const userInPostCommunity = !!(post.community.membersUser.find(user => user.id === response.account.id)?.id);
+  if (!userInPostCommunity) {
+    res.status(403).json({ success: false, error: "You need to join this community before you can like it's posts" });
+    return;
+  }
+
+  if (post.user.id !== response.account.id) {
+    res.status(403).json({ success: false, error: "You can't delete a post you don't own" });
+    return;
+  }
+  
+  await prisma.post.delete({ 
+    where: { id: postID }
+  });
+
+  const updatedCommunity = await prisma.community.findUnique({
+    where: { id: post.community.id },
     include: {
       membersUser: true,
       members: true,

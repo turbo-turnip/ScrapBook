@@ -48,6 +48,9 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 - Clean up popups in array, not being used
 - Add dates to posts and other things
 
+## Future possible features
+- Post deletion folder
+
 ## Support
 
 For support, or to report a bug, email att.cubing.sharks@gmail.com.

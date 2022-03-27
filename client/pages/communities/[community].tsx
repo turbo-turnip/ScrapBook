@@ -1,6 +1,7 @@
 import { NextPage } from "next"
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import Head from "next/head";
 import { Sidebar, Nav, Alert, Popup, PopupType } from "../../components";
 import styles from '../../styles/communities.module.css';
@@ -284,6 +285,37 @@ const Community: NextPage = () => {
     }
   }
 
+  const deletePost = async (postID: string) => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/posts/delete", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        postID
+      })
+    });
+    const res = await req.json();
+
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken);
+        localStorage.setItem("rt", res?.newRefreshToken);
+      }
+
+      setCommunity(res?.community);
+      setSuccessPopups(prevState => [...prevState, "Successfully deleted post"]);
+      return;
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
+      return;
+    }
+  }
+
   useEffect(() => {
     auth();
   }, []);
@@ -395,6 +427,14 @@ const Community: NextPage = () => {
                         <div data-info="" data-tooltip="Share" onClick={() => {
                           navigator.clipboard.writeText(`${frontendPath}/post/${post.id}`);
                         }}>🔗</div>
+                        {post.user.id === account?.id && 
+                          <div className={styles.morePostOptions} data-tooltip="More options">
+                            •••  
+                            <div className={styles.postOptions}>
+                              <Link href={`/communities/post/${post.id}/edit`}>Edit Post</Link>
+                              <p onClick={() => setAlerts(prevState => [...prevState, { message: "Are you sure you want to delete this post? It's not recoverable!", buttons: [{ message: "Yes 😬", color: "#ed3b3b", onClick: () => deletePost(post.id) }, { message: "No ☝️", color: "var(--blue)" }] }])}>Delete Post</p>
+                            </div>
+                          </div>}
                       </div> 
                     </>}
                   {showComments[i] &&

@@ -27,10 +27,11 @@ export const postExists = (prop: string, value: any) => {
 
 // Returns a specific post by specific property
 export const getPost = (prop: string, value: any) => {
-  return new Promise<(Partial<Post> & { membersLiked: Array<CommunityMember> } & { community: Partial<Community> & { membersUser: Array<User> } & { members: Array<CommunityMember> } })|null>(async (res) => {
+  return new Promise<(Partial<Post> & { user: User } & { membersLiked: Array<CommunityMember> } & { community: Partial<Community> & { membersUser: Array<User> } & { members: Array<CommunityMember> } })|null>(async (res) => {
     const post = await prisma.post.findFirst({
       where: { [prop]: value },
       include: {
+        user: true,
         membersLiked: true,
         community: {
           include: {
@@ -47,13 +48,14 @@ export const getPost = (prop: string, value: any) => {
 
 // Returns a specific comment by specific property
 export const getComment = (prop: string, value: any) => {
-  return new Promise<(Partial<Comment> & { memberLikes: Array<CommunityMember> } & { post: Partial<Post> & { community: Partial<Community> & { membersUser: Array<User> } & { members: Array<CommunityMember> } } })|null>(async (res) => {
+  return new Promise<(Partial<Comment> & { memberLikes: Array<CommunityMember> } & { post: Partial<Post> & { user: User } & { community: Partial<Community> & { membersUser: Array<User> } & { members: Array<CommunityMember> } } })|null>(async (res) => {
     const comment = await prisma.comment.findFirst({
       where: { [prop]: value },
       include: {
         memberLikes: true,
         post: {
           include: {
+            user: true,
             community: {
               include: {
                 membersUser: true,
