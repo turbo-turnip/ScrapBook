@@ -17,7 +17,7 @@ const Community: NextPage = () => {
   const [community, setCommunity] = useState<CommunityType|null>();
   const [communityLoading, setCommunityLoading] = useState(true);
   const [invalidCommunity, setInvalidCommunity] = useState(false);
-  const [alerts, setAlerts] = useState<Array<{ message: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }> }>>([]);
+  const [alerts, setAlerts] = useState<Array<{ message: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }>, input?: { placeholder?: string } }>>([]);
   const [errorPopups, setErrorPopups] = useState<Array<string>>([]);
   const [successPopups, setSuccessPopups] = useState<Array<string>>([]);
   const [postBoxOpen, setPostBoxOpen] = useState(false);
@@ -27,6 +27,7 @@ const Community: NextPage = () => {
   const [showCommentAlert, setShowCommentAlert] = useState(false);
   const [showComments, setShowComments] = useState<Array<boolean>>([]);
   const [newCommentPostID, setNewCommentPostID] = useState<string|null>();
+  const [replyCommentID, setReplyCommentID] = useState<string|null>();
   const router = useRouter(); 
 
   const auth = async () => {
@@ -252,6 +253,37 @@ const Community: NextPage = () => {
     }
   }
 
+  const replyComment = async (reply: string) => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/posts/replyComment", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        reply, 
+        commentID: replyCommentID
+      })
+    });
+    const res = await req.json();
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken);
+        localStorage.setItem("rt", res?.newRefreshToken);
+      }
+
+      setCommunity(res?.community);
+      setSuccessPopups(prevState => [...prevState, "Successfully replied"]);
+      return;
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
+      return;
+    }
+  }
+
   useEffect(() => {
     auth();
   }, []);
@@ -298,7 +330,7 @@ const Community: NextPage = () => {
       <Sidebar categories={getSidebarPropsWithOption("Communities")} onToggle={(value) => setSidebarCollapsed(value)} />
       <Nav loggedIn={loggedIn} account={loggedIn ? account : null} /> 
       {alerts.map((alert, i) =>
-        <Alert message={alert.message} buttons={alert.buttons} key={i} />)}
+        <Alert message={alert.message} buttons={alert.buttons} input={alert?.input} key={i} />)}
 
       <div className={styles.communityContainer} data-collapsed={sidebarCollapsed}>
         {communityLoading ? <h1 className={styles.info}>Loading...</h1> : null}
@@ -367,22 +399,43 @@ const Community: NextPage = () => {
                     </>}
                   {showComments[i] &&
                     <div className={styles.postComments}>
+                      <div className={styles.closeComments} onClick={() => {
+                        setShowComments(prevState => prevState.map((show, i2) => i2 === i ? false : show));
+                      }}>&times;</div>
                       {loggedIn && <button className={styles.createComment} onClick={() => {
                         setShowCommentAlert(true);  
                         setNewCommentPostID(post.id);
                       }}>Create a comment</button>}
-                      {post.comments.length === 0 && <h4 className={styles.info}>There aren't any comments for this post yet...</h4>}
-                      {post.comments.map((comment, i) =>
-                        <div className={styles.comment} key={i}>
-                          <div className={styles.commentPoster}>
-                            <img src={comment.user.avatar} alt={`${comment.user.name}'s avatar`} />
-                            <p>Posted by {comment.user.name}</p>
-                          </div>
-                          <p>{comment?.content || "No comment"}</p>
-                          <span className={styles.commentLikes} data-likes={comment.likes} onClick={() => likeComment(comment.id)}>
-                            {!(comment.memberLikes.find(member => member.userID === account?.id)) ? "🤍" : "❤️"}
-                          </span>
-                        </div>)}
+                      <div className={styles.comments}>
+                        {post.comments.length === 0 && <h4 className={styles.info}>There aren't any comments for this post yet...</h4>}
+                        {post.comments.map((comment, i) =>
+                          <div className={styles.commentContainer} key={i}>
+                            <div className={styles.comment}>
+                              <div className={styles.replyComment} onClick={() => {
+                                setReplyCommentID(comment.id);
+                                setAlerts((prev) => [...prev, { message: `Reply to ${comment.user.name}'s comment`, buttons: [{ message: "Create", color: "var(--orange)", onClickInput: (input: string) => replyComment(input) }, { message: "Cancel", color: "var(--blue)" }], input: { placeholder: "Your reply goes here..." } }]);
+                              }}>✍️ Reply</div>
+                              <div className={styles.commentPoster}>
+                                <img src={comment.user.avatar} alt={`${comment.user.name}'s avatar`} />
+                                <p>Posted by {comment.user.name}</p>
+                              </div>
+                              <p>{comment?.content || "No comment"}</p>
+                              <span className={styles.commentLikes} data-likes={comment.likes} onClick={() => likeComment(comment.id)}>
+                                {!(comment.memberLikes.find(member => member.userID === account?.id)) ? "🤍" : "❤️"}
+                              </span>
+                            </div>
+                            <div className={styles.commentReplies}>
+                              {comment.replies.map((reply, i) => 
+                                <div className={styles.commentReply} key={i}>
+                                  <div className={styles.replyUser}>
+                                    <img src={reply.user.avatar} alt={`${reply.user.name}'s avatar`} />
+                                    <p>Posted by {reply.user.name}</p>
+                                  </div>
+                                  <p>{reply.content}</p>
+                                </div>)}
+                            </div>
+                          </div>)}
+                      </div>
                     </div>}
                 </div>)}
             </div>

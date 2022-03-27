@@ -126,7 +126,12 @@ export const getCommunity = async (req: Request, res: Response) => {
             comments: {
               include: {
                 user: true,
-                memberLikes: true
+                memberLikes: true,
+                replies: {
+                  include: {
+                    user: true
+                  }
+                }
               }
             },
             images: true,
@@ -269,7 +274,12 @@ export const joinCommunity = async (req: Request, res: Response) => {
             comments: {
               include: {
                 user: true,
-                memberLikes: true
+                memberLikes: true,
+                replies: {
+                  include: {
+                    user: true
+                  }
+                }
               }
             },
             images: true,

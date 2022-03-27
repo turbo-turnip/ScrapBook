@@ -28,6 +28,16 @@ type CommentType = {
   user: UserType
   likes: number;
   memberLikes: Array<CommunityMember>;
+  replies: Array<CommentReplyType>;
+};
+
+type CommentReplyType = {
+  id: string,
+  content: string,
+  userID?: string,
+  user: UserType,
+  commentID?: string,
+  comment: CommentType
 };
 
 type DMType = {

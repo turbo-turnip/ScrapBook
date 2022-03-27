@@ -101,7 +101,12 @@ export const createPost = async (req: Request, res: Response) => {
           comments: {
             include: {
               user: true,
-              memberLikes: true
+              memberLikes: true,
+              replies: {
+                include: {
+                  user: true
+                }
+              }
             }
           },
           images: true,
@@ -165,12 +170,17 @@ export const likePost = async (req: Request, res: Response) => {
           comments: {
             include: {
               user: true,
-              memberLikes: true
+              memberLikes: true,
+              replies: {
+                include: {
+                  user: true
+                }
+              }
             }
           },
           images: true,
           videos: true,
-          membersLiked: true
+          membersLiked: true,
         }
       }
     }
@@ -231,7 +241,12 @@ export const commentOnPost = async (req: Request, res: Response) => {
           comments: {
             include: {
               user: true,
-              memberLikes: true
+              memberLikes: true,
+              replies: {
+                include: {
+                  user: true
+                }
+              }
             }
           },
           images: true,
@@ -260,7 +275,7 @@ export const likeComment = async (req: Request, res: Response) => {
 
   const comment = await getComment("id", commentID);
   if (!comment) {
-    res.status(400).json({ success: false, error: "That post doesn't exist" });
+    res.status(400).json({ success: false, error: "That comment doesn't exist" });
     return;
   }
 
@@ -296,7 +311,12 @@ export const likeComment = async (req: Request, res: Response) => {
           comments: {
             include: {
               user: true,
-              memberLikes: true
+              memberLikes: true,
+              replies: {
+                include: {
+                  user: true
+                }
+              }
             }
           },
           images: true,
@@ -308,4 +328,73 @@ export const likeComment = async (req: Request, res: Response) => {
   });
 
   res.status(200).json({ success: true, community: updatedCommunity, option: userAlreadyLiked ? "dislike" : "like", ...response });
+}
+
+// POST :8080/posts/replyComment
+// Like a user's comment on a post
+export const replyToComment = async (req: Request, res: Response) => {
+  const accessToken: string = req.body?.accessToken || "";
+  const refreshToken: string = req.body?.refreshToken || "";
+  const commentID: string = req.body?.commentID || "";
+  const reply: string = req.body?.reply || "";
+  const { success, response } = await authenticateUser(accessToken, refreshToken);
+  if (!success) {
+    log(LogType.ERROR, JSON.stringify(response));
+    res.status(400).json({ success, error: "Invalid account" });
+    return;
+  }
+
+  const comment = await getComment("id", commentID);
+  if (!comment) {
+    res.status(400).json({ success: false, error: "That comment doesn't exist" });
+    return;
+  }
+
+  const userInPostCommunity = !!(comment.post.community.membersUser.find(user => user.id === response.account.id)?.id);
+  if (!userInPostCommunity) {
+    res.status(403).json({ success: false, error: "You need to join this community before you can like it's posts" });
+    return;
+  }
+
+  await prisma.commentReply.create({
+    data: {
+      content: reply,
+      user: { 
+        connect: { id: response.account.id }
+      },
+      comment: {
+        connect: { id: commentID }
+      }
+    }
+  });
+
+  const updatedCommunity = await prisma.community.findUnique({
+    where: { id: comment.post.community.id },
+    include: {
+      membersUser: true,
+      members: true,
+      interests: true,
+      posts: {
+        include: {
+          user: true,
+          comments: {
+            include: {
+              user: true,
+              memberLikes: true,
+              replies: {
+                include: {
+                  user: true
+                }
+              }
+            }
+          },
+          images: true,
+          videos: true,
+          membersLiked: true
+        }
+      }
+    }
+  });
+
+  res.status(200).json({ success: true, community: updatedCommunity, ...response });
 }
