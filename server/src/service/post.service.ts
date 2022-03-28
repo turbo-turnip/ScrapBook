@@ -33,6 +33,7 @@ export const getPost = (prop: string, value: any) => {
       include: {
         user: true,
         membersLiked: true,
+        images: true,
         community: {
           include: {
             membersUser: true,

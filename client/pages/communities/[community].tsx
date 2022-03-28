@@ -8,7 +8,7 @@ import styles from '../../styles/communities.module.css';
 import { CommunityType } from "../../util/communityType.util";
 import { UserType } from "../../util/userType.util";
 import { getSidebarPropsWithOption } from "../../util/homeSidebarProps.util";
-const ReactQuill = typeof window === 'object' && require('react-quill');
+const ReactQuill = typeof window === 'object' ? require('react-quill') : () => false;
 require('react-quill/dist/quill.snow.css');
 
 const Community: NextPage = () => {
@@ -25,10 +25,7 @@ const Community: NextPage = () => {
   const postBarContainerRef = useRef<HTMLDivElement|null>(null);
   const [editorText, setEditorText] = useState("");
   const [newPostLoading, setNewPostLoading] = useState(false);
-  const [showCommentAlert, setShowCommentAlert] = useState(false);
   const [showComments, setShowComments] = useState<Array<boolean>>([]);
-  const [newCommentPostID, setNewCommentPostID] = useState<string|null>();
-  const [replyCommentID, setReplyCommentID] = useState<string|null>();
   const router = useRouter(); 
 
   const auth = async () => {
@@ -222,8 +219,7 @@ const Community: NextPage = () => {
     }
   }
 
-  const createComment = async (comment: string) => {
-    setTimeout(() => setShowCommentAlert(false), 500);
+  const createComment = async (comment: string, postID: string) => {
     const accessToken = localStorage.getItem("at") || "";
     const refreshToken = localStorage.getItem("rt") || "";
 
@@ -235,7 +231,7 @@ const Community: NextPage = () => {
       body: JSON.stringify({
         accessToken, refreshToken,
         comment, 
-        postID: newCommentPostID
+        postID
       })
     });
     const res = await req.json();
@@ -254,7 +250,7 @@ const Community: NextPage = () => {
     }
   }
 
-  const replyComment = async (reply: string) => {
+  const replyComment = async (reply: string, commentID: string) => {
     const accessToken = localStorage.getItem("at") || "";
     const refreshToken = localStorage.getItem("rt") || "";
 
@@ -266,7 +262,7 @@ const Community: NextPage = () => {
       body: JSON.stringify({
         accessToken, refreshToken,
         reply, 
-        commentID: replyCommentID
+        commentID
       })
     });
     const res = await req.json();
@@ -345,7 +341,6 @@ const Community: NextPage = () => {
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
       </Head>
 
-      {showCommentAlert && <Alert message="Create a new comment" buttons={[{ message: "Create", color: "var(--orange)", onClickInput: (input) => createComment(input) }, { message: "Cancel", color: "var(--blue)", onClick: () => setTimeout(() => setShowCommentAlert(false), 500) }]} input={{ placeholder: "Your comment goes here..." }} />}
       {errorPopups.map((errorPopup, i) =>
         <Popup 
           key={i}
@@ -431,7 +426,7 @@ const Community: NextPage = () => {
                           <div className={styles.morePostOptions} data-tooltip="More options">
                             •••  
                             <div className={styles.postOptions}>
-                              <Link href={`/communities/post/${post.id}/edit`}>Edit Post</Link>
+                              <Link href={`/post/${post.id}/edit`}>Edit Post</Link>
                               <p onClick={() => setAlerts(prevState => [...prevState, { message: "Are you sure you want to delete this post? It's not recoverable!", buttons: [{ message: "Yes 😬", color: "#ed3b3b", onClick: () => deletePost(post.id) }, { message: "No ☝️", color: "var(--blue)" }] }])}>Delete Post</p>
                             </div>
                           </div>}
@@ -443,8 +438,7 @@ const Community: NextPage = () => {
                         setShowComments(prevState => prevState.map((show, i2) => i2 === i ? false : show));
                       }}>&times;</div>
                       {loggedIn && <button className={styles.createComment} onClick={() => {
-                        setShowCommentAlert(true);  
-                        setNewCommentPostID(post.id);
+                        setAlerts(prevState => [...prevState, { message: "Create a new comment", buttons: [{ message: "Create", color: "var(--orange)", onClickInput: (input: string) => createComment(input, post.id) }, { message: "Cancel", color: "var(--blue)" }], input: { placeholder: "Your comment goes here..." } }]);
                       }}>Create a comment</button>}
                       <div className={styles.comments}>
                         {post.comments.length === 0 && <h4 className={styles.info}>There aren't any comments for this post yet...</h4>}
@@ -452,8 +446,7 @@ const Community: NextPage = () => {
                           <div className={styles.commentContainer} key={i}>
                             <div className={styles.comment}>
                               <div className={styles.replyComment} onClick={() => {
-                                setReplyCommentID(comment.id);
-                                setAlerts((prev) => [...prev, { message: `Reply to ${comment.user.name}'s comment`, buttons: [{ message: "Create", color: "var(--orange)", onClickInput: (input: string) => replyComment(input) }, { message: "Cancel", color: "var(--blue)" }], input: { placeholder: "Your reply goes here..." } }]);
+                                setAlerts((prev) => [...prev, { message: `Reply to ${comment.user.name}'s comment`, buttons: [{ message: "Create", color: "var(--orange)", onClickInput: (input: string) => replyComment(input, comment?.id || "") }, { message: "Cancel", color: "var(--blue)" }], input: { placeholder: "Your reply goes here..." } }]);
                               }}>✍️ Reply</div>
                               <div className={styles.commentPoster}>
                                 <img src={comment.user.avatar} alt={`${comment.user.name}'s avatar`} />

@@ -109,7 +109,7 @@ model Image {
   id     String  @id @default(cuid())
   url    String? @db.VarChar(255)
   postID String
-  post   Post   @relation(fields: [postID], references: [id], onDelete: Cascade)
+  post   Post    @relation(fields: [postID], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([postID], map: "image_postID_fkey")
   @@map("image")
@@ -117,11 +117,11 @@ model Image {
 
 model Video {
   id      String  @id @default(cuid())
-  url     String? @db.VarChar(255)
+  url     String @db.VarChar(255)
   caption String? @db.VarChar(150)
   alt     String? @db.VarChar(150)
   postID  String
-  post    Post   @relation(fields: [postID], references: [id], onDelete: Cascade)
+  post    Post    @relation(fields: [postID], references: [id], onDelete: Cascade)
 
   @@index([postID], map: "video_postID_fkey")
   @@map("video")

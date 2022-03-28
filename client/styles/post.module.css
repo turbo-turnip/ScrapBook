@@ -1,0 +1,43 @@
+.submit {
+  font-size: 1.5rem;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--orange);
+  color: var(--white);
+  padding: 0.2rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.container {
+  min-height: 50vh !important;
+  position: relative;
+  top: 10vh;
+  padding: 2rem 2.5rem;
+}
+
+.container > div > div:first-of-type {
+  border-radius: 12px 12px 0 0;
+  background: var(--border);
+}
+
+.container > div > div:nth-of-type(2) {
+  border-radius: 0 0 12px 12px;
+  min-height: 300px;
+}
+
+.container[data-collapsed="true"] {
+  width: calc(100vw - (200px - (200px * 0.91)));
+}
+
+.container[data-collapsed="false"] {
+  width: 50vw;
+}
+
+@media (min-width: 400px) {
+  .container[data-collapsed="false"] {
+    width: calc(100vw - 200px);
+  }
+}

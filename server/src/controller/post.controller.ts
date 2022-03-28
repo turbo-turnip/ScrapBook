@@ -282,7 +282,7 @@ export const likeComment = async (req: Request, res: Response) => {
 
   const userInPostCommunity = !!(comment.post.community.membersUser.find(user => user.id === response.account.id)?.id);
   if (!userInPostCommunity) {
-    res.status(403).json({ success: false, error: "You need to join this community before you can like it's posts" });
+    res.status(403).json({ success: false, error: "You need to join this community before you can like it's comments" });
     return;
   }
 
@@ -353,7 +353,7 @@ export const replyToComment = async (req: Request, res: Response) => {
 
   const userInPostCommunity = !!(comment.post.community.membersUser.find(user => user.id === response.account.id)?.id);
   if (!userInPostCommunity) {
-    res.status(403).json({ success: false, error: "You need to join this community before you can like it's posts" });
+    res.status(403).json({ success: false, error: "You need to join this community before you can reply to comments" });
     return;
   }
 
@@ -421,7 +421,7 @@ export const deletePost = async (req: Request, res: Response) =>{
 
   const userInPostCommunity = !!(post.community.membersUser.find(user => user.id === response.account.id)?.id);
   if (!userInPostCommunity) {
-    res.status(403).json({ success: false, error: "You need to join this community before you can like it's posts" });
+    res.status(403).json({ success: false, error: "You need to join this community before you can delete a post" });
     return;
   }
 
@@ -429,7 +429,7 @@ export const deletePost = async (req: Request, res: Response) =>{
     res.status(403).json({ success: false, error: "You can't delete a post you don't own" });
     return;
   }
-  
+
   await prisma.post.delete({ 
     where: { id: postID }
   });
@@ -463,4 +463,108 @@ export const deletePost = async (req: Request, res: Response) =>{
   });
 
   res.status(200).json({ success: true, community: updatedCommunity, ...response });
+}
+
+// POST :8080/posts/find 
+// Finds a specific post
+export const findPost = async (req: Request, res: Response) => {
+  const accessToken: string = req.body?.accessToken || "";
+  const refreshToken: string = req.body?.refreshToken || "";
+  const postID: string = req.body?.postID || "";
+  const { success, response } = await authenticateUser(accessToken, refreshToken);
+  if (!success) {
+    log(LogType.ERROR, JSON.stringify(response));
+    res.status(400).json({ success, error: "Invalid account" });
+    return;
+  }
+
+  const post = await getPost("id", postID);
+
+  res.status(200).json({ success: true, post, ...response });  
+}
+
+// POST :8080/posts/edit
+// Edits a specific post's content
+export const editPost = async (req: Request, res: Response) => {
+  const accessToken: string = req.body?.accessToken || "";
+  const refreshToken: string = req.body?.refreshToken || "";
+  const postID: string = req.body?.postID || "";
+  const content: string = req.body?.content || "";
+  const { success, response } = await authenticateUser(accessToken, refreshToken);
+  if (!success) {
+    log(LogType.ERROR, JSON.stringify(response));
+    res.status(400).json({ success, error: "Invalid account" });
+    return;
+  }
+
+  const post = await getPost("id", postID);
+  if (!post) {
+    res.status(400).json({ success: false, error: "That post doesn't exist" });
+    return;
+  }
+
+  const userInPostCommunity = !!(post.community.membersUser.find(user => user.id === response.account.id)?.id);
+  if (!userInPostCommunity) {
+    res.status(403).json({ success: false, error: "You need to join this community before you can edit it's posts" });
+    return;
+  }
+
+  if (post.user.id !== response.account.id) {
+    res.status(403).json({ success: false, error: "You can't edit a post you don't own" });
+    return;
+  }
+
+  const images = getContentImages(content);
+  for (let i = 0; i < images.length; i++) {
+    if (!acceptableImageSize(images[i])) {
+      res.status(400).json({ success: false, error: "Please keep image files under 2 megabytes!" });
+      return;
+    }
+  }
+
+  const uploadedImages = [];
+
+  for (let i = 0; i < images.length; i++) {
+    try {
+      const uploadResponse = await cloudinary.uploader.upload(images[i], {});
+      const secureImageURL = uploadResponse.secure_url;
+      uploadedImages.push(secureImageURL);
+
+      log(LogType.ADDED, "Successfully uploaded image");
+    } catch (err: any) {
+      log(LogType.ERROR, "Error uploading image: " + err?.message || err);
+      res.status(500).json({ success: false, message: "We couldn't upload an image. Please refresh the page and try again" });
+    }
+    try {
+      const uploadResponse = await cloudinary.uploader.upload(images[i], {});
+      console.log(uploadResponse);
+    } catch (err: any) {
+      console.log(err);
+    }
+  }
+
+  await prisma.post.update({
+    where: { id: postID },
+    data: {
+      images: {
+        set: []
+      },
+      body: content.replace(/<img src="(.)*">/g, '')
+    }
+  });
+
+  await prisma.post.update({
+    where: { id: postID },
+    data: {
+      images: {
+        createMany: {
+          data: uploadedImages.map(image => ({
+            url: image
+          }))
+        }
+      }
+    }
+  });
+
+  res.status(200).json({ success: true, ...response });  
 }
