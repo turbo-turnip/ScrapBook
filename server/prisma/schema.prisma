@@ -29,6 +29,7 @@ model User {
   posts            Post[]
   openDMs          DM[]
   interests        UserInterest[]
+  folders          Folder[]
 
   @@map("user")
 }
@@ -99,6 +100,7 @@ model Post {
   comments     Comment[]
   images       Image[]
   videos       Video[]
+  folders      Folder[]
 
   @@index([communityID], map: "post_communityID_fkey")
   @@index([userID], map: "post_userID_fkey")
@@ -117,7 +119,7 @@ model Image {
 
 model Video {
   id      String  @id @default(cuid())
-  url     String @db.VarChar(255)
+  url     String  @db.VarChar(255)
   caption String? @db.VarChar(150)
   alt     String? @db.VarChar(150)
   postID  String
@@ -194,4 +196,12 @@ model BannedRefreshTokens {
   refreshToken String @unique @db.VarChar(512)
 
   @@map("banned_refresh_token")
+}
+
+model Folder {
+  id    String  @id @default(cuid())
+  label String  @db.VarChar(35)
+  color String? @default("rgb(255, 157, 87)")
+  posts Post[]
+  users User[]
 }

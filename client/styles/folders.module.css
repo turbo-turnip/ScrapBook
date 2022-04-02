@@ -1,0 +1,18 @@
+.container {
+  position: relative;
+  top: 10vh;
+}
+
+.container[data-collapsed="true"] {
+  width: calc(100vw - (200px - (200px * 0.91)));
+}
+
+.container[data-collapsed="false"] {
+  width: 50vw;
+}
+
+@media (min-width: 400px) {
+  .container[data-collapsed="false"] {
+    width: calc(100vw - 200px);
+  }
+}

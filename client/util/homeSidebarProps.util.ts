@@ -50,7 +50,8 @@ export const homeSidebarProps:
         {
           title: "Folders",
           tooltip: "Manage your post and event folders",
-          emoji: "📁"
+          emoji: "📁",
+          link: "/folders"
         }
       ]
     }

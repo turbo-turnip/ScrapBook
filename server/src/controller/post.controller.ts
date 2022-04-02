@@ -434,6 +434,11 @@ export const deletePost = async (req: Request, res: Response) =>{
     where: { id: postID }
   });
 
+  for (let i = 0; i < post?.images?.length; i++) {
+    const imagePublicID: string = (post?.images?.[i]?.url || "").replace(/(https\:\/\/res\.cloudinary\.com\/scrapbooksite\/image\/upload\/v([0-9]*)\/)|\.png/g, '');
+    await cloudinary.uploader.destroy(imagePublicID, {});
+  }
+
   const updatedCommunity = await prisma.community.findUnique({
     where: { id: post.community.id },
     include: {

@@ -1,9 +1,8 @@
 import { NextPage } from "next"
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import Head from "next/head";
-import { Sidebar, Nav, Alert, Popup, PopupType } from "../../components";
+import { Sidebar, Nav, Alert, Popup, PopupType, Post } from "../../components";
 import styles from '../../styles/communities.module.css';
 import { CommunityType } from "../../util/communityType.util";
 import { UserType } from "../../util/userType.util";
@@ -159,159 +158,6 @@ const Community: NextPage = () => {
     }
   }
 
-  const likePost = async (postID: string) => {
-    const accessToken = localStorage.getItem("at") || "";
-    const refreshToken = localStorage.getItem("rt") || "";
-
-    const req = await fetch(backendPath + "/posts/like", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        accessToken, refreshToken,
-        postID
-      })
-    });
-    const res = await req.json();
-    if (res.success) {
-      if (res.generateNewTokens) {
-        localStorage.setItem("at", res?.newAccessToken);
-        localStorage.setItem("rt", res?.newRefreshToken);
-      }
-
-      setCommunity(res?.community);
-      setSuccessPopups(prevState => [...prevState, `You ${res?.option || "like"} this post`]);
-      return;
-    } else {
-      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
-      return;
-    }
-  }
-
-  const likeComment = async (commentID: string) => {
-    const accessToken = localStorage.getItem("at") || "";
-    const refreshToken = localStorage.getItem("rt") || "";
-
-    const req = await fetch(backendPath + "/posts/likeComment", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        accessToken, refreshToken,
-        commentID
-      })
-    });
-    const res = await req.json();
-    if (res.success) {
-      if (res.generateNewTokens) {
-        localStorage.setItem("at", res?.newAccessToken);
-        localStorage.setItem("rt", res?.newRefreshToken);
-      }
-
-      setCommunity(res?.community);
-      setSuccessPopups(prevState => [...prevState, `You ${res?.option || "like"} this comment`]);
-      return;
-    } else {
-      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
-      return;
-    }
-  }
-
-  const createComment = async (comment: string, postID: string) => {
-    const accessToken = localStorage.getItem("at") || "";
-    const refreshToken = localStorage.getItem("rt") || "";
-
-    const req = await fetch(backendPath + "/posts/comment", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        accessToken, refreshToken,
-        comment, 
-        postID
-      })
-    });
-    const res = await req.json();
-    if (res.success) {
-      if (res.generateNewTokens) {
-        localStorage.setItem("at", res?.newAccessToken);
-        localStorage.setItem("rt", res?.newRefreshToken);
-      }
-
-      setCommunity(res?.community);
-      setSuccessPopups(prevState => [...prevState, "Successfully commented"]);
-      return;
-    } else {
-      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
-      return;
-    }
-  }
-
-  const replyComment = async (reply: string, commentID: string) => {
-    const accessToken = localStorage.getItem("at") || "";
-    const refreshToken = localStorage.getItem("rt") || "";
-
-    const req = await fetch(backendPath + "/posts/replyComment", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        accessToken, refreshToken,
-        reply, 
-        commentID
-      })
-    });
-    const res = await req.json();
-    if (res.success) {
-      if (res.generateNewTokens) {
-        localStorage.setItem("at", res?.newAccessToken);
-        localStorage.setItem("rt", res?.newRefreshToken);
-      }
-
-      setCommunity(res?.community);
-      setSuccessPopups(prevState => [...prevState, "Successfully replied"]);
-      return;
-    } else {
-      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
-      return;
-    }
-  }
-
-  const deletePost = async (postID: string) => {
-    const accessToken = localStorage.getItem("at") || "";
-    const refreshToken = localStorage.getItem("rt") || "";
-
-    const req = await fetch(backendPath + "/posts/delete", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        accessToken, refreshToken,
-        postID
-      })
-    });
-    const res = await req.json();
-
-    if (res.success) {
-      if (res.generateNewTokens) {
-        localStorage.setItem("at", res?.newAccessToken);
-        localStorage.setItem("rt", res?.newRefreshToken);
-      }
-
-      setCommunity(res?.community);
-      setSuccessPopups(prevState => [...prevState, "Successfully deleted post"]);
-      return;
-    } else {
-      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
-      return;
-    }
-  }
-
   useEffect(() => {
     auth();
   }, []);
@@ -401,76 +247,18 @@ const Community: NextPage = () => {
             <div className={styles.postsContainer}>
               {community.posts.length === 0 && <h4 className={styles.info}>There aren't any posts yet...</h4>}
               {community.posts.length > 0 && community.posts.map((post, i) =>
-                <div className={styles.post} key={i} data-posted-by={`Posted by ${post.user.name}`}>
-                  {!showComments[i] && 
-                    <>
-                      <div>
-                        <div className={styles.postBody} dangerouslySetInnerHTML={{ __html: post?.body || (post?.images?.length > 0 ? `${post.images.length} Image` : 'No content') }}></div>
-                        {(post?.images || []).map((image, i) => 
-                          <img src={image?.url} alt="Post image" key={i} className={styles.postImage} onClick={() => window.open(image?.url)} />)}
-                      </div>
-                      <div className={styles.postRight}>
-                        <div data-tooltip={`Posted by ${post.user.name}`} onClick={() => router.push(`/user/${post.user.name}`)}>
-                          <img className={styles.posterAvatar} src={post.user.avatar} />
-                        </div>
-                        <div data-info={post.likes} data-tooltip={!(post.membersLiked.find(member => member.userID === account?.id)) ? "Like this post?" : "Liked this post"} onClick={() => likePost(post.id)}>
-                          {!(post.membersLiked.find(member => member.userID === account?.id)) ? "🤍" : "❤️"}
-                        </div>
-                        <div data-info={post.comments.length} data-tooltip="Comments" onClick={() => {
-                          setShowComments(prevState => prevState.map((show, i2) => i2 === i ? true : show));
-                        }}>💬</div>
-                        <div data-info="" data-tooltip="Share" onClick={() => {
-                          navigator.clipboard.writeText(`${frontendPath}/post/${post.id}`);
-                        }}>🔗</div>
-                        {post.user.id === account?.id && 
-                          <div className={styles.morePostOptions} data-tooltip="More options">
-                            •••  
-                            <div className={styles.postOptions}>
-                              <Link href={`/post/${post.id}/edit`}>Edit Post</Link>
-                              <p onClick={() => setAlerts(prevState => [...prevState, { message: "Are you sure you want to delete this post? It's not recoverable!", buttons: [{ message: "Yes 😬", color: "#ed3b3b", onClick: () => deletePost(post.id) }, { message: "No ☝️", color: "var(--blue)" }] }])}>Delete Post</p>
-                            </div>
-                          </div>}
-                      </div> 
-                    </>}
-                  {showComments[i] &&
-                    <div className={styles.postComments}>
-                      <div className={styles.closeComments} onClick={() => {
-                        setShowComments(prevState => prevState.map((show, i2) => i2 === i ? false : show));
-                      }}>&times;</div>
-                      {loggedIn && <button className={styles.createComment} onClick={() => {
-                        setAlerts(prevState => [...prevState, { message: "Create a new comment", buttons: [{ message: "Create", color: "var(--orange)", onClickInput: (input: string) => createComment(input, post.id) }, { message: "Cancel", color: "var(--blue)" }], input: { placeholder: "Your comment goes here..." } }]);
-                      }}>Create a comment</button>}
-                      <div className={styles.comments}>
-                        {post.comments.length === 0 && <h4 className={styles.info}>There aren't any comments for this post yet...</h4>}
-                        {post.comments.map((comment, i) =>
-                          <div className={styles.commentContainer} key={i}>
-                            <div className={styles.comment}>
-                              <div className={styles.replyComment} onClick={() => {
-                                setAlerts((prev) => [...prev, { message: `Reply to ${comment.user.name}'s comment`, buttons: [{ message: "Create", color: "var(--orange)", onClickInput: (input: string) => replyComment(input, comment?.id || "") }, { message: "Cancel", color: "var(--blue)" }], input: { placeholder: "Your reply goes here..." } }]);
-                              }}>✍️ Reply</div>
-                              <div className={styles.commentPoster}>
-                                <img src={comment.user.avatar} alt={`${comment.user.name}'s avatar`} />
-                                <p>Posted by {comment.user.name}</p>
-                              </div>
-                              <p>{comment?.content || "No comment"}</p>
-                              <span className={styles.commentLikes} data-likes={comment.likes} onClick={() => likeComment(comment.id)}>
-                                {!(comment.memberLikes.find(member => member.userID === account?.id)) ? "🤍" : "❤️"}
-                              </span>
-                            </div>
-                            <div className={styles.commentReplies}>
-                              {comment.replies.map((reply, i) => 
-                                <div className={styles.commentReply} key={i}>
-                                  <div className={styles.replyUser}>
-                                    <img src={reply.user.avatar} alt={`${reply.user.name}'s avatar`} />
-                                    <p>Posted by {reply.user.name}</p>
-                                  </div>
-                                  <p>{reply.content}</p>
-                                </div>)}
-                            </div>
-                          </div>)}
-                      </div>
-                    </div>}
-                </div>)}
+                <Post 
+                  post={post} 
+                  key={i}
+                  index={i}
+                  showComments={showComments[i]} 
+                  setShowComments={setShowComments} 
+                  router={router} 
+                  userID={account?.id} 
+                  setAlerts={setAlerts} 
+                  setErrorPopups={setErrorPopups} 
+                  setSuccessPopups={setSuccessPopups} 
+                  setCommunity={setCommunity} />)}
             </div>
           </>}
           {(loggedIn && community) &&

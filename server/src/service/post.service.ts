@@ -1,4 +1,4 @@
-import { Community, CommunityMember, Post, Prisma, PrismaClient, User } from "@prisma/client";
+import { Community, CommunityMember, Image, Post, Prisma, PrismaClient, User } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -27,11 +27,16 @@ export const postExists = (prop: string, value: any) => {
 
 // Returns a specific post by specific property
 export const getPost = (prop: string, value: any) => {
-  return new Promise<(Partial<Post> & { user: User } & { membersLiked: Array<CommunityMember> } & { community: Partial<Community> & { membersUser: Array<User> } & { members: Array<CommunityMember> } })|null>(async (res) => {
+  return new Promise<(Partial<Post> & { images: Array<Image> } & { user: User } & { membersLiked: Array<CommunityMember> } & { community: Partial<Community> & { membersUser: Array<User> } & { members: Array<CommunityMember> } })|null>(async (res) => {
     const post = await prisma.post.findFirst({
       where: { [prop]: value },
       include: {
         user: true,
+        comments: {
+          include: {
+            user: true
+          }
+        },
         membersLiked: true,
         images: true,
         community: {

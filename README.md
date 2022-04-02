@@ -47,6 +47,9 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 - Fix prisma schema unique constraint on community member communityID and userID
 - Clean up popups in array, not being used
 - Add dates to posts and other things
+- Spread types in postTypes util into separate files
+- Destroy images when posts deleted
+- Add input field limits based on database field string limits
 
 ## Future possible features
 - Post deletion folder

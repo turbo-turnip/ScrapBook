@@ -3,21 +3,21 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { UserType } from "../../../util/userType.util";
-import { Nav, Popup, PopupType, Sidebar } from "../../../components";
+import { Nav, Popup, PopupType, Sidebar, Post, Alert } from "../../../components";
 import { getSidebarPropsWithOption } from "../../../util/homeSidebarProps.util";
 import styles from "../../../styles/post.module.css";
 import { PostType } from "../../../util/postType.util";
-const ReactQuill = typeof window === 'object' ? require('react-quill') : () => false;
-require('react-quill/dist/quill.snow.css');
+import { CommunityType } from "../../../util/communityType.util";
 
-const EditPage: NextPage = () => {
+const PostPage: NextPage = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [account, setAccount] = useState<UserType|null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [errorPopups, setErrorPopups] = useState<Array<string>>([]);
-  const [editorText, setEditorText] = useState("");
   const [successPopups, setSuccessPopups] = useState<Array<string>>([]);
   const [post, setPost] = useState<PostType|null>();
+  const [showComments, setShowComments] = useState(false);
+  const [alerts, setAlerts] = useState<Array<{ message: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }>, input?: { placeholder?: string } }>>([]);
   const router = useRouter();
 
   const auth = async () => {
@@ -52,7 +52,7 @@ const EditPage: NextPage = () => {
       })
     });
     const res = await req.json();
-    setPost(res?.post);
+    res?.post && setPost(res.post);
     if (res.success) {
       if (res.generateNewTokens) {
         localStorage.setItem("at", res?.newAccessToken || "");
@@ -62,40 +62,6 @@ const EditPage: NextPage = () => {
       setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
       return;
     }
-  }
-
-  const submitEditedPost = async () => {
-    if (post && account)
-      if (post.user.id === account?.id) {
-        const accessToken = localStorage.getItem("at") || "";
-        const refreshToken = localStorage.getItem("rt") || "";
-
-        const req = await fetch(backendPath + "/posts/edit", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            accessToken, refreshToken,
-            postID: post.id,
-            content: editorText
-          })
-        });
-        const res = await req.json();
-        if (res.success) {
-          if (res.generateNewTokens) {
-            localStorage.setItem("at", res?.newAccessToken || "");
-            localStorage.setItem("rt", res?.newRefreshToken || "");
-          }
-
-          setSuccessPopups(prevState => [...prevState, "Successfully edited post"]);
-          setTimeout(() => router.push(`/post/${post.id}`), 5500);
-          return;
-        } else {
-          setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
-          return;
-        }
-      }
   }
 
   useEffect(() => {
@@ -111,7 +77,7 @@ const EditPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>ScrapBook - Edit Post</title>
+        <title>ScrapBook - Post</title>
 
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
       </Head>
@@ -131,40 +97,24 @@ const EditPage: NextPage = () => {
 
       <Sidebar categories={getSidebarPropsWithOption("Communities")} onToggle={(value) => setSidebarCollapsed(value)} />
       <Nav loggedIn={loggedIn} account={loggedIn ? account : null} /> 
+      {alerts.map((alert, i) =>
+        <Alert message={alert.message} buttons={alert.buttons} input={alert?.input} key={i} />)}
 
       <div className={styles.container} data-collapsed={sidebarCollapsed}>
-        {(post && post.user.id === account?.id) && 
-          <>
-            <button className={styles.submit} onClick={() => submitEditedPost()}>Submit edited post</button>
-            <ReactQuill
-              style={{
-                height: "100%"
-              }}
-              theme="snow" 
-              defaultValue={post.body + (post?.images || []).map((image) => `<img src="${image.url}" />`).join('<br/>')}
-              placeholder={`Edit this post`} 
-              onChange={setEditorText}
-              formats={[
-                'size',
-                'bold', 'italic', 'underline', 'blockquote',
-                'list', 'bullet',
-                'link', 'image', 'video'
-              ]} 
-              modules={{
-                toolbar: [
-                  [{ size: [] }],
-                  ['bold', 'italic', 'underline', 'blockquote'],
-                  [{'list': 'ordered'}, {'list': 'bullet'}],
-                  ['link', 'image', 'video']
-                ],
-                clipboard: {
-                  matchVisual: true
-                }
-              }} />
-            </>}
-        </div>
+        <Post
+          post={post}
+          showComments={showComments}
+          setShowComments={(set: (comments: Array<boolean>) => Array<boolean>) => setShowComments(set([showComments])[0])} 
+          index={0}
+          router={router}
+          userID={account?.id || ""}
+          setAlerts={setAlerts}
+          setErrorPopups={setErrorPopups}
+          setSuccessPopups={setSuccessPopups}
+          setCommunity={(set: CommunityType) => setPost(set.posts.find(communityPost => communityPost.id === post?.id))} />
+      </div>
     </>
   );
 }
 
-export default EditPage;
+export default PostPage;
