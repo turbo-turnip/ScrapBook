@@ -35,9 +35,21 @@ export const getUser = (prop?: string, value?: any) => {
   return new Promise<UserType>(async (res) => {
     let query = {};
     if (prop && value)
-      query = { where: { [prop]: value }, include: { interests: true } };
+      query = { where: { [prop]: value } };
 
-    const user = await prisma.user.findFirst(query);
+    const user = await prisma.user.findFirst({
+      ...query,
+      include: {
+        interests: true,
+        blockedUsers: true,
+        communities: true,
+        followers: true,
+        friends: true,
+        messages: true,
+        openDMs: true,
+        folders: true
+      }
+    });
     res((user as any) as UserType);
   });
 }

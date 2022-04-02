@@ -1,6 +1,6 @@
 import { LogType, log } from './util/log.util';
 import express, { Application, json } from 'express';
-import { UserRouter, AuthRouter, CommunitiesRouter, PostRouter } from './routes';
+import { UserRouter, AuthRouter, CommunitiesRouter, PostRouter, FoldersRouter } from './routes';
 import cors from "cors";
 
 const app: Application = express();
@@ -13,6 +13,7 @@ const app: Application = express();
     app.use('/auth', AuthRouter);
     app.use('/communities', CommunitiesRouter);
     app.use('/posts', PostRouter);
+    app.use('/folders', FoldersRouter);
     app.listen(port, () => log(LogType.INIT, `Server started on port ${port}`));
   }
 

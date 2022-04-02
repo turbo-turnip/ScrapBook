@@ -11,3 +11,4 @@
 /**/.DS_Store
 /client/.next
 /server/util/hashCode.util.ts
+/.vscode

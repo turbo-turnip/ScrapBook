@@ -56,7 +56,7 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 
 ## Support
 
-For support, or to report a bug, email att.cubing.sharks@gmail.com.
+For support, or to report a bug, submit an issue or email me at att.cubing.sharks@gmail.com.
 
 
 ## Socials

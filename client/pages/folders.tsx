@@ -100,7 +100,7 @@ const FoldersPage: NextPage = () => {
         <Alert message={alert.message} buttons={alert.buttons} input={alert?.input} key={i} />)}
 
       <div className={styles.container} data-collapsed={sidebarCollapsed}>
-        
+        {folders && console.log(folders)}
       </div>
     </>
   );
