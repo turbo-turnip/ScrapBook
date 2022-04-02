@@ -1,6 +1,26 @@
+.create {
+  font-size: 1.2rem;
+  background: var(--orange);
+  color: var(--white);
+  padding: 0.2rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  width: fit-content;
+  align-self: center;
+  margin-bottom: 1rem;
+}
+
+.info {
+  width: 100%;
+  text-align: center;
+}
+
 .container {
   position: relative;
   top: 10vh;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .container[data-collapsed="true"] {

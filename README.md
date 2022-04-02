@@ -50,6 +50,7 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 - Spread types in postTypes util into separate files
 - Destroy images when posts deleted
 - Add input field limits based on database field string limits
+- Add necessary try/catch to prisma queries code
 
 ## Future possible features
 - Post deletion folder

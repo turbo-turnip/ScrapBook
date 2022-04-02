@@ -201,7 +201,6 @@ model BannedRefreshTokens {
 model Folder {
   id    String  @id @default(cuid())
   label String  @db.VarChar(35)
-  color String? @default("rgb(255, 157, 87)")
   posts Post[]
   users User[]
 }

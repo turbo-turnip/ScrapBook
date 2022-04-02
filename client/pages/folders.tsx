@@ -6,8 +6,6 @@ import { UserType } from "../util/userType.util";
 import { Nav, Popup, PopupType, Sidebar, Post, Alert } from "../components";
 import { getSidebarPropsWithOption } from "../util/homeSidebarProps.util";
 import styles from "../styles/folders.module.css";
-import { PostType } from "../util/postType.util";
-import { CommunityType } from "../util/communityType.util";
 import { FolderType } from "../util/folderType.util";
 
 const FoldersPage: NextPage = () => {
@@ -36,8 +34,6 @@ const FoldersPage: NextPage = () => {
   }
 
   const fetchFolders = async () => {
-    const path = new URL(window.location.href).pathname;
-    const postID = decodeURIComponent(path.split('/')[2]);
     const accessToken = localStorage.getItem("at") || "";
     const refreshToken = localStorage.getItem("rt") || "";
 
@@ -57,6 +53,35 @@ const FoldersPage: NextPage = () => {
         localStorage.setItem("at", res?.newAccessToken || "");
         localStorage.setItem("rt", res?.newRefreshToken || "");
       }
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
+      return;
+    }
+  }
+
+  const createFolder = async (label: string) => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/folders", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        label
+      })
+    });
+    const res = await req.json();
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken || "");
+        localStorage.setItem("rt", res?.newRefreshToken || "");
+      }
+
+      setSuccessPopups(prevState => [...prevState, "Successfully created folder"]);
+      setFolders(prevState => res?.folders || prevState);
     } else {
       setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
       return;
@@ -100,7 +125,8 @@ const FoldersPage: NextPage = () => {
         <Alert message={alert.message} buttons={alert.buttons} input={alert?.input} key={i} />)}
 
       <div className={styles.container} data-collapsed={sidebarCollapsed}>
-        {folders && console.log(folders)}
+        <button className={styles.create} onClick={() => setAlerts(prevState => [...prevState, { message: "Enter folder label", input: { placeholder: "e.g. Cool Posts" }, buttons: [{ message: "Create", color: "var(--orange)", onClickInput: (input: string) => createFolder(input) }, { message: "Cancel" }] }])}>Create new folder ➕</button>
+        {(folders && folders.length === 0) && <h1 className={styles.info}>You don't have any folders yet... 👀</h1>}
       </div>
     </>
   );
