@@ -88,6 +88,35 @@ const FoldersPage: NextPage = () => {
     }
   }
 
+  const deleteFolder = async (folderID: string) => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/folders/removeUser", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        folderID
+      })
+    });
+    const res = await req.json();
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken || "");
+        localStorage.setItem("rt", res?.newRefreshToken || "");
+      }
+
+      setSuccessPopups(prevState => [...prevState, "Successfully deleted folder"]);
+      setFolders(prevState => res?.folders || prevState);
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
+      return;
+    }
+  }
+
   useEffect(() => {
     auth();
   }, []);
@@ -131,11 +160,11 @@ const FoldersPage: NextPage = () => {
           <div className={styles.folderContainer}>
             {folders.map((folder, i) =>
               <div className={styles.folder} key={i} onClick={() => router.push(`/folders/${folder.id}`)} data-label={folder.label}>
-                <div className={styles.moreOptions}>
+                <div className={styles.moreOptions} onClick={(event) => event.stopPropagation()}>
                   ⋮
                   <div>
                     <p>Edit label</p>
-                    <p>Delete folder</p>
+                    <p onClick={() => setAlerts(prevState => [...prevState, { message: "Are you sure you want to delete this folder?", buttons: [{ message: "Yes 👍", onClick: () => deleteFolder(folder.id) }, { message: "No 👎" }] }])}>Delete folder</p>
                   </div>
                 </div>
               </div>)}
