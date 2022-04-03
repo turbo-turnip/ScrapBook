@@ -1,3 +1,42 @@
+.folderContainer {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 2rem;
+  row-gap: 3rem;
+}
+
+.folder {
+  width: 120px;
+  height: 88px;
+  background-image: url(/folder.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.folder::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  width: fit-content;
+  transition: 0.2s;
+}
+
+.folder:hover::after {
+  transform: translate(-50%, 60%);
+}
+
+.folder:hover {
+  transform: translateY(5%);
+}
+
 .create {
   font-size: 1.2rem;
   background: var(--orange);

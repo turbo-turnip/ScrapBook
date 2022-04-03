@@ -2,11 +2,11 @@ import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { UserType } from "../util/userType.util";
-import { Nav, Popup, PopupType, Sidebar, Post, Alert } from "../components";
-import { getSidebarPropsWithOption } from "../util/homeSidebarProps.util";
-import styles from "../styles/folders.module.css";
-import { FolderType } from "../util/folderType.util";
+import { UserType } from "../../util/userType.util";
+import { Nav, Popup, PopupType, Sidebar, Post, Alert } from "../../components";
+import { getSidebarPropsWithOption } from "../../util/homeSidebarProps.util";
+import styles from "../../styles/folders.module.css";
+import { FolderType } from "../../util/folderType.util";
 
 const FoldersPage: NextPage = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -127,6 +127,11 @@ const FoldersPage: NextPage = () => {
       <div className={styles.container} data-collapsed={sidebarCollapsed}>
         <button className={styles.create} onClick={() => setAlerts(prevState => [...prevState, { message: "Enter folder label", input: { placeholder: "e.g. Cool Posts" }, buttons: [{ message: "Create", color: "var(--orange)", onClickInput: (input: string) => createFolder(input) }, { message: "Cancel" }] }])}>Create new folder ➕</button>
         {(folders && folders.length === 0) && <h1 className={styles.info}>You don't have any folders yet... 👀</h1>}
+        {(folders && folders.length > 0) && 
+          <div className={styles.folderContainer}>
+            {folders.map((folder, i) =>
+              <div className={styles.folder} key={i} onClick={() => router.push(`/folders/${folder.id}`)} data-label={folder.label}></div>)}
+          </div>}
       </div>
     </>
   );
