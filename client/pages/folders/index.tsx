@@ -130,7 +130,15 @@ const FoldersPage: NextPage = () => {
         {(folders && folders.length > 0) && 
           <div className={styles.folderContainer}>
             {folders.map((folder, i) =>
-              <div className={styles.folder} key={i} onClick={() => router.push(`/folders/${folder.id}`)} data-label={folder.label}></div>)}
+              <div className={styles.folder} key={i} onClick={() => router.push(`/folders/${folder.id}`)} data-label={folder.label}>
+                <div className={styles.moreOptions}>
+                  ⋮
+                  <div>
+                    <p>Edit label</p>
+                    <p>Delete folder</p>
+                  </div>
+                </div>
+              </div>)}
           </div>}
       </div>
     </>
