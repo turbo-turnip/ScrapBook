@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { log } from 'console';
 import { Request, Response } from 'express';
 import { authenticateUser, communityExists } from '../service';
+import { communityInclude } from '../util/communityInclude.util';
 import { LogType } from '../util/log.util';
 
 const prisma = new PrismaClient();
@@ -116,30 +117,7 @@ export const getCommunity = async (req: Request, res: Response) => {
   try {
     const community = await prisma.community.findUnique({
       where: { title },
-      include: {
-        membersUser: true,
-        members: true,
-        interests: true,
-        posts: {
-          include: {
-            user: true,
-            comments: {
-              include: {
-                user: true,
-                memberLikes: true,
-                replies: {
-                  include: {
-                    user: true
-                  }
-                }
-              }
-            },
-            images: true,
-            videos: true,
-            membersLiked: true
-          }
-        }
-      }
+      include: communityInclude
     });
 
     if (community) {
@@ -264,29 +242,7 @@ export const joinCommunity = async (req: Request, res: Response) => {
 
     const updatedCommunity = await prisma.community.findUnique({
       where: { id: communityID },
-      include: {
-        membersUser: true,
-        members: true,
-        interests: true,
-        posts: {
-          include: {
-            user: true,
-            comments: {
-              include: {
-                user: true,
-                memberLikes: true,
-                replies: {
-                  include: {
-                    user: true
-                  }
-                }
-              }
-            },
-            images: true,
-            videos: true
-          }
-        }
-      }
+      include: communityInclude
     });
 
     res.status(200).json({ success: true, community: updatedCommunity || { name: "Error! Refresh the page 🤖" }, ...response });
@@ -346,12 +302,7 @@ export const leaveCommunity = async (req: Request, res: Response) => {
 
     const updatedCommunity = await prisma.community.findUnique({
       where: { id: communityID },
-      include: {
-        membersUser: true,
-        members: true,
-        interests: true,
-        posts: true
-      }
+      include: communityInclude
     });
 
     res.status(200).json({ success: true, community: updatedCommunity || { name: "Error! Refresh the page 🤖" }, ...response });

@@ -1,3 +1,5 @@
+import { FolderType } from "./folderType.util";
+
 export type UserType = {
   id: string,
   name: string,
@@ -8,5 +10,6 @@ export type UserType = {
   activity?: string,
   likes?: number,
   suggestions?: boolean,
-  verified?: boolean
+  verified?: boolean,
+  folders?: Array<FolderType>
 }

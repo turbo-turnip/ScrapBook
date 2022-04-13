@@ -3,11 +3,15 @@ import { FC } from "react";
 import { PostType } from "../util/postType.util";
 import styles from '../styles/post.module.css';
 import Link from "next/link";
+import { UserType } from "../util/userType.util";
+import { useState } from "react";
 
 interface PostProps {
   post?: PostType|null;
   showComments: boolean;
   setShowComments: (prevState: any) => any;
+  showFolders: boolean;
+  setShowFolders: (prevState: any) => any;
   index: number;
   router: NextRouter;
   userID: string|undefined;
@@ -15,9 +19,12 @@ interface PostProps {
   setErrorPopups: (prevState: any) => any;
   setSuccessPopups: (prevState: any) => any;
   setCommunity: (prevState: any) => any;
+  account: UserType;
 }
 
-export const Post: FC<PostProps> = ({ post, showComments, router, setShowComments, index, userID, setAlerts, setErrorPopups, setSuccessPopups, setCommunity }) => {
+export const Post: FC<PostProps> = ({ account, post, showFolders, showComments, router, setShowFolders, setShowComments, index, userID, setAlerts, setErrorPopups, setSuccessPopups, setCommunity }) => {
+  const [folderIndexSelected, setFolderIndexSelected] = useState(0);
+
   const likePost = async () => {
     const accessToken = localStorage.getItem("at") || "";
     const refreshToken = localStorage.getItem("rt") || "";
@@ -171,10 +178,42 @@ export const Post: FC<PostProps> = ({ post, showComments, router, setShowComment
     }
   }
 
+  const moveToFolder = async (folderID: string) => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/folders/addPost", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        folderID,
+        postID: post?.id || ""
+      })
+    });
+    const res = await req.json();
+
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken);
+        localStorage.setItem("rt", res?.newRefreshToken);
+      }
+
+      setCommunity(res?.community);
+      setSuccessPopups((prevState: Array<string>) => [...prevState, "Successfully added post to folder"]);
+      return;
+    } else {
+      setErrorPopups((prevState: Array<string>) => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
+      return;
+    }
+  }
+
   return (
     <div className={styles.post} data-posted-by={`Posted by ${post?.user?.name || "anonymous"}`}>
       {!post && <h1>Loading...</h1>}
-      {(!showComments && post) && 
+      {(!showComments && !showFolders && post) && 
         <>
           <div>
             <div className={styles.postBody} dangerouslySetInnerHTML={{ __html: post?.body || (post?.images?.length > 0 ? `${post.images.length} Image` : 'No content') }}></div>
@@ -194,16 +233,24 @@ export const Post: FC<PostProps> = ({ post, showComments, router, setShowComment
             <div data-info="" data-tooltip="Share" onClick={() => {
               navigator.clipboard.writeText(`${frontendPath}/post/${post.id}`);
             }}>🔗</div>
-            {post.user.id === userID && 
               <div className={styles.morePostOptions} data-tooltip="More options">
                 •••  
                 <div className={styles.postOptions}>
-                  <Link href={`/post/${post.id}/edit`}>Edit Post</Link>
-                  <p onClick={() => setAlerts((prevState: any) => [...prevState, { message: "Are you sure you want to delete this post? It's not recoverable!", buttons: [{ message: "Yes 😬", color: "#ed3b3b", onClick: () => deletePost() }, { message: "No ☝️", color: "var(--blue)" }] }])}>Delete Post</p>
+                  {post.userID === userID && <Link href={`/post/${post.id}/edit`}>Edit Post</Link>}
+                  {post.userID === userID && <p onClick={() => setAlerts((prevState: any) => [...prevState, { message: "Are you sure you want to delete this post? It's not recoverable!", buttons: [{ message: "Yes 😬", color: "#ed3b3b", onClick: () => deletePost() }, { message: "No ☝️", color: "var(--blue)" }] }])}>Delete Post</p>}
+                  <p onClick={() => setShowFolders((prevState: Array<boolean>) => prevState.map((show, i2) => i2 === index ? true : show))}>Add to folder</p>
                 </div>
-              </div>}
+              </div>
           </div> 
         </>}
+      {(showFolders && post) && 
+        <div className={styles.postFolders}>
+          <h4>Which folder do you want to move this folder to?</h4>  
+          {account?.folders?.filter(folder => !(folder?.posts?.find(p => p.id === post.id)?.id))?.map((folder, i) =>
+            <p className={styles.postFolder} key={i} data-selected={folderIndexSelected === i} onClick={() => setFolderIndexSelected(i)}>{folder.label}</p>)}
+          {account?.folders?.filter(folder => !(folder?.posts?.find(p => p.id === post.id)?.id))?.length === 0 && <h4>You don't seem to have any folders to put this post in...</h4>}
+          {(account?.folders?.filter(folder => !(folder?.posts?.find(p => p.id === post.id)?.id))?.length || 0) > 0 && <button className={styles.folderAdd} onClick={() => moveToFolder(account?.folders?.filter(folder => !(folder?.posts?.find(p => p.id === post.id)?.id))?.[folderIndexSelected]?.id || "")}>Add this post to "{(account?.folders?.[folderIndexSelected]?.label || "this folder")}"</button>}
+        </div>}
       {(showComments && post) &&
         <div className={styles.postComments}>
           <div className={styles.closeComments} onClick={() => {

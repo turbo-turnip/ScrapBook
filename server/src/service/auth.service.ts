@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { JsonWebTokenError, JwtPayload, sign, TokenExpiredError } from 'jsonwebtoken';
 import env from '../config/env.config';
-import { getUser, UserType } from './user.service';
+import { getUser } from './user.service';
 import { verify as verifyToken } from 'jsonwebtoken';
 import { userExists } from './';
 import { log, LogType } from '../util/log.util';
@@ -19,7 +19,9 @@ export const authenticateUser = (accessToken: string, refreshToken: string) => {
         return;
       }
 
-      res({ success: true, response: { generateNewTokens: false, account: decodedAccessToken } });
+      const account = await getUser("id", decodedAccessToken?.id || "");
+
+      res({ success: true, response: { generateNewTokens: false, account } });
     } catch (err: any) {
       if (err instanceof JsonWebTokenError) {
         if (err instanceof TokenExpiredError || err.message === "jwt must be provided") {
@@ -59,7 +61,7 @@ export const authenticateUser = (accessToken: string, refreshToken: string) => {
 }
 
 // Generate access and refresh tokens
-export const generateTokens = (user: UserType) => {
+export const generateTokens = (user: User) => {
   return new Promise<Array<string>>(async (res) => {
     // Access token expires in 15 minutes
     const accessToken = await sign(user, env.AT_SECRET, {

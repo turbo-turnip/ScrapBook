@@ -1,3 +1,27 @@
+.folderAdd {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  border-radius: 6px;
+  background: var(--blue);
+  cursor: pointer;
+  color: var(--white);
+  padding: 0.2rem 0.8rem;
+}
+
+.postFolder {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.2rem 0.8rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+}
+
+.postFolder:hover,
+.postFolder[data-selected="true"] {
+  background: var(--lighter-orange);
+  border: 1px solid var(--darker-border);
+}
+
 .submit {
   font-size: 1.5rem;
   position: relative;

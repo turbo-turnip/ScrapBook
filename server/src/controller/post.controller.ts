@@ -5,6 +5,7 @@ import { v2 as cloudinary } from "cloudinary";
 import env from "../config/env.config";
 import { acceptableImageSize, getComment, getContentImages, getPost, postExists } from "../service/post.service";
 import { PrismaClient } from "@prisma/client";
+import { communityInclude } from "../util/communityInclude.util";
 
 const prisma = new PrismaClient();
 
@@ -91,30 +92,7 @@ export const createPost = async (req: Request, res: Response) => {
 
   const updatedCommunity = await prisma.community.findUnique({
     where: { id: communityID },
-    include: {
-      membersUser: true,
-      members: true,
-      interests: true,
-      posts: {
-        include: {
-          user: true,
-          membersLiked: true,
-          comments: {
-            include: {
-              user: true,
-              memberLikes: true,
-              replies: {
-                include: {
-                  user: true
-                }
-              }
-            }
-          },
-          images: true,
-          videos: true
-        }
-      }
-    }
+    include: communityInclude
   });
 
   res.status(200).json({ success: true, post: newPost, community: updatedCommunity, ...response });
@@ -161,30 +139,7 @@ export const likePost = async (req: Request, res: Response) => {
 
   const updatedCommunity = await prisma.community.findUnique({
     where: { id: post.community.id },
-    include: {
-      membersUser: true,
-      members: true,
-      interests: true,
-      posts: {
-        include: {
-          user: true,
-          membersLiked: true,
-          comments: {
-            include: {
-              user: true,
-              memberLikes: true,
-              replies: {
-                include: {
-                  user: true
-                }
-              }
-            }
-          },
-          images: true,
-          videos: true
-        }
-      }
-    }
+    include: communityInclude
   });
 
   res.status(200).json({ success: true, community: updatedCommunity, option: userAlreadyLiked ? "dislike" : "like", ...response });
@@ -232,30 +187,7 @@ export const commentOnPost = async (req: Request, res: Response) => {
 
   const updatedCommunity = await prisma.community.findUnique({
     where: { id: post.community.id },
-    include: {
-      membersUser: true,
-      members: true,
-      interests: true,
-      posts: {
-        include: {
-          user: true,
-          comments: {
-            include: {
-              user: true,
-              memberLikes: true,
-              replies: {
-                include: {
-                  user: true
-                }
-              }
-            }
-          },
-          images: true,
-          videos: true,
-          membersLiked: true
-        }
-      }
-    }
+    include: communityInclude
   });
 
   res.status(200).json({ success: true, community: updatedCommunity, ...response });
@@ -302,30 +234,7 @@ export const likeComment = async (req: Request, res: Response) => {
 
   const updatedCommunity = await prisma.community.findUnique({
     where: { id: comment.post.community.id },
-    include: {
-      membersUser: true,
-      members: true,
-      interests: true,
-      posts: {
-        include: {
-          user: true,
-          comments: {
-            include: {
-              user: true,
-              memberLikes: true,
-              replies: {
-                include: {
-                  user: true
-                }
-              }
-            }
-          },
-          images: true,
-          videos: true,
-          membersLiked: true
-        }
-      }
-    }
+    include: communityInclude
   });
 
   res.status(200).json({ success: true, community: updatedCommunity, option: userAlreadyLiked ? "dislike" : "like", ...response });
@@ -371,30 +280,7 @@ export const replyToComment = async (req: Request, res: Response) => {
 
   const updatedCommunity = await prisma.community.findUnique({
     where: { id: comment.post.community.id },
-    include: {
-      membersUser: true,
-      members: true,
-      interests: true,
-      posts: {
-        include: {
-          user: true,
-          comments: {
-            include: {
-              user: true,
-              memberLikes: true,
-              replies: {
-                include: {
-                  user: true
-                }
-              }
-            }
-          },
-          images: true,
-          videos: true,
-          membersLiked: true
-        }
-      }
-    }
+    include: communityInclude
   });
 
   res.status(200).json({ success: true, community: updatedCommunity, ...response });
@@ -441,30 +327,7 @@ export const deletePost = async (req: Request, res: Response) =>{
 
   const updatedCommunity = await prisma.community.findUnique({
     where: { id: post.community.id },
-    include: {
-      membersUser: true,
-      members: true,
-      interests: true,
-      posts: {
-        include: {
-          user: true,
-          comments: {
-            include: {
-              user: true,
-              memberLikes: true,
-              replies: {
-                include: {
-                  user: true
-                }
-              }
-            }
-          },
-          images: true,
-          videos: true,
-          membersLiked: true
-        }
-      }
-    }
+    include: communityInclude
   });
 
   res.status(200).json({ success: true, community: updatedCommunity, ...response });

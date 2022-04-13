@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { generateTokens, getUser, getUserByEmail, userExists, UserType, refreshTokenIsBanned, banRefreshToken, authenticateUser } from '../service';
-import { PrismaClient } from '@prisma/client';
+import { generateTokens, getUser, getUserByEmail, userExists, refreshTokenIsBanned, banRefreshToken, authenticateUser } from '../service';
+import { PrismaClient, User } from '@prisma/client';
 import { verify as verifyHash } from 'argon2';
 import { decode, JsonWebTokenError, JwtPayload, sign, TokenExpiredError, verify as verifyToken } from 'jsonwebtoken';
 import env from '../config/env.config';
@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 export const login = async (req: Request, res: Response) => {
   const email: string = req.body?.email || "";
   const password: string = req.body?.password || "";
-  let user: UserType;
+  let user: User;
 
   try {
     user = await getUserByEmail(email);

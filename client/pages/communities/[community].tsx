@@ -25,6 +25,7 @@ const Community: NextPage = () => {
   const [editorText, setEditorText] = useState("");
   const [newPostLoading, setNewPostLoading] = useState(false);
   const [showComments, setShowComments] = useState<Array<boolean>>([]);
+  const [showFolders, setShowFolders] = useState<Array<boolean>>([]);
   const router = useRouter(); 
 
   const auth = async () => {
@@ -35,6 +36,7 @@ const Community: NextPage = () => {
     if (res.loggedIn) {
       setLoggedIn(true)
       setAccount(res.account);
+      console.log(res.account.folders);
       return;
     } else {
       router.push(res.redirect);
@@ -163,14 +165,19 @@ const Community: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    if (community && community.posts) 
+    if (community && community.posts)  {
+      const newArray = new Array(community.posts.length).fill(false);
       setShowComments(prevState => {
-        const newArray = new Array(community.posts.length).fill(false);
-        prevState.slice(0, prevState.length).forEach((s, i) => {
-          newArray[i] = s;
-        });
-        return newArray;
+        const tmp = newArray;
+        prevState.slice(0, prevState.length).forEach((s, i) => { tmp[i] = s });
+        return tmp;
       });
+      setShowFolders(prevState => {
+        const tmp = newArray;
+        prevState.slice(0, prevState.length).forEach((s, i) => { tmp[i] = s });
+        return tmp;
+      })
+    }
   }, [community]);
 
   useEffect(() => {
@@ -248,11 +255,14 @@ const Community: NextPage = () => {
               {community.posts.length === 0 && <h4 className={styles.info}>There aren't any posts yet...</h4>}
               {community.posts.length > 0 && community.posts.map((post, i) =>
                 <Post 
+                  account={account as UserType}
                   post={post} 
                   key={i}
                   index={i}
                   showComments={showComments[i]} 
                   setShowComments={setShowComments} 
+                  showFolders={showFolders[i]} 
+                  setShowFolders={setShowFolders} 
                   router={router} 
                   userID={account?.id} 
                   setAlerts={setAlerts} 

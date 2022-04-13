@@ -1,3 +1,69 @@
+.removeBtn {
+  font-size: 1rem;
+  padding: 0.2rem 0.8rem;
+  border-radius: 8px;
+  background: var(--orange);
+  color: var(--white);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(0%);
+  transition: 0.2s;
+  pointer-events: none;
+  position: absolute;
+  bottom: 0;
+}
+
+.folderPost:hover .removeBtn {
+  opacity: 1;
+  transform: translateY(50%);
+  pointer-events: all;
+}
+
+.folderBody {
+  gap: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.folderPost {
+  border: 1px solid var(--border);
+  max-width: 450px;
+  min-width: 200px;
+  height: min-content;
+  width: fit-content;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.folderPost > p:first-of-type {
+  color: rgb(136, 136, 136);
+  margin-top: 1rem;
+}
+
+.folderPost > p:not(:first-of-type) {
+  color: var(--blue) !important;
+}
+
+.folderTop {
+  width: 100%;
+  height: 10vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  column-gap: 1.2rem;
+  padding: 1rem;
+  padding-left: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.folderTop img {
+  height: 100%;
+}
+
 .folderContainer {
   width: 100%;
   display: flex;
@@ -100,7 +166,16 @@
   text-align: center;
 }
 
-.container {
+.folderBody {
+  padding: 1rem;
+}
+
+.folderViewContainer {
+  padding-top: 0 !important;
+}
+
+.container,
+.folderViewContainer {
   position: relative;
   top: 10vh;
   padding: 1rem;
@@ -108,16 +183,19 @@
   flex-direction: column;
 }
 
-.container[data-collapsed="true"] {
+.container[data-collapsed="true"],
+.folderViewContainer[data-collapsed="true"] {
   width: calc(100vw - (200px - (200px * 0.91)));
 }
 
-.container[data-collapsed="false"] {
+.container[data-collapsed="false"],
+.folderViewContainer[data-collapsed="false"] {
   width: 50vw;
 }
 
 @media (min-width: 400px) {
-  .container[data-collapsed="false"] {
+  .container[data-collapsed="false"],
+  .folderViewContainer[data-collapsed="false"] {
     width: calc(100vw - 200px);
   }
 }

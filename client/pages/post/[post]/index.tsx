@@ -17,6 +17,7 @@ const PostPage: NextPage = () => {
   const [successPopups, setSuccessPopups] = useState<Array<string>>([]);
   const [post, setPost] = useState<PostType|null>();
   const [showComments, setShowComments] = useState(false);
+  const [showFolders, setShowFolders] = useState(false);
   const [alerts, setAlerts] = useState<Array<{ message: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }>, input?: { placeholder?: string } }>>([]);
   const router = useRouter();
 
@@ -102,7 +103,10 @@ const PostPage: NextPage = () => {
 
       <div className={styles.container} data-collapsed={sidebarCollapsed}>
         <Post
+          account={account as UserType}
           post={post}
+          showFolders={showFolders}
+          setShowFolders={(set: (folders: Array<boolean>) => Array<boolean>) => setShowFolders(set([showFolders])[0])}
           showComments={showComments}
           setShowComments={(set: (comments: Array<boolean>) => Array<boolean>) => setShowComments(set([showComments])[0])} 
           index={0}

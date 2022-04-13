@@ -6,5 +6,6 @@ export type FolderType = {
   label: string;
   color?: string;
   posts: Array<PostType>;
-  users: Array<UserType>;
+  userID?: string;
+  user: UserType;
 };

@@ -202,5 +202,6 @@ model Folder {
   id    String  @id @default(cuid())
   label String  @db.VarChar(35)
   posts Post[]
-  users User[]
+  userID String
+  user User @relation(fields: [userID], references: [id])
 }

@@ -34,7 +34,11 @@ export const getPost = (prop: string, value: any) => {
         user: true,
         comments: {
           include: {
-            user: true
+            user: true,
+            memberLikes: true,
+            replies: {
+              include: { user: true }
+            }
           }
         },
         membersLiked: true,

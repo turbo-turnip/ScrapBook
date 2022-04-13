@@ -57,7 +57,6 @@ type MessageType = {
 
 export type PostType = {
   id: string,
-  title: string,
   body?: string,
   likes: number,
   userID?: string,
