@@ -228,3 +228,48 @@ export const removePostFromFolder = async (req: Request, res: Response) => {
 
   res.status(200).json({ success: true, folder: updatedFolder, ...response });  
 }
+
+// POST :8080/folders/editLabel
+// Edit a folder's label
+export const editFolderLabel = async (req: Request, res: Response) => {
+  const accessToken: string = req.body?.accessToken || "";
+  const refreshToken: string = req.body?.refreshToken || "";
+  const folderID: string = req.body?.folderID || "";
+  const label: string = req.body?.label || "";
+  const { success, response } = await authenticateUser(accessToken, refreshToken);
+  if (!success) {
+    log(LogType.ERROR, JSON.stringify(response));
+    res.status(400).json({ success, error: "Invalid account" });
+    return;
+  }
+
+  const folderExists = await prisma.folder.findUnique({
+    where: { id: folderID },
+    include: { 
+      posts: { 
+        include: { 
+          community: true,
+          folders: true
+        } 
+      } 
+    }
+  });
+
+  if (!folderExists?.id) {
+    res.status(400).json({ success: false, error: "That folder doesn't exist" });
+    return;
+  }
+
+  await prisma.folder.update({
+    where: { id: folderID },
+    data: { label }
+  });
+
+  const updatedFolders = await prisma.folder.findMany({
+    where: {
+      user: { id: response.account.id }
+    }
+  });
+
+  res.status(200).json({ success: true, folders: updatedFolders, ...response });  
+}

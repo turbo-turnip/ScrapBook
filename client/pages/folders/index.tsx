@@ -117,6 +117,36 @@ const FoldersPage: NextPage = () => {
     }
   }
 
+  const editFolderLabel = async (folderID: string, label: string) => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/folders/editLabel", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        folderID,
+        label
+      })
+    });
+    const res = await req.json();
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken || "");
+        localStorage.setItem("rt", res?.newRefreshToken || "");
+      }
+
+      setSuccessPopups(prevState => [...prevState, "Successfully re-labeled folder"]);
+      setFolders(prevState => res?.folders || prevState);
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
+      return;
+    }
+  }
+
   useEffect(() => {
     auth();
   }, []);
@@ -163,7 +193,7 @@ const FoldersPage: NextPage = () => {
                 <div className={styles.moreOptions} onClick={(event) => event.stopPropagation()}>
                   ⋮
                   <div>
-                    <p>Edit label</p>
+                    <p onClick={() => setAlerts(prevState => [...prevState, { message: "What do you want to change this folder's label to?", input: { placeholder: "Enter new label..." }, buttons: [{ message: "Submit", color: "var(--orange)", onClickInput: (input: string) => editFolderLabel(folder.id, input) }, { message: "Cancel" }] }])}>Edit label</p>
                     <p onClick={() => setAlerts(prevState => [...prevState, { message: "Are you sure you want to delete this folder?", buttons: [{ message: "Yes 👍", onClick: () => deleteFolder(folder.id) }, { message: "No 👎" }] }])}>Delete folder</p>
                   </div>
                 </div>

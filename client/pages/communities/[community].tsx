@@ -36,7 +36,6 @@ const Community: NextPage = () => {
     if (res.loggedIn) {
       setLoggedIn(true)
       setAccount(res.account);
-      console.log(res.account.folders);
       return;
     } else {
       router.push(res.redirect);
