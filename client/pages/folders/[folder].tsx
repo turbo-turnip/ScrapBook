@@ -95,6 +95,41 @@ const FolderPage: NextPage = () => {
     }
   }
 
+  const editLabel = async (label: string) => {
+    const path = new URL(window.location.href).pathname;
+    const folderID = decodeURIComponent(path.split('/')[2]);
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/folders/editLabel", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        folderID,
+        label
+      })
+    });
+    const res = await req.json();
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken || "");
+        localStorage.setItem("rt", res?.newRefreshToken || "");
+      }
+
+      console.log(folderID);
+      const updatedFolder = res?.folders?.find((f: FolderType) => f.id === folderID);
+      setFolder(prevState => updatedFolder || prevState);
+      setSuccessPopups(prevState => [...prevState, "Successfully removed post from folder"]);
+      return;
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
+      return;
+    }
+  }
+
   useEffect(() => {
     auth();
   }, []);
@@ -136,10 +171,14 @@ const FolderPage: NextPage = () => {
           <>
             <div className={styles.folderTop}>
               <img src="/folder.svg" alt={`${folder.label} folder`} />
-              <h1>{folder.label}</h1>
+              <h1 onClick={() => setAlerts(prevState => [...prevState, { message: "What do you want to re-label this folder to?", input: { placeholder: "Enter new label" }, buttons: [{ message: "Re-label", color: "var(--orange)", onClickInput: (input: string) => editLabel(input) }, { message: "Cancel" }]}])}>{folder.label}</h1>
             </div>
             <div className={styles.folderBody}>
-              {folder.posts.length === 0 && <h1 className={styles.info}>There aren't any posts in this folder... 👀</h1>}
+              {folder.posts.length === 0 && 
+                <>
+                  <h1 className={styles.info}>There aren't any posts in this folder... 👀</h1>
+                  <p>To add posts to this folder, find a post, click the •••, and select "Add to folder", then you can choose which folder to add the post to by clicking on the different folders, and click add!</p>
+                </>}
               {folder.posts.sort((a, b) => (a?.body?.length || 0) - (b?.body?.length || 0)).map((post, i) =>
                 <div className={styles.folderPost} key={i} onClick={() => router.push(`/post/${post.id}`)}>
                   {post?.body?.length === 0 && <h4>No content</h4>}

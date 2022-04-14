@@ -268,6 +268,11 @@ export const editFolderLabel = async (req: Request, res: Response) => {
   const updatedFolders = await prisma.folder.findMany({
     where: {
       user: { id: response.account.id }
+    },
+    include: {
+      posts: {
+        include: { user: true }
+      }
     }
   });
 

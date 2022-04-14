@@ -1517,3 +1517,8 @@
 [TERMINATED] Server terminated [AM 6:35:56:744-4/3/2022]
 [INIT] Server started on port 8080 [AM 6:36:3:867-4/3/2022]
 [ADDED] Banishing refresh token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsMWp0N3RzMTAwMDc0Y2p3MndhZjltb2UiLCJpYXQiOjE2NDk5MDg5ODAsImV4cCI6MTY1MjUwMDk4MH0.LsjaVsqDFhIb2OQPbM7wCQbGvheqvaXjLSiV9XDAvfA [AM 6:36:23:110-4/3/2022]
+[ADDED] Banishing refresh token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsMWp0N3RzMTAwMDc0Y2p3MndhZjltb2UiLCJpYXQiOjE2NDk5NDMzODMsImV4cCI6MTY1MjUzNTM4M30.ZIFbxc2AuY_b4CFqzzfCzxoCAfMkcVDitF4nmiJ9mAU [AM 7:39:0:707-4/3/2022]
+[TERMINATED] Server terminated [AM 7:41:14:216-4/3/2022]
+[INIT] Server started on port 8080 [AM 7:41:16:579-4/3/2022]
+[TERMINATED] Server terminated [AM 7:42:27:603-4/3/2022]
+[INIT] Server started on port 8080 [AM 7:42:38:941-4/3/2022]

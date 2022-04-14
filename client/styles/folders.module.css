@@ -60,6 +60,10 @@
   border-bottom: 1px solid var(--border);
 }
 
+.folderTop h1 {
+  cursor: pointer;
+}
+
 .folderTop img {
   height: 100%;
 }
