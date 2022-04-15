@@ -130,6 +130,39 @@ const FolderPage: NextPage = () => {
     }
   }
 
+  const deleteFolder = async () => {
+    const path = new URL(window.location.href).pathname;
+    const folderID = decodeURIComponent(path.split('/')[2]);
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/folders/removeUser", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        folderID
+      })
+    });
+    const res = await req.json();
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken || "");
+        localStorage.setItem("rt", res?.newRefreshToken || "");
+      }
+
+      setSuccessPopups(prevState => [...prevState, "Successfully deleted folder"]);
+      setTimeout(() => router.push('/folders'), 5500);
+
+      return;
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
+      return;
+    }
+  }
+
   useEffect(() => {
     auth();
   }, []);
@@ -172,6 +205,7 @@ const FolderPage: NextPage = () => {
             <div className={styles.folderTop}>
               <img src="/folder.svg" alt={`${folder.label} folder`} />
               <h1 onClick={() => setAlerts(prevState => [...prevState, { message: "What do you want to re-label this folder to?", input: { placeholder: "Enter new label" }, buttons: [{ message: "Re-label", color: "var(--orange)", onClickInput: (input: string) => editLabel(input) }, { message: "Cancel" }]}])}>{folder.label}</h1>
+              <button className={styles.deleteFolder} onClick={() => setAlerts(prevState => [...prevState, { message: "Are you sure you want to delete this folder?", buttons: [{ message: "Yes 👀", color: "var(--orange)", onClick: () => deleteFolder() }, { message: "No 👎" }] }])}>Delete folder</button>
             </div>
             <div className={styles.folderBody}>
               {folder.posts.length === 0 && 

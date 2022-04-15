@@ -1,4 +1,5 @@
-.removeBtn {
+.removeBtn,
+.deleteFolder {
   font-size: 1rem;
   padding: 0.2rem 0.8rem;
   border-radius: 8px;
@@ -6,10 +7,22 @@
   color: var(--white);
   cursor: pointer;
   opacity: 0;
-  transform: translateY(0%);
   transition: 0.2s;
   pointer-events: none;
   position: absolute;
+}
+
+.deleteFolder {
+  right: 2rem;
+}
+
+.folderTop:hover .deleteFolder {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.removeBtn {
+  transform: translateY(0%);
   bottom: 0;
 }
 
@@ -201,5 +214,15 @@
   .container[data-collapsed="false"],
   .folderViewContainer[data-collapsed="false"] {
     width: calc(100vw - 200px);
+  }
+}
+
+@media (max-width: 550px) {
+  .folderTop:hover .deleteFolder {
+    left: 50%;
+    transform: translateX(-50%);
+    outline: var(--white);
+    outline-style: solid;
+    outline-width: 12px;
   }
 }
