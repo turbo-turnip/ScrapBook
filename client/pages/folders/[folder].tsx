@@ -154,7 +154,7 @@ const FolderPage: NextPage = () => {
       }
 
       setSuccessPopups(prevState => [...prevState, "Successfully deleted folder"]);
-      setTimeout(() => router.push('/folders'), 5500);
+      setTimeout(() => router.push('/folders'), 6500);
 
       return;
     } else {

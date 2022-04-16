@@ -19,8 +19,8 @@ const Communities: NextPage = () => {
   const [showFind, setShowFind] = useState(false);
   const [searchedCommunities, setSearchedCommunities] = useState<Array<CommunityType>|null>();
   const [searchCommunitiesLoading, setSearchCommunitiesLoading] = useState(false);
+  const [searchedYet, setSearchedYet] = useState(false);
   const [showSearchedCommunityJoinSuccessPopup, setShowSearchedCommunityJoinSuccessPopup] = useState(false);
-  const [searchedCommunityJoinErrorPopups, setSearchedCommunityJoinErrorPopups] = useState<Array<string>>([]);
   const [errorPopups, setErrorPopups] = useState<Array<string>>([]);
   const router = useRouter(); 
 
@@ -176,6 +176,7 @@ const Communities: NextPage = () => {
             <form className={styles.findInput} onSubmit={(event) => {
               event.preventDefault();
               const target = event.target as HTMLFormElement;
+              setSearchedYet(true);
               findCommunity((target.querySelector("input") as HTMLInputElement).value);
             }}>
               <input placeholder="Search for a community 🔎" />
@@ -183,11 +184,12 @@ const Communities: NextPage = () => {
             </form>
 
             {searchCommunitiesLoading && <h1 className={styles.info}>Loading...</h1>}
-            {(!searchCommunitiesLoading && (searchedCommunities || []).length === 0) && <h1 className={styles.info}>Hmm, there aren't any communities that match that name. Try a different name 😐</h1>}
+            {(searchedYet && !searchCommunitiesLoading && (searchedCommunities || []).length === 0) && <h1 className={styles.info}>Hmm, there aren't any communities that match that name. Try a different name 😐</h1>}
+            {(!searchedYet) && <h1 className={styles.info}>Search for a community by name or interest</h1>}
             {(!searchCommunitiesLoading && (searchedCommunities || []).length > 0) && 
               searchedCommunities?.map((community, i) => 
                 <div className={styles.searchedCommunity} key={i}>
-                  <h1 onClick={() => router.push(`/community/${community?.title || ""}`)}>{community.title}{(account && !(community?.membersUser || []).find(m => m.id === account.id)) && <button className={styles.joinCommunityBtn} onClick={() => joinCommunity(community.id)}>Join Community</button>}</h1>
+                  <h1 onClick={() => router.push(`/communities/${community?.title || ""}`)}>{community.title}{(account && !(community?.membersUser || []).find(m => m.id === account.id)) && <button className={styles.joinCommunityBtn} onClick={() => joinCommunity(community.id)}>Join Community</button>}</h1>
                   <p>{community.details}</p>
                   <div className={styles.searchedCommunityInterests}>{community.interests.map(i => i.name).join(' • ')}{community.interests.length === 0 && "No community interests 🤷🏾‍♀️"}</div>
                   <div className={styles.userCount} data-user-count={community.members.length}>
