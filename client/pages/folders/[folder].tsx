@@ -172,7 +172,7 @@ const FolderPage: NextPage = () => {
     if (loggedIn)
       setTimeout(fetchFolder, 500);
   }, [loggedIn]);
-
+      
   return (
     <>
       <Head>

@@ -80,3 +80,19 @@ export const getComment = (prop: string, value: any) => {
     res(comment);
   });
 }
+
+// Check if user is in this community
+export const userInCommunity = (userID: string, communityID: string) => {
+  return new Promise<boolean>(async (res) => {
+    const result = await prisma.user.findFirst({
+      where: {
+        communities: {
+          some: { id: communityID }
+        },
+        id: userID
+      }
+    });
+
+    res(!!result?.id);
+  });
+}

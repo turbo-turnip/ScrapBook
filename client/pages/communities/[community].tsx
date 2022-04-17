@@ -1,35 +1,49 @@
-import { NextPage } from "next"
+import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import Head from "next/head";
-import { Sidebar, Nav, Alert, Popup, PopupType, Post } from "../../components";
-import styles from '../../styles/communities.module.css';
+import { Alert, Nav, Popup, PopupType, Post, Sidebar } from "../../components";
+import styles from "../../styles/communities.module.css";
 import { CommunityType } from "../../util/communityType.util";
 import { UserType } from "../../util/userType.util";
 import { getSidebarPropsWithOption } from "../../util/homeSidebarProps.util";
-const ReactQuill = typeof window === 'object' ? require('react-quill') : () => false;
-require('react-quill/dist/quill.snow.css');
+const ReactQuill = typeof window === "object"
+  ? require("react-quill")
+  : () => false;
+require("react-quill/dist/quill.snow.css");
 
 const Community: NextPage = () => {
-  const [communityBannerImageSizes, setCommunityBannerImageSizes] = useState<Array<Array<number>>>([]);
+  const [communityBannerImageSizes, setCommunityBannerImageSizes] = useState<
+    Array<Array<number>>
+  >([]);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [account, setAccount] = useState<UserType|null>(null);
+  const [account, setAccount] = useState<UserType | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [community, setCommunity] = useState<CommunityType|null>();
+  const [community, setCommunity] = useState<CommunityType | null>();
   const [communityLoading, setCommunityLoading] = useState(true);
   const [invalidCommunity, setInvalidCommunity] = useState(false);
-  const [alerts, setAlerts] = useState<Array<{ message: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }>, input?: { placeholder?: string } }>>([]);
+  const [alerts, setAlerts] = useState<
+    Array<
+      {
+        message: string;
+        buttons: Array<
+          { message: string; onClick?: () => any; color?: string }
+        >;
+        input?: { placeholder?: string };
+      }
+    >
+  >([]);
   const [errorPopups, setErrorPopups] = useState<Array<string>>([]);
   const [successPopups, setSuccessPopups] = useState<Array<string>>([]);
   const [postBoxOpen, setPostBoxOpen] = useState(false);
-  const postBarContainerRef = useRef<HTMLDivElement|null>(null);
+  const postBarContainerRef = useRef<HTMLDivElement | null>(null);
   const [editorText, setEditorText] = useState("");
   const [newPostLoading, setNewPostLoading] = useState(false);
   const [showComments, setShowComments] = useState<Array<boolean>>([]);
   const [showFolders, setShowFolders] = useState<Array<boolean>>([]);
   const [windowWidth, setWindowWidth] = useState(0);
-  const bannerBackgroundRef = useRef<HTMLDivElement|null>(null);
-  const router = useRouter(); 
+  const bannerBackgroundRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
 
   const auth = async () => {
     const accessToken = localStorage.getItem("at") || "";
@@ -37,25 +51,25 @@ const Community: NextPage = () => {
 
     const res = await fetchAccount(localStorage, accessToken, refreshToken);
     if (res.loggedIn) {
-      setLoggedIn(true)
+      setLoggedIn(true);
       setAccount(res.account);
       return;
     } else {
       router.push(res.redirect);
       return;
     }
-  }
+  };
 
   const fetchCommunity = async () => {
     const path = new URL(window.location.href).pathname;
-    const title = decodeURIComponent(path.split('/')[2]);
+    const title = decodeURIComponent(path.split("/")[2]);
 
     const req = await fetch(backendPath + "/communities/community", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ title })
+      body: JSON.stringify({ title }),
     });
     const res = await req.json();
     setCommunityLoading(false);
@@ -64,68 +78,81 @@ const Community: NextPage = () => {
       setCommunity(res.community);
       return;
     }
-  }
-
+  };
 
   const joinCommunity = async (communityID: string) => {
     const accessToken = localStorage.getItem("at") || "";
     const refreshToken = localStorage.getItem("rt") || "";
 
     const req = await fetch(backendPath + "/communities/join", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         communityID,
-        accessToken, refreshToken
-      })
+        accessToken,
+        refreshToken,
+      }),
     });
     const res = await req.json();
-    
+
     if (res.success) {
       if (res?.generateNewTokens) {
         localStorage.setItem("at", res?.newAccessToken || "");
         localStorage.setItem("rt", res?.newRefreshToken || "");
-      } 
+      }
 
-      setCommunity(prevState => res?.community || prevState);
-      return; 
+      setCommunity((prevState) => res?.community || prevState);
+      return;
     } else {
-      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
+      setErrorPopups(
+        (prevState) => [
+          ...prevState,
+          res?.error ||
+          "An error occurred. Please refresh the page and try again 👁👄👁",
+        ]
+      );
       return;
     }
-  }
+  };
 
   const leaveCommunity = async (communityID: string) => {
     const accessToken = localStorage.getItem("at") || "";
     const refreshToken = localStorage.getItem("rt") || "";
 
     const req = await fetch(backendPath + "/communities/leave", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         communityID,
-        accessToken, refreshToken
-      })
+        accessToken,
+        refreshToken,
+      }),
     });
     const res = await req.json();
-    
+
     if (res.success) {
       if (res?.generateNewTokens) {
         localStorage.setItem("at", res?.newAccessToken || "");
         localStorage.setItem("rt", res?.newRefreshToken || "");
-      } 
+      }
 
-      setCommunity(prevState => res?.community || prevState);
-      return; 
+      setCommunity((prevState) => res?.community || prevState);
+      return;
     } else {
-      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
+      setErrorPopups(
+        (prevState) => [
+          ...prevState,
+          res?.error ||
+          "An error occurred. Please refresh the page and try again 👁👄👁",
+        ]
+      );
       return;
     }
-  }
+  };
 
   const submitPost = async (content: string, communityID: string) => {
     const accessToken = localStorage.getItem("at") || "";
@@ -133,15 +160,16 @@ const Community: NextPage = () => {
 
     setNewPostLoading(true);
     const req = await fetch(backendPath + "/posts", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        accessToken, refreshToken,
+        accessToken,
+        refreshToken,
         communityID,
-        content
-      })
+        content,
+      }),
     });
     const res = await req.json();
     setNewPostLoading(false);
@@ -154,28 +182,42 @@ const Community: NextPage = () => {
       }
 
       setCommunity(res?.community);
-      setSuccessPopups(prevState => [...prevState, "Successfully created post"]);
+      setSuccessPopups(
+        (prevState) => [...prevState, "Successfully created post"]
+      );
       return;
     } else {
-      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again"]);
+      setErrorPopups(
+        (prevState) => [
+          ...prevState,
+          res?.error ||
+          "An error occurred. Please refresh the page and try again",
+        ]
+      );
       return;
     }
-  }
+  };
 
   useEffect(() => {
     const newSizes = [
-      new Array(Math.floor(windowWidth / 200)).fill(null).map(() => Math.floor(Math.random() * (80 - 40 + 1) + 40)),
-      new Array(Math.floor(windowWidth / 200)).fill(null).map(() => Math.floor(Math.random() * (80 - 40 + 1) + 40))
+      new Array(Math.floor(windowWidth / 200)).fill(null).map(() =>
+        Math.floor(Math.random() * (80 - 40 + 1) + 40)
+      ),
+      new Array(Math.floor(windowWidth / 200)).fill(null).map(() =>
+        Math.floor(Math.random() * (80 - 40 + 1) + 40)
+      ),
     ];
     setCommunityBannerImageSizes(newSizes);
   }, [windowWidth]);
 
   useEffect(() => {
     auth();
-  
+
     window.onmousemove = (event) => {
       if (bannerBackgroundRef?.current) {
-        const bannerBackgroundImages = Array.from(bannerBackgroundRef.current.querySelectorAll("img"));
+        const bannerBackgroundImages = Array.from(
+          bannerBackgroundRef.current.querySelectorAll("img"),
+        );
         bannerBackgroundImages.forEach((img, i) => {
           const speed = Math.cos(i) * 10 + i;
           console.log(speed);
@@ -184,34 +226,39 @@ const Community: NextPage = () => {
           img.style.transform = `translate(${x}px, ${y}px)`;
         });
       }
-    }
+    };
 
     setWindowWidth(window.innerWidth);
     window.onresize = () => {
       setWindowWidth(window.innerWidth);
-    }
+    };
   }, []);
 
   useEffect(() => {
-    if (community && community.posts)  {
+    if (community && community.posts) {
       const newArray = new Array(community.posts.length).fill(false);
-      setShowComments(prevState => {
+      setShowComments((prevState) => {
         const tmp = newArray;
-        prevState.slice(0, prevState.length).forEach((s, i) => { tmp[i] = s });
+        prevState.slice(0, prevState.length).forEach((s, i) => {
+          tmp[i] = s;
+        });
         return tmp;
       });
-      setShowFolders(prevState => {
+      setShowFolders((prevState) => {
         const tmp = newArray;
-        prevState.slice(0, prevState.length).forEach((s, i) => { tmp[i] = s });
+        prevState.slice(0, prevState.length).forEach((s, i) => {
+          tmp[i] = s;
+        });
         return tmp;
-      })
+      });
     }
   }, [community]);
 
   useEffect(() => {
     // Fix this later
-    if (loggedIn)
+    if (loggedIn) {
       setTimeout(fetchCommunity, 500);
+    }
   }, [loggedIn]);
 
   return (
@@ -223,149 +270,285 @@ const Community: NextPage = () => {
       </Head>
 
       {errorPopups.map((errorPopup, i) =>
-        <Popup 
-          key={i}
-          message={errorPopup || "An error occurred. Please refresh the page"}
-          type={PopupType.ERROR}
-          />)}
+        (
+          <Popup
+            key={i}
+            message={errorPopup || "An error occurred. Please refresh the page"}
+            type={PopupType.ERROR}
+          />
+        )
+      )}
       {successPopups.map((successPopup, i) =>
-        <Popup 
-          key={i}
-          message={successPopup || "An error occurred. Please refresh the page"}
-          type={PopupType.SUCCESS}
-          />)}
+        (
+          <Popup
+            key={i}
+            message={successPopup ||
+              "An error occurred. Please refresh the page"}
+            type={PopupType.SUCCESS}
+          />
+        )
+      )}
 
-      <Sidebar categories={getSidebarPropsWithOption("Communities")} onToggle={(value) => setSidebarCollapsed(value)} />
-      <Nav loggedIn={loggedIn} account={loggedIn ? account : null} /> 
+      <Sidebar
+        categories={getSidebarPropsWithOption("Communities")}
+        onToggle={(value) => setSidebarCollapsed(value)}
+      />
+      <Nav loggedIn={loggedIn} account={loggedIn ? account : null} />
       {alerts.map((alert, i) =>
-        <Alert message={alert.message} buttons={alert.buttons} input={alert?.input} key={i} />)}
+        (
+          <Alert
+            message={alert.message}
+            buttons={alert.buttons}
+            input={alert?.input}
+            key={i}
+          />
+        )
+      )}
 
-      <div className={styles.communityContainer} data-collapsed={sidebarCollapsed}>
+      <div
+        className={styles.communityContainer}
+        data-collapsed={sidebarCollapsed}
+      >
         {communityLoading ? <h1 className={styles.info}>Loading...</h1> : null}
-        {(!communityLoading && invalidCommunity) ? <h1 className={styles.info}>Hmm... That community doesn't exist 👁👄👁</h1> : null}
+        {(!communityLoading && invalidCommunity)
+          ? (
+            <h1 className={styles.info}>
+              Hmm... That community doesn't exist 👁👄👁
+            </h1>
+          )
+          : null}
 
         {(!communityLoading && !invalidCommunity && community) &&
-          <>
-            <div className={styles.banner} data-title={community.title}>
-              <div className={styles.bannerBackground} ref={bannerBackgroundRef}>
-                {new Array(2).fill(null).map((_, rowIndex) =>
-                  <div className={styles.bannerBgRow} key={rowIndex}>
-                    {new Array(Math.floor(windowWidth / 200)).fill(null).map((_, colIndex) => 
-                      <div key={colIndex}>
-                        {((windowWidth * colIndex) % 10) <= 5 ?
-                          <>
-                            <div>
-                              <img src="/logo-small.svg" width={`${communityBannerImageSizes[rowIndex][colIndex]}px`} />
-                            </div>
-                            <div>
-                              <img src="/logo-small.svg" width={`${communityBannerImageSizes[rowIndex][colIndex]}px`} />
-                            </div>
-                          </>
-                          : <img src="/logo-large.svg" width="200px" />}
-                      </div>)}
-                  </div>)}
-              </div>
-              <div className={styles.bannerCenter}>
-                {(account && !!community?.membersUser?.find(u => u?.id === account.id)) && <div className={styles.leaveCommunity} onClick={() => {
-                  setAlerts(prevState => 
-                    [
-                      ...prevState, 
-                      { 
-                        message: `Are you sure you want to leave ${community?.title || "this community"}?`,
-                        buttons: [
-                          { 
-                            message: "Yes 👋", 
-                            color: "var(--blue)",
-                            onClick: () => {
-                              leaveCommunity(community?.id || ""); 
-                            }
+          (
+            <>
+              <div className={styles.banner} data-title={community.title}>
+                <div
+                  className={styles.bannerBackground}
+                  ref={bannerBackgroundRef}
+                >
+                  {new Array(2).fill(null).map((_, rowIndex) =>
+                    (
+                      <div className={styles.bannerBgRow} key={rowIndex}>
+                        {new Array(Math.floor(windowWidth / 200)).fill(null)
+                          .map((_, colIndex) =>
+                            (
+                              <div key={colIndex}>
+                                {((windowWidth * colIndex) % 10) <= 5
+                                  ? (
+                                    <>
+                                      <div>
+                                        <img
+                                          src="/logo-small.svg"
+                                          width={`${
+                                            communityBannerImageSizes[rowIndex][
+                                              colIndex
+                                            ]
+                                          }px`}
+                                        />
+                                      </div>
+                                      <div>
+                                        <img
+                                          src="/logo-small.svg"
+                                          width={`${
+                                            communityBannerImageSizes[rowIndex][
+                                              colIndex
+                                            ]
+                                          }px`}
+                                        />
+                                      </div>
+                                    </>
+                                  )
+                                  : <img src="/logo-large.svg" width="200px" />}
+                              </div>
+                            )
+                          )}
+                      </div>
+                    )
+                  )}
+                </div>
+                <div className={styles.bannerCenter}>
+                  {(account && !!community?.membersUser?.find((u) =>
+                    u?.id === account.id
+                  )) && (
+                    <div
+                      className={styles.leaveCommunity}
+                      onClick={() => {
+                        setAlerts((prevState) => [
+                          ...prevState,
+                          {
+                            message:
+                              `Are you sure you want to leave ${community
+                                ?.title || "this community"}?`,
+                            buttons: [
+                              {
+                                message: "Yes 👋",
+                                color: "var(--blue)",
+                                onClick: () => {
+                                  leaveCommunity(community?.id || "");
+                                },
+                              },
+                              {
+                                message: "No ☝️",
+                                color: "var(--orange)",
+                              },
+                            ],
                           },
-                          { 
-                            message: "No ☝️", 
-                            color: "var(--orange)" 
-                          }
-                        ]
-                      }
-                    ]
-                  );
-                }}>➡️</div>}
-                <h1>{community.title}</h1>
-                <p>{community.details}</p>
-                <div className={styles.bannerStats}>
-                  {(account && !community?.membersUser?.find(u => u?.id === account.id)) && <button className={styles.joinCommunity} onClick={() => joinCommunity(community?.id || "")}>Join Community</button>}
-                  {community.members.length} Member{community.members.length != 1 ? "s" : null} • {community.posts.length} Post{community.posts.length != 1 ? "s" : null}  
-                  <p className={styles.communityInterests}>Interests: {community.interests.map((interest) => interest.name).filter((_, i) => i !== community.interests.length - 1).join(', ') + `, and ${community.interests[community.interests.length - 1].name}`}</p>
-                </div>  
+                        ]);
+                      }}
+                    >
+                      ➡️
+                    </div>
+                  )}
+                  <h1>
+                    {community.title}
+                  </h1>
+                  <p>{community.details}</p>
+                  <div className={styles.bannerStats}>
+                    {(account && !community?.membersUser?.find((u) =>
+                      u?.id === account.id
+                    )) &&
+                      (
+                        <button
+                          className={styles.joinCommunity}
+                          onClick={() => joinCommunity(community?.id || "")}
+                        >
+                          Join Community
+                        </button>
+                      )}
+                    <br />
+                    {community.members.length}{" "}
+                    Member{community.members.length != 1 ? "s" : null} •{" "}
+                    {community.posts.length}{" "}
+                    Post{community.posts.length != 1 ? "s" : null}
+                    <p className={styles.communityInterests}>
+                      Interests:{" "}
+                      {community.interests.map((interest) => interest.name)
+                        .filter((_, i) => i !== community.interests.length - 1)
+                        .join(", ") +
+                        `, and ${
+                          community.interests[community.interests.length - 1]
+                            .name
+                        }`}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className={styles.postsContainer}>
-              {community.posts.length === 0 && <h4 className={styles.info}>There aren't any posts yet...</h4>}
-              {community.posts.length > 0 && community.posts.map((post, i) =>
-                <Post 
-                  account={account as UserType}
-                  post={post} 
-                  key={i}
-                  index={i}
-                  showComments={showComments[i]} 
-                  setShowComments={setShowComments} 
-                  showFolders={showFolders[i]} 
-                  setShowFolders={setShowFolders} 
-                  router={router} 
-                  userID={account?.id} 
-                  setAlerts={setAlerts} 
-                  setErrorPopups={setErrorPopups} 
-                  setSuccessPopups={setSuccessPopups} 
-                  setCommunity={setCommunity} />)}
-            </div>
-          </>}
-          {(loggedIn && community) &&
-            <div className={styles.postBarContainer} data-collapsed={sidebarCollapsed} ref={postBarContainerRef}>
-              <form className={styles.postBar} onFocus={() => {
-                setPostBoxOpen(true);
-                const postBarContainer = postBarContainerRef?.current;
-                postBarContainer?.classList.add(styles.postBarOpen);
-              }} onSubmit={(event) => {
-                event.preventDefault();
-                submitPost(editorText, community?.id || "");
-              }}>
-                {postBoxOpen && <button className={styles.postSubmit}>Submit Post</button>}
-                {postBoxOpen && <div className={styles.postBoxExit} onClick={() => {
-                  setPostBoxOpen(false);
+              <div className={styles.postsContainer}>
+                {community.posts.length === 0 &&
+                  (
+                    <h4 className={styles.info}>There aren't any posts yet...
+                    </h4>
+                  )}
+                {community.posts.length > 0 && community.posts.map((post, i) =>
+                  (
+                    <Post
+                      actionPermissions={!!community.membersUser?.find(user => user.id === account?.id)?.id}
+                      account={account as UserType}
+                      post={post}
+                      key={i}
+                      index={i}
+                      showComments={showComments[i]}
+                      setShowComments={setShowComments}
+                      showFolders={showFolders[i]}
+                      setShowFolders={setShowFolders}
+                      router={router}
+                      userID={account?.id}
+                      setAlerts={setAlerts}
+                      setErrorPopups={setErrorPopups}
+                      setSuccessPopups={setSuccessPopups}
+                      setCommunity={setCommunity}
+                    />
+                  )
+                )}
+              </div>
+            </>
+          )}
+        {(loggedIn && community) &&
+          (
+            <div
+              className={styles.postBarContainer}
+              data-collapsed={sidebarCollapsed}
+              ref={postBarContainerRef}
+            >
+              <form
+                className={styles.postBar}
+                onFocus={() => {
+                  setPostBoxOpen(true);
                   const postBarContainer = postBarContainerRef?.current;
-                  postBarContainer?.classList.remove(styles.postBarOpen);
-                }}>&times;</div>}
-                {!postBoxOpen && <textarea className={styles.postInput} placeholder={`Post to ${community?.title || "this community"}`}></textarea>}
-                {(postBoxOpen && newPostLoading) && <h1 className={styles.info}>Creating post...</h1>}
-                {(postBoxOpen && !newPostLoading) && 
-                  <ReactQuill
-                    style={{
-                      height: "100%"
-                    }}
-                    theme="snow" 
-                    placeholder={`Post to ${community?.title || "this community"}`} 
-                    onChange={setEditorText}
-                    formats={[
-                      'size',
-                      'bold', 'italic', 'underline', 'blockquote',
-                      'list', 'bullet',
-                      'link', 'image', 'video'
-                    ]} 
-                    modules={{
-                      toolbar: [
-                        [{ size: [] }],
-                        ['bold', 'italic', 'underline', 'blockquote'],
-                        [{'list': 'ordered'}, {'list': 'bullet'}],
-                        ['link', 'image', 'video']
-                      ],
-                      clipboard: {
-                        matchVisual: true
-                      }
-                    }} />}
+                  postBarContainer?.classList.add(styles.postBarOpen);
+                }}
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  submitPost(editorText, community?.id || "");
+                }}
+              >
+                {postBoxOpen &&
+                  <button className={styles.postSubmit}>Submit Post</button>}
+                {postBoxOpen &&
+                  (
+                    <div
+                      className={styles.postBoxExit}
+                      onClick={() => {
+                        setPostBoxOpen(false);
+                        const postBarContainer = postBarContainerRef?.current;
+                        postBarContainer?.classList.remove(styles.postBarOpen);
+                      }}
+                    >
+                      &times;
+                    </div>
+                  )}
+                {!postBoxOpen &&
+                  (
+                    <textarea
+                      className={styles.postInput}
+                      placeholder={`Post to ${community?.title ||
+                        "this community"}`}
+                    >
+                    </textarea>
+                  )}
+                {(postBoxOpen && newPostLoading) &&
+                  <h1 className={styles.info}>Creating post...</h1>}
+                {(postBoxOpen && !newPostLoading) &&
+                  (
+                    <ReactQuill
+                      style={{
+                        height: "100%",
+                      }}
+                      theme="snow"
+                      placeholder={`Post to ${community?.title ||
+                        "this community"}`}
+                      onChange={setEditorText}
+                      formats={[
+                        "size",
+                        "bold",
+                        "italic",
+                        "underline",
+                        "blockquote",
+                        "list",
+                        "bullet",
+                        "link",
+                        "image",
+                        "video",
+                      ]}
+                      modules={{
+                        toolbar: [
+                          [{ size: [] }],
+                          ["bold", "italic", "underline", "blockquote"],
+                          [{ "list": "ordered" }, { "list": "bullet" }],
+                          ["link", "image", "video"],
+                        ],
+                        clipboard: {
+                          matchVisual: true,
+                        },
+                      }}
+                    />
+                  )}
               </form>
-            </div>}
+            </div>
+          )}
       </div>
     </>
   );
-}
+};
 
 export default Community;

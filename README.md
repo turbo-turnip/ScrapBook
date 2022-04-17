@@ -52,6 +52,7 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 - Add input field limits based on database field string limits
 - Add necessary try/catch to prisma queries code
 - Add service functions for controllers
+- Liking/commenting/actions on posts reset state for showComments and showFolders
 
 ## Future possible features
 - Post deletion folder

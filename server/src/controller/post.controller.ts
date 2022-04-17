@@ -3,7 +3,7 @@ import { authenticateUser, communityExists } from "../service";
 import { LogType, log } from "../util/log.util";
 import { v2 as cloudinary } from "cloudinary";
 import env from "../config/env.config";
-import { acceptableImageSize, getComment, getContentImages, getPost, postExists } from "../service/post.service";
+import { acceptableImageSize, getComment, getContentImages, getPost, postExists, userInCommunity } from "../service/post.service";
 import { PrismaClient } from "@prisma/client";
 import { communityInclude } from "../util/communityInclude.util";
 
@@ -32,6 +32,12 @@ export const createPost = async (req: Request, res: Response) => {
   const doesCommunityExist = await communityExists("id", communityID);
   if (!doesCommunityExist) {
     res.status(400).json({ success: false, error: "That community doesn't exist" });
+    return;
+  }
+
+  const userExistsInCommunity = await userInCommunity(response.account.id, communityID);
+  if (!userExistsInCommunity) {
+    res.status(403).json({ success: false, error: "You need to join this community before you can post!" });
     return;
   }
 
@@ -117,7 +123,7 @@ export const likePost = async (req: Request, res: Response) => {
     return;
   }
 
-  const userInPostCommunity = !!(post.community.membersUser.find(user => user.id === response.account.id)?.id);
+  const userInPostCommunity = await userInCommunity(response.account.id, post?.community?.id || "");
   if (!userInPostCommunity) {
     res.status(403).json({ success: false, error: "You need to join this community before you can like it's posts" });
     return;
@@ -165,7 +171,7 @@ export const commentOnPost = async (req: Request, res: Response) => {
     return;
   }
 
-  const userInPostCommunity = !!(post.community.membersUser.find(user => user.id === response.account.id)?.id);
+  const userInPostCommunity = await userInCommunity(response.account.id, post?.community?.id || "");
   if (!userInPostCommunity) {
     res.status(403).json({ success: false, error: "You need to join this community before you can like it's posts" });
     return;
@@ -212,7 +218,7 @@ export const likeComment = async (req: Request, res: Response) => {
     return;
   }
 
-  const userInPostCommunity = !!(comment.post.community.membersUser.find(user => user.id === response.account.id)?.id);
+  const userInPostCommunity = await userInCommunity(response.account.id, comment?.post?.community?.id || "");
   if (!userInPostCommunity) {
     res.status(403).json({ success: false, error: "You need to join this community before you can like it's comments" });
     return;
@@ -260,7 +266,7 @@ export const replyToComment = async (req: Request, res: Response) => {
     return;
   }
 
-  const userInPostCommunity = !!(comment.post.community.membersUser.find(user => user.id === response.account.id)?.id);
+  const userInPostCommunity = await userInCommunity(response.account.id, comment?.post?.community?.id || "");
   if (!userInPostCommunity) {
     res.status(403).json({ success: false, error: "You need to join this community before you can reply to comments" });
     return;
@@ -305,7 +311,7 @@ export const deletePost = async (req: Request, res: Response) =>{
     return;
   }
 
-  const userInPostCommunity = !!(post.community.membersUser.find(user => user.id === response.account.id)?.id);
+  const userInPostCommunity = await userInCommunity(response.account.id, post?.community?.id || "");
   if (!userInPostCommunity) {
     res.status(403).json({ success: false, error: "You need to join this community before you can delete a post" });
     return;
@@ -371,7 +377,7 @@ export const editPost = async (req: Request, res: Response) => {
     return;
   }
 
-  const userInPostCommunity = !!(post.community.membersUser.find(user => user.id === response.account.id)?.id);
+  const userInPostCommunity = await userInCommunity(response.account.id, post?.community?.id || "");
   if (!userInPostCommunity) {
     res.status(403).json({ success: false, error: "You need to join this community before you can edit it's posts" });
     return;

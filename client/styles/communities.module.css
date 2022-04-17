@@ -43,7 +43,8 @@
 .bannerCenter {
   content: attr(data-title);
   width: 70%;
-  height: 70%;
+  padding-top: 1rem;
+  min-height: 70%;
   background: var(--white);
   position: absolute;
   left: 50%;
@@ -379,6 +380,7 @@
   position: fixed;
   bottom: 0;
   transition: 0.5s;
+  z-index: 100;
 }
 
 .postBar {

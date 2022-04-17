@@ -109,6 +109,7 @@
 
 .postRight > div {
   position: relative;
+  z-index: 10;
 }
 
 .postRight > div::after {
@@ -145,11 +146,11 @@
 
 .postRight > div {
   font-size: 2.5rem;
-  cursor: pointer;
+  transition: 0.2s;
 }
 
-.postRight > div {
-  transition: 0.2s;
+.postRight> div span {
+  font-size: 1.5rem;
 }
 
 .postRight > div:hover {
@@ -213,7 +214,6 @@
 }
 
 .commentLikes {
-  cursor: pointer;
   position: relative;
   transition: 0.2s;
 }
