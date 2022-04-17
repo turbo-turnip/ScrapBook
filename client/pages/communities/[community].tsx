@@ -11,6 +11,7 @@ const ReactQuill = typeof window === 'object' ? require('react-quill') : () => f
 require('react-quill/dist/quill.snow.css');
 
 const Community: NextPage = () => {
+  const [communityBannerImageSizes, setCommunityBannerImageSizes] = useState<Array<Array<number>>>([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [account, setAccount] = useState<UserType|null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -26,6 +27,8 @@ const Community: NextPage = () => {
   const [newPostLoading, setNewPostLoading] = useState(false);
   const [showComments, setShowComments] = useState<Array<boolean>>([]);
   const [showFolders, setShowFolders] = useState<Array<boolean>>([]);
+  const [windowWidth, setWindowWidth] = useState(0);
+  const bannerBackgroundRef = useRef<HTMLDivElement|null>(null);
   const router = useRouter(); 
 
   const auth = async () => {
@@ -160,7 +163,33 @@ const Community: NextPage = () => {
   }
 
   useEffect(() => {
+    const newSizes = [
+      new Array(Math.floor(windowWidth / 200)).fill(null).map(() => Math.floor(Math.random() * (80 - 40 + 1) + 40)),
+      new Array(Math.floor(windowWidth / 200)).fill(null).map(() => Math.floor(Math.random() * (80 - 40 + 1) + 40))
+    ];
+    setCommunityBannerImageSizes(newSizes);
+  }, [windowWidth]);
+
+  useEffect(() => {
     auth();
+  
+    window.onmousemove = (event) => {
+      if (bannerBackgroundRef?.current) {
+        const bannerBackgroundImages = Array.from(bannerBackgroundRef.current.querySelectorAll("img"));
+        bannerBackgroundImages.forEach((img, i) => {
+          const speed = Math.cos(i) * 10 + i;
+          console.log(speed);
+          const x = (window.innerWidth - event.pageX * speed) / 500;
+          const y = (window.innerHeight - event.pageY * speed) / 500;
+          img.style.transform = `translate(${x}px, ${y}px)`;
+        });
+      }
+    }
+
+    setWindowWidth(window.innerWidth);
+    window.onresize = () => {
+      setWindowWidth(window.innerWidth);
+    }
   }, []);
 
   useEffect(() => {
@@ -218,6 +247,24 @@ const Community: NextPage = () => {
         {(!communityLoading && !invalidCommunity && community) &&
           <>
             <div className={styles.banner} data-title={community.title}>
+              <div className={styles.bannerBackground} ref={bannerBackgroundRef}>
+                {new Array(2).fill(null).map((_, rowIndex) =>
+                  <div className={styles.bannerBgRow} key={rowIndex}>
+                    {new Array(Math.floor(windowWidth / 200)).fill(null).map((_, colIndex) => 
+                      <div key={colIndex}>
+                        {((windowWidth * colIndex) % 10) <= 5 ?
+                          <>
+                            <div>
+                              <img src="/logo-small.svg" width={`${communityBannerImageSizes[rowIndex][colIndex]}px`} />
+                            </div>
+                            <div>
+                              <img src="/logo-small.svg" width={`${communityBannerImageSizes[rowIndex][colIndex]}px`} />
+                            </div>
+                          </>
+                          : <img src="/logo-large.svg" width="200px" />}
+                      </div>)}
+                  </div>)}
+              </div>
               <div className={styles.bannerCenter}>
                 {(account && !!community?.membersUser?.find(u => u?.id === account.id)) && <div className={styles.leaveCommunity} onClick={() => {
                   setAlerts(prevState => 
@@ -244,11 +291,12 @@ const Community: NextPage = () => {
                 }}>➡️</div>}
                 <h1>{community.title}</h1>
                 <p>{community.details}</p>
+                <div className={styles.bannerStats}>
+                  {(account && !community?.membersUser?.find(u => u?.id === account.id)) && <button className={styles.joinCommunity} onClick={() => joinCommunity(community?.id || "")}>Join Community</button>}
+                  {community.members.length} Member{community.members.length != 1 ? "s" : null} • {community.posts.length} Post{community.posts.length != 1 ? "s" : null}  
+                  <p className={styles.communityInterests}>Interests: {community.interests.map((interest) => interest.name).filter((_, i) => i !== community.interests.length - 1).join(', ') + `, and ${community.interests[community.interests.length - 1].name}`}</p>
+                </div>  
               </div>
-              <div className={styles.bannerStats}>
-                {(account && !community?.membersUser?.find(u => u?.id === account.id)) && <button className={styles.joinCommunity} onClick={() => joinCommunity(community?.id || "")}>Join Community</button>}
-                {community.members.length} Member{community.members.length != 1 ? "s" : null} • {community.posts.length} Post{community.posts.length != 1 ? "s" : null}  
-              </div>  
             </div>
             <div className={styles.postsContainer}>
               {community.posts.length === 0 && <h4 className={styles.info}>There aren't any posts yet...</h4>}
