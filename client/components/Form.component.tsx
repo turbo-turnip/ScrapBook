@@ -21,6 +21,7 @@ interface FormProps {
     type?: FieldType,
     onChange?: (event: ChangeEvent) => any
     skip?: boolean,
+    default?: string
   }>;
   links: Array<{
     text: string,
@@ -50,7 +51,7 @@ export const Form: FC<FormProps> = ({ submitHandler, heading, fields, links, tag
         !field?.skip ?
         <div className={styles.field} key={i}>
           <label className={styles.label}>{field.label}</label>
-          <input className={styles.input} type={field.type} placeholder={field?.placeholder || ""} maxLength={field?.max || 1024} required={field?.required || false} onChange={field?.onChange ? (field.onChange as any) as ChangeEventHandler : () => {}} />
+          <input className={styles.input} type={field.type} placeholder={field?.placeholder || ""} maxLength={field?.max || 1024} required={field?.required || false} onChange={field?.onChange ? (field.onChange as any) as ChangeEventHandler : () => {}} defaultValue={field?.default || ""} />
         </div> : null)}
       <div className={styles.tags}>
         {tags && tags?.map((tag, i) => 

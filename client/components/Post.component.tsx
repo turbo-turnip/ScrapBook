@@ -356,6 +356,8 @@ export const Post: FC<PostProps> = (
                   navigator.clipboard.writeText(
                     `${frontendPath}/post/${post.id}`,
                   );
+
+                  setSuccessPopups((prevState: Array<string>) => [...prevState, "Link copied!"]);
                 }}
               >
                 🔗

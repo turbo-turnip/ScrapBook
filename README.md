@@ -36,6 +36,7 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 
 ## Known Bugs / Things to fix
 
+- Make interests fields not required in community forms
 - Creating user avatar field uses old default value
 - Add limit for user interests and community interests
 - Refine interest search algorithm
@@ -53,8 +54,10 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 - Add necessary try/catch to prisma queries code
 - Add service functions for controllers
 - Liking/commenting/actions on posts reset state for showComments and showFolders
+- Pass account state to useEffect dependencies when calling initial fetch requests after authentication (/client/pages/communities/settings/\[community\].tsx:96)
 
 ## Future possible features
+
 - Post deletion folder
 - Edit banner images/background color for communities
 
@@ -64,6 +67,7 @@ For support, or to report a bug, submit an issue or email me at att.cubing.shark
 
 
 ## Socials
+
 Email: att.cubing.sharks@gmail.com  
 Codepen: [@teake_smal](https://codepen.io/teake_smal)  
 Github: [@SoftwareFuze](https://github.com/SoftwareFuze)  

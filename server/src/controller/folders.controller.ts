@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import { authenticateUser, getUser } from "../service";
 import { communityInclude } from "../util/communityInclude.util";
 import { log, LogType } from "../util/log.util";
-import { getCommunity } from "./communities.controller";
 
 const prisma = new PrismaClient();
 

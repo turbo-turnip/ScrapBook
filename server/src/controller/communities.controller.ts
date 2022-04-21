@@ -1,8 +1,7 @@
 import { PrismaClient } from '.prisma/client';
-import { Prisma } from '@prisma/client';
 import { log } from 'console';
 import { Request, Response } from 'express';
-import { authenticateUser, communityExists } from '../service';
+import { authenticateUser, communityExists, getCommunity } from '../service';
 import { communityInclude } from '../util/communityInclude.util';
 import { LogType } from '../util/log.util';
 
@@ -111,7 +110,7 @@ export const communitiesForUser = async (req: Request, res: Response) => {
 
 // POST :8080/communities/community
 // Fetch a community from the database
-export const getCommunity = async (req: Request, res: Response) => {
+export const fetchCommunity = async (req: Request, res: Response) => {
   const title: string = req.body?.title || "";
 
   try {
@@ -308,6 +307,70 @@ export const leaveCommunity = async (req: Request, res: Response) => {
     res.status(200).json({ success: true, community: updatedCommunity || { name: "Error! Refresh the page 🤖" }, ...response });
     return;
   } catch (err: any) {
+    log(LogType.ERROR, err);
+    res.status(500).json({ success: false, error: "An error occurred. Please refresh the page and try again" });
+    return;
+  }
+}
+
+// POST :8080/communities/edit
+// Edits a community's name, details, and interests
+export const editCommunity = async (req: Request, res: Response) => {
+  const accessToken: string = req.body?.accessToken || "";
+  const refreshToken: string = req.body?.refreshToken || "";
+  const { success, response } = await authenticateUser(accessToken, refreshToken);
+  if (!success) {
+    log(LogType.ERROR, JSON.stringify(response));
+    res.status(400).json({ success, error: "Invalid account" });
+    return;
+  }
+
+  const title: string = req.body?.title;
+  const name: string = req.body?.name;
+  const details: string = req.body?.details || "";
+  const interests: Array<string> = req.body?.interests || [];
+  console.log(title, details, interests);
+
+  const communityAlreadyExists = await getCommunity("title", title);
+  if (!(communityAlreadyExists?.id)) {
+    res.status(400).json({ success: false, error: "That community doesn't exist" });
+    return;
+  }
+
+  const ownerID = communityAlreadyExists.members.find(m => m.owner)?.userID || "";
+  if (response.account.id !== ownerID) {
+    res.status(403).json({ success: false, error: "You are not authorized to edit this community" });
+    return;
+  }
+
+  try {
+    const deletedInterests = communityAlreadyExists.interests.filter(i => !interests.includes(i.name));
+
+    const newCommunity = await prisma.community.update({
+      where: { id: communityAlreadyExists?.id || "" },
+      data: {
+        title: name,
+        details,
+        interests: {
+          connectOrCreate: interests.map(interest => ({ create: { name: interest }, where: { name: interest } })),
+          deleteMany: deletedInterests.map(i => ({ id: i.id }))
+        }
+      },
+      include: {
+        interests: true,
+        members: true,
+        membersUser: true
+      }
+    });
+
+    res.status(200).json({ success: true, community: newCommunity, ...response });
+    return;
+  } catch (err: any) {
+    if ((err?.code || "") === "P2002") {
+      res.status(400).json({ success: false, error: "That community already exists. Please choose a different name" });
+      return;
+    } 
+
     log(LogType.ERROR, err);
     res.status(500).json({ success: false, error: "An error occurred. Please refresh the page and try again" });
     return;
