@@ -556,6 +556,14 @@
       0% 0%
     );
   }
+
+  .topBar,
+  .createContainer,
+  .communityContainer,
+  .postBarContainer,
+  .communities {
+    width: calc(100vw - 1rem) !important;
+  }
 }
 
 @media (max-width: 750px) {
