@@ -60,6 +60,7 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 
 - Post deletion folder
 - Edit banner images/background color for communities
+- Support for polls, discussions, and other features on posts
 
 ## Support
 

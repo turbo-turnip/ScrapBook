@@ -20,11 +20,17 @@ export const Sidebar: FC<SidebarProps> = ({ categories, onToggle }) => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
 
+  const windowOnResize = () => {
+    const query = window.matchMedia("(max-width: 500px)").matches;
+    setCollapsed(query);
+    onToggle && onToggle(query);
+  }
+
   useEffect(() => {
+    windowOnResize();
+
     window.onresize = () => {
-      const query = window.matchMedia("(max-width: 500px)").matches;
-      setCollapsed(query);
-      onToggle && onToggle(query);
+      windowOnResize();
     }
   }, []);
 

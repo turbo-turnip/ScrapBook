@@ -226,3 +226,10 @@
     outline-width: 12px;
   }
 }
+
+@media (max-width: 690px) {
+  .container,
+  .folderViewContainer {
+    width: calc(100vw - 1rem) !important;
+  }
+}

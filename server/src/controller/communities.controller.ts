@@ -329,7 +329,6 @@ export const editCommunity = async (req: Request, res: Response) => {
   const name: string = req.body?.name;
   const details: string = req.body?.details || "";
   const interests: Array<string> = req.body?.interests || [];
-  console.log(title, details, interests);
 
   const communityAlreadyExists = await getCommunity("title", title);
   if (!(communityAlreadyExists?.id)) {
