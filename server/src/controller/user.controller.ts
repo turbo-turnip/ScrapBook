@@ -154,3 +154,16 @@ export const verifyUser = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: "An error occurred. Please refresh the page" });
   }
 }
+
+
+// POST :8080/users/find
+// Returns a specific user based on their name
+export const findUser = async (req: Request, res: Response) => {
+  const exists = await getUser("name", req.body?.username || "");
+  if (!exists) {
+    res.status(400).json({ success: false, error: "Invalid username" });
+    return;
+  }
+
+  res.status(200).json({ success: true, user: exists });
+}

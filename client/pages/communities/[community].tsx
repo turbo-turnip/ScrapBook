@@ -412,14 +412,16 @@ const Community: NextPage = () => {
                       u?.id === account.id
                     )) &&
                       (
-                        <button
-                          className={styles.joinCommunity}
-                          onClick={() => joinCommunity(community?.id || "")}
-                        >
-                          Join Community
-                        </button>
+                        <>
+                          <button
+                            className={styles.joinCommunity}
+                            onClick={() => joinCommunity(community?.id || "")}
+                          >
+                            Join Community
+                          </button>
+                          <br />
+                        </>
                       )}
-                    <br />
                     {community.members.length}{" "}
                     Member{community.members.length != 1 ? "s" : null} •{" "}
                     {community.posts.length}{" "}

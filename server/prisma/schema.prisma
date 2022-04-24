@@ -69,8 +69,9 @@ model CommunityMember {
   community     Community @relation(fields: [communityID], references: [id])
   user          User      @relation(fields: [userID], references: [id])
   owner         Boolean
-  likedPosts    Post[]
+  likedPosts    Post[]    @relation("memberlikes_to_post")
   likedComments Comment[]
+  posts         Post[]    @relation("member_to_post")
 
   @@map("community_member")
 }
@@ -92,7 +93,9 @@ model Post {
   id           String            @id @default(cuid())
   body         String?           @db.VarChar(800)
   likes        Int
-  membersLiked CommunityMember[]
+  memberID     String
+  member       CommunityMember   @relation("member_to_post", fields: [memberID], references: [id])
+  membersLiked CommunityMember[] @relation("memberlikes_to_post")
   userID       String
   communityID  String
   community    Community         @relation(fields: [communityID], references: [id], onDelete: Cascade)
@@ -199,9 +202,9 @@ model BannedRefreshTokens {
 }
 
 model Folder {
-  id    String  @id @default(cuid())
-  label String  @db.VarChar(35)
-  posts Post[]
+  id     String @id @default(cuid())
+  label  String @db.VarChar(35)
+  posts  Post[]
   userID String
-  user User @relation(fields: [userID], references: [id])
+  user   User   @relation(fields: [userID], references: [id])
 }

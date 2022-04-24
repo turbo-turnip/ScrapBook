@@ -285,7 +285,7 @@ export const Post: FC<PostProps> = (
   return (
     <div
       className={styles.post}
-      data-posted-by={`Posted by ${post?.user?.name || "anonymous"}`}
+      data-posted-by={`Posted by ${post?.member?.nickname || "anonymous"}`}
     >
       {!post && <h1>Loading...</h1>}
       {(!showComments && !showFolders && post) &&

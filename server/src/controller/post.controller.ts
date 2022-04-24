@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { authenticateUser, communityExists } from "../service";
+import { authenticateUser, communityExists, getCommunity } from "../service";
 import { LogType, log } from "../util/log.util";
 import { v2 as cloudinary } from "cloudinary";
 import env from "../config/env.config";
@@ -70,12 +70,22 @@ export const createPost = async (req: Request, res: Response) => {
     }
   }
 
+  const community = await getCommunity("id", communityID);
+  const memberID = community.members.find(member => member.userID === response.account.id)?.id || "";
+  if (!memberID) {
+    res.status(500).json({ success: false, message: "An error occurred trying to find you as a community member. Please try again" });
+    return;
+  }
+
   const newPost = await prisma.post.create({
     data: {
       body: content.replace(/<img src="(.)*">/g, ''),
       likes: 0,
       membersLiked: {
         create: []
+      },
+      member: { 
+        connect: { id: memberID }
       },
       user: {
         connect: { id: response.account.id }
