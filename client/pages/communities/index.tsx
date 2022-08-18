@@ -7,7 +7,6 @@ import { UserType } from "../../util/userType.util";
 import { getSidebarPropsWithOption } from "../../util/homeSidebarProps.util";
 import styles from '../../styles/communities.module.css';
 import { CommunityType } from "../../util/communityType.util";
-import { kMaxLength } from "buffer";
 
 const Communities: NextPage = () => {
   const [loggedIn, setLoggedIn] = useState(false);

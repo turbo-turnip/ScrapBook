@@ -30,6 +30,7 @@ model User {
   openDMs          DM[]
   interests        UserInterest[]
   folders          Folder[]
+  bot              Bot?
 
   @@map("user")
 }
@@ -207,4 +208,27 @@ model Folder {
   posts  Post[]
   userID String
   user   User   @relation(fields: [userID], references: [id])
+}
+
+model BotAttachment {
+  id       String @id @default(cuid())
+  configID String @db.VarChar(255)
+  botID    String
+  bot      Bot    @relation(fields: [botID], references: [id])
+}
+
+model BotModification {
+  id       String @id @default(cuid())
+  configID String @db.VarChar(255)
+  botID    String
+  bot      Bot    @relation(fields: [botID], references: [id])
+}
+
+model Bot {
+  id            String            @id @default(cuid())
+  rank          String            @default("") @db.VarChar(35)
+  attachments   BotAttachment[]
+  modifications BotModification[]
+  userID        String            @unique
+  user          User              @relation(fields: [userID], references: [id])
 }
