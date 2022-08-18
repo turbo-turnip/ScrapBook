@@ -36,7 +36,7 @@ interface FormProps {
 }
 
 export const Form: FC<FormProps> = ({ submitHandler, heading, fields, links, tags }) => {
-  return (
+  return ( 
     <form className={styles.form} onSubmit={(event) => {
       event.preventDefault();
 
