@@ -60,6 +60,7 @@ export type PostType = {
   body?: string,
   likes: number,
   userID?: string,
+  member: CommunityMember,
   membersLiked: Array<CommunityMember>,
   communityID?: string,
   community: CommunityType,

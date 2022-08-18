@@ -202,7 +202,7 @@ const Communities: NextPage = () => {
           <>
             {communities.map((community, i) =>
               <div className={styles.community} key={i} onClick={() => router.push(`/communities/${community.title}`)}>
-                <img src="/community-banner.svg" alt="Community Banner" />
+                <img src="/banner.svg" alt="Community Banner" />
                 <div className={styles.communityContent}>
                   <h1 className={styles.communityTitle}>{community.title}</h1>
                   <div className={styles.communityInfo}>

@@ -365,7 +365,6 @@ const Community: NextPage = () => {
                     )
                   )}
                 </div>
-                  {console.log(community)}
                 <div className={styles.bannerCenter}>
                   {(account && community.members.find(member => member.userID === account.id && member.owner)) && 
                     <div className={styles.communitySettings} onClick={() => router.push(`/communities/settings/${community.title}`)}>
@@ -427,14 +426,15 @@ const Community: NextPage = () => {
                     {community.posts.length}{" "}
                     Post{community.posts.length != 1 ? "s" : null}
                     <p className={styles.communityInterests}>
-                      Interests:{" "}
-                      {community.interests.map((interest) => interest.name)
-                        .filter((_, i) => i !== community.interests.length - 1)
-                        .join(", ") +
-                        `, and ${
-                          community.interests[community.interests.length - 1]
-                            .name
-                        }`}
+                      Interests:&nbsp;
+                      {community.interests.length != 1 ?
+                        community.interests.map((interest) => interest.name)
+                          .filter((_, i) => i !== community.interests.length - 1)
+                          .join(", ") +
+                          `, and ${
+                            community.interests[community.interests.length - 1]
+                              .name
+                          }` : community.interests[0].name}
                     </p>
                   </div>
                 </div>
