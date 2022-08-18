@@ -14,3 +14,5 @@
 /client/.next
 /server/util/hashCode.util.ts
 /.vscode
+/server/src/logs/flush.txt
+/server/src/logs/log.txt

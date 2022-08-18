@@ -13,7 +13,7 @@ const transporter = createTransport({
   service: 'Gmail',
   auth: {
     user: env.MAILER_ADDR,
-    pass: env.MAILER_PASS
+    pass: env.MAILER_APP_PASS
   }
 });
 

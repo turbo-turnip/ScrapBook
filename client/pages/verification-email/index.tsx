@@ -22,6 +22,7 @@ const VerificationEmail: NextPage = () => {
       body: JSON.stringify({ id, email })
     });
     const res: ServerResponse = await req.json();
+    console.log(res);
     if (res.success) {
       setSuccessPopups(prevState => [...prevState, { message: res?.message || "Verification email sent" }]);
       return;

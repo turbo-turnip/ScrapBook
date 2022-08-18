@@ -18,7 +18,7 @@ const Home: NextPage = () => {
     const res = await fetchAccount(localStorage, accessToken, refreshToken);
     if (res.loggedIn) {
       setLoggedIn(true)
-      setAccount(res.account);                                                                                                  x                                                  z                   
+      setAccount(res.account);                                                                                                      
       return;
     } else {
       router.push(res.redirect);
