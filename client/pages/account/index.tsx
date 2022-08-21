@@ -58,7 +58,7 @@ const PostPage: NextPage = () => {
           type={PopupType.SUCCESS}
           />)}
 
-      <Sidebar categories={getSidebarPropsWithOption("Communities")} onToggle={(value) => setSidebarCollapsed(value)} />
+      <Sidebar categories={getSidebarPropsWithOption("Account")} onToggle={(value) => setSidebarCollapsed(value)} />
       <Nav loggedIn={loggedIn} account={loggedIn ? account : null} /> 
       {alerts.map((alert, i) =>
         <Alert message={alert.message} buttons={alert.buttons} input={alert?.input} key={i} />)}
@@ -73,7 +73,18 @@ const PostPage: NextPage = () => {
               {account ? (
                 <>
                   <h1>{account.name}</h1>
-                  <h4>{account?.followers ? account.followers.length : "Loading..."} Follower{(account?.followers?.length || 0) != 1 && "s"}</h4>
+                  {account?.details ? <h4>{account.details}</h4> : <></>}
+                  <div>
+                    <h4>{account?.followers ? account.followers.length : "Loading..."} Follower{(account?.followers?.length || 0) != 1 && "s"} • {account?.communities ? account.communities.length : "Loading..."} Communit{(account?.communities?.length || 0) != 1 ? "ies" : "y"} • {account?.likes != null ? account?.likes : "Loading..."} Like{(account?.likes || 0) != 1 && "s"} • {account?.posts ? account.posts.length : "Loading..."} Post{(account?.posts?.length || 0) != 1 && "s"}</h4>
+                    {account?.suggestions ? 
+                      (
+                        <h4>
+                          Interests:&nbsp;
+                          {(account?.interests?.length) != 0 ?
+                            (account?.interests || []).map((interest, i) => interest.name).slice(0, (account?.interests?.length || 0) - 1).join(", ") + " and " + account?.interests?.[account?.interests?.length - 1].name : "Opt-in to ScrapBook suggestions to add your interests!"}
+                        </h4>
+                      ) : <></>}
+                  </div>
                 </>
               ) : <h1>Loading...</h1>}
             </div>

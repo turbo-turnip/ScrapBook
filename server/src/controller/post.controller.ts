@@ -158,6 +158,13 @@ export const likePost = async (req: Request, res: Response) => {
     include: communityInclude
   });
 
+  await prisma.user.update({
+    where: { id: post.user.id },
+    data: {
+      likes: post.user.likes + (userAlreadyLiked ? -1 : 1)
+    }
+  });
+
   res.status(200).json({ success: true, community: updatedCommunity, option: userAlreadyLiked ? "dislike" : "like", ...response });
 }
 

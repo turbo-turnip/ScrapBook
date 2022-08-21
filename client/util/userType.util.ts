@@ -1,5 +1,7 @@
+import { CommunityType } from "./communityType.util";
 import { FolderType } from "./folderType.util";
 import { FollowerType } from "./followerType.util";
+import { PostType } from "./postType.util";
 
 export type UserType = {
   id: string,
@@ -9,6 +11,8 @@ export type UserType = {
   details?: string,
   avatar?: string,
   activity?: string,
+  communities?: Array<CommunityType>,
+  posts?: Array<PostType>,
   likes?: number,
   suggestions?: boolean,
   followers?: Array<FollowerType>,

@@ -31,6 +31,7 @@ export const getUser = (prop?: string, value?: any) => {
         interests: true,
         blockedUsers: true,
         communities: true,
+        posts: true,
         followers: true,
         friends: true,
         messages: true,
