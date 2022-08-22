@@ -36,6 +36,11 @@ export const getUser = (prop?: string, value?: any) => {
         friends: true,
         messages: true,
         openDMs: true,
+        bot: {
+          include: {
+            attachments: true
+          }
+        },
         folders: {
           include: {
             posts: true

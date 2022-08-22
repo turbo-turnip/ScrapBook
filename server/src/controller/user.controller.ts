@@ -52,6 +52,12 @@ export const addUser = async (req: Request, res: Response) => {
         suggestions,
         // Temporary, fix default value bug later - See README.md Bugs
         avatar: "/default-avatar.svg",
+        bot: {
+          create: {
+            rank: "Silver",
+            attachments: { create: [] }
+          }
+        },
         // Create interests and add them to user if they don't already exist in the interest table
         interests: {
           connectOrCreate: interests.map(interest => ({ create: { name: interest }, where: { name: interest } }))

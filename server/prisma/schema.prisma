@@ -23,6 +23,7 @@ model User {
   commentReplies   CommentReply[]
   communities      Community[]
   communityMembers CommunityMember[]
+  coins            Int               @default(0)
   followers        Follower[]
   friends          Friend[]
   messages         Message[]
@@ -218,9 +219,9 @@ model BotAttachment {
 }
 
 model Bot {
-  id            String            @id @default(cuid())
-  rank          String            @default("") @db.VarChar(35)
-  attachments   BotAttachment[]
-  userID        String            @unique
-  user          User              @relation(fields: [userID], references: [id])
+  id          String          @id @default(cuid())
+  rank        String          @default("") @db.VarChar(35)
+  attachments BotAttachment[]
+  userID      String          @unique
+  user        User            @relation(fields: [userID], references: [id])
 }
