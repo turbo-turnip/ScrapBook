@@ -100,6 +100,9 @@ export const sendVerificationEmail = async (req: Request, res: Response) => {
     const user = await getUser("id", req.body?.id || "");
     const hexUsername = Buffer.from(user.name, "utf8").toString("hex");
     const hexCode = Buffer.from(hashEmailCode(user.email).join("_"), "utf8").toString("hex");
+
+    // fun times with database137
+
     try {
 
       const emailRes = await email({
@@ -107,7 +110,7 @@ export const sendVerificationEmail = async (req: Request, res: Response) => {
         subject: "Verify your email for ScrapBook",
         html: `
           <h1>Verify your email for ScrapBook</h1>
-          <h3>To get started and use the full potential of ScrapBook, verify your email address you signed up with! (${userEmail})</h4>
+          <h4>To get started and use the full potential of ScrapBook, verify your email address you signed up with! (${userEmail})</h4>
           <br/>
           <a href="http://localhost:3000/verification-email/verify?u=${hexUsername}&c=${hexCode}">Click this link to verify your email!</a>
         `
