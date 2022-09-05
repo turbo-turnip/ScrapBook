@@ -1,0 +1,672 @@
+[
+  {
+    "configID": "1",
+    "imgPath": "sunglasses_average_filled.png",
+    "attachmentName": "Sunglasses",
+    "attachmentRequiredRank": "Silver",
+    "attachmentCost": "0",
+    "attachmentPosition": "-2px",
+    "attachmentScale": "52%",
+    "attachmentType": "Face"
+  },
+  {
+    "configID": "2",
+    "imgPath": "sunglasses_average_nofilled.png",
+    "attachmentName": "Sunglasses",
+    "attachmentRequiredRank": "Silver",
+    "attachmentCost": "10",
+    "attachmentPosition": "-6px",
+    "attachmentScale": "52%",
+    "attachmentType": "Face"
+  },
+  {
+    "configID": "3",
+    "imgPath": "sunglasses_outerangled_filled.png",
+    "attachmentName": "Sunglasses",
+    "attachmentRequiredRank": "Silver",
+    "attachmentCost": "50",
+    "attachmentPosition": "-10px",
+    "attachmentScale": "52%",
+    "attachmentType": "Face"
+  },
+  { 
+    "configID": "4",
+    "imgPath": "sunglasses_outerangled_nofilled.png",
+    "attachmentName": "Sunglasses",
+    "attachmentRequiredRank": "Silver",
+    "attachmentCost": "10",
+    "attachmentPosition": "-10px",
+    "attachmentScale": "52%",
+    "attachmentType": "Face"
+  },
+  {
+    "configID": "5",
+    "imgPath": "sunglasses_innerangled_filled.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Sunglasses",
+    "attachmentCost": "20",
+    "attachmentPosition": "-2px",
+    "attachmentScale": "52%",
+    "attachmentType": "Face"
+  },
+  {
+    "configID": "6",
+    "imgPath": "sunglasses_innerangled_nofilled.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Sunglasses",
+    "attachmentCost": "30",
+    "attachmentPosition": "-2px",
+    "attachmentScale": "52%",
+    "attachmentType": "Face"
+  },
+  {
+    "configID": "7",
+    "imgPath": "sunglasses_rectangle_filled.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Sunglasses",
+    "attachmentCost": "50",
+    "attachmentPosition": "-2px",
+    "attachmentScale": "52%",
+    "attachmentType": "Face"
+  },
+  {
+    "configID": "8",
+    "imgPath": "sunglasses_rectangle_nofilled.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Sunglasses",
+    "attachmentCost": "60",
+    "attachmentPosition": "-2px",
+    "attachmentScale": "52%",
+    "attachmentType": "Face"
+  },
+  {
+    "configID": "9",
+    "imgPath": "sunglasses_circle_filled.png",
+    "attachmentRequiredRank": "Diamond",
+    "attachmentName": "Sunglasses",
+    "attachmentCost": "40",
+    "attachmentPosition": "-2px",
+    "attachmentScale": "52%",
+    "attachmentType": "Face"
+  },
+  {
+    "configID": "10",
+    "imgPath": "sunglasses_circle_nofilled.png",
+    "attachmentRequiredRank": "Diamond",
+    "attachmentName": "Sunglasses",
+    "attachmentCost": "60",
+    "attachmentPosition": "10%",
+    "attachmentScale": "52%",
+    "attachmentType": "Face"
+  },
+  {
+    "configID": "11",
+    "imgPath": "baking_hat.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Baking Hat",
+    "attachmentCost": "20",
+    "attachmentPosition": "-33%",
+    "attachmentScale": "60%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "12",
+    "imgPath": "beanie_silver.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Silver Beanie",
+    "attachmentCost": "30",
+    "attachmentPosition": "-32%",
+    "attachmentScale": "40%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "13",
+    "imgPath": "cap_blue.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Blue Cap",
+    "attachmentCost": "20",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "14",
+    "imgPath": "cap_green.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Green Cap",
+    "attachmentCost": "20",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "15",
+    "imgPath": "cap_pink.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Pink Cap",
+    "attachmentCost": "20",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "16",
+    "imgPath": "cap_purple.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Purple Cap",
+    "attachmentCost": "20",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "17",
+    "imgPath": "cap_red.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Red Cap",
+    "attachmentCost": "20",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "18",
+    "imgPath": "cap_silver.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Silver Cap",
+    "attachmentCost": "30",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "19",
+    "imgPath": "cap_yellow.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Yellow Cap",
+    "attachmentCost": "20",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "20",
+    "imgPath": "construction_hat.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Construction Hat",
+    "attachmentCost": "40",
+    "attachmentPosition": "-23%",
+    "attachmentScale": "50%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "21",
+    "imgPath": "crown.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Silver Crown",
+    "attachmentCost": "100",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "55%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "22",
+    "imgPath": "tophat_black_short.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Short Black Top Hat",
+    "attachmentCost": "40",
+    "attachmentPosition": "-18%",
+    "attachmentScale": "55%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "23",
+    "imgPath": "tophat_black.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Black Top Hat",
+    "attachmentCost": "40",
+    "attachmentPosition": "-22%",
+    "attachmentScale": "55%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "24",
+    "imgPath": "tophat_green.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Green Top Hat",
+    "attachmentCost": "40",
+    "attachmentPosition": "-22%",
+    "attachmentScale": "55%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "25",
+    "imgPath": "tophat_purple.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Purple Top Hat",
+    "attachmentCost": "40",
+    "attachmentPosition": "-22%",
+    "attachmentScale": "55%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "26",
+    "imgPath": "tophat_red.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Red Top Hat",
+    "attachmentCost": "40",
+    "attachmentPosition": "-22%",
+    "attachmentScale": "55%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "27",
+    "imgPath": "tophat_silver.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Silver Top Hat",
+    "attachmentCost": "50",
+    "attachmentPosition": "-22%",
+    "attachmentScale": "55%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "28",
+    "imgPath": "beanie_blue.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Blue Beanie",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "29",
+    "imgPath": "beanie_golden.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Golden Beanie",
+    "attachmentCost": "40",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "30",
+    "imgPath": "beanie_green.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Green Beanie",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "31",
+    "imgPath": "beanie_pink.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Pink Beanie",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "32",
+    "imgPath": "beanie_purple.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Purple Beanie",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "33",
+    "imgPath": "beanie_red.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Red Beanie",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "34",
+    "imgPath": "cap_black.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Black Cap",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "35",
+    "imgPath": "cap_blue.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Blue Cap",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "36",
+    "imgPath": "cap_golden.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Golden Cap",
+    "attachmentCost": "40",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "37",
+    "imgPath": "cap_green.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Green Cap",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "38",
+    "imgPath": "cap_pink.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Pink Cap",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "39",
+    "imgPath": "cap_red.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Red Cap",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "40",
+    "imgPath": "cap_white.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "White Cap",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "41",
+    "imgPath": "cap_yellow.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Yellow Cap",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "42",
+    "imgPath": "crown.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Golden Crown",
+    "attachmentCost": "100",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "43",
+    "imgPath": "graduation_hat.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Graduation Hat",
+    "attachmentCost": "40",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "44",
+    "imgPath": "tophat_golden.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Golden Top Hat",
+    "attachmentCost": "40",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "45",
+    "imgPath": "tophat_tiny.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Tiny Tophat",
+    "attachmentCost": "40",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "46",
+    "imgPath": "beanie_black.png",
+    "attachmentRequiredRank": "Diamond",
+    "attachmentName": "Black Beanie",
+    "attachmentCost": "40",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "47",
+    "imgPath": "beanie_diamond.png",
+    "attachmentRequiredRank": "Diamond",
+    "attachmentName": "Diamond Beanie",
+    "attachmentCost": "50",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "48",
+    "imgPath": "beanie_white.png",
+    "attachmentRequiredRank": "Diamond",
+    "attachmentName": "White Beanie",
+    "attachmentCost": "40",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "49",
+    "imgPath": "cap_diamond.png",
+    "attachmentRequiredRank": "Diamond",
+    "attachmentName": "Diamond Cap",
+    "attachmentCost": "50",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "50",
+    "imgPath": "crown.png",
+    "attachmentRequiredRank": "Diamond",
+    "attachmentName": "Diamond Crown",
+    "attachmentCost": "100",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "51",
+    "imgPath": "propeller_hat.png",
+    "attachmentRequiredRank": "Diamond",
+    "attachmentName": "Propeller Hat",
+    "attachmentCost": "60",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "52",
+    "imgPath": "shoes_blue.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Blue Sneakers",
+    "attachmentCost": "20",
+    "attachmentPosition": "93%",
+    "attachmentScale": "100%",
+    "attachmentType": "Feet"
+  },
+  {
+    "configID": "53",
+    "imgPath": "shoes_green.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Green Sneakeres",
+    "attachmentCost": "20",
+    "attachmentPosition": "93%",
+    "attachmentScale": "100%",
+    "attachmentType": "Feet"
+  },
+  {
+    "configID": "54",
+    "imgPath": "shoes_red.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Red Sneakers",
+    "attachmentCost": "20",
+    "attachmentPosition": "93%",
+    "attachmentScale": "100%",
+    "attachmentType": "Feet"
+  },
+  {
+    "configID": "55",
+    "imgPath": "shoes_silver.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Silver Sneakers",
+    "attachmentCost": "40",
+    "attachmentPosition": "93%",
+    "attachmentScale": "100%",
+    "attachmentType": "Feet"
+  },
+  {
+    "configID": "56",
+    "imgPath": "boots.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Boots",
+    "attachmentCost": "40",
+    "attachmentPosition": "93%",
+    "attachmentScale": "100%",
+    "attachmentType": "Feet"
+  },
+  {
+    "configID": "57",
+    "imgPath": "watch_black.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Black Watch",
+    "attachmentCost": "40",
+    "attachmentPosition": "30%",
+    "attachmentScale": "12%",
+    "attachmentType": "Wrist"
+  },
+  {
+    "configID": "58",
+    "imgPath": "watch_silver.png",
+    "attachmentRequiredRank": "Silver",
+    "attachmentName": "Silver Watch",
+    "attachmentCost": "60",
+    "attachmentPosition": "30%",
+    "attachmentScale": "12%",
+    "attachmentType": "Wrist"
+  },
+  {
+    "configID": "59",
+    "imgPath": "watch_golden.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Golden Watch",
+    "attachmentCost": "70",
+    "attachmentPosition": "30%",
+    "attachmentScale": "12%",
+    "attachmentType": "Wrist"
+  },
+  {
+    "configID": "60",
+    "imgPath": "watch_diamond.png",
+    "attachmentRequiredRank": "Diamond",
+    "attachmentName": "Diamond Watch",
+    "attachmentCost": "90",
+    "attachmentPosition": "30%",
+    "attachmentScale": "12%",
+    "attachmentType": "Wrist"
+  },
+  {
+    "configID": "61",
+    "imgPath": "shoes_gold.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Golden Sneakers",
+    "attachmentCost": "60",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "62",
+    "imgPath": "shoes_pink.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Pink Sneakers",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "63",
+    "imgPath": "shoes_purple.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Purple Sneakers",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "64",
+    "imgPath": "shoes_yellow.png",
+    "attachmentRequiredRank": "Golden",
+    "attachmentName": "Yellow Sneakers",
+    "attachmentCost": "30",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "65",
+    "imgPath": "shoes_black.png",
+    "attachmentRequiredRank": "Diamond",
+    "attachmentName": "Black Sneakers",
+    "attachmentCost": "40",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "66",
+    "imgPath": "shoes_diamond.png",
+    "attachmentRequiredRank": "Diamond",
+    "attachmentName": "Diamond Sneakers",
+    "attachmentCost": "60",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  },
+  {
+    "configID": "67",
+    "imgPath": "shoes_white.png",
+    "attachmentRequiredRank": "Diamond",
+    "attachmentName": "White Sneakers",
+    "attachmentCost": "40",
+    "attachmentPosition": "10%",
+    "attachmentScale": "100%",
+    "attachmentType": "Head"
+  }
+] 

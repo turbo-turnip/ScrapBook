@@ -119,7 +119,6 @@ const SignUp: NextPage = () => {
             label: "What are you interested in?",
             type: FieldType.INPUT,
             placeholder: "Enter a hobby/interest you have",
-            required: true,
             max: 255,
             onChange: (event) => { 
               const target: HTMLInputElement = event.target as any;

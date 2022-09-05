@@ -36,6 +36,7 @@ ScrapBook is an open-source social media platform with privacy, so you can conne
 
 ## Known Bugs / Things to fix
 
+- Add activity status
 - Fix signup page interest regex, failed at "C++"
 - Implement use of verification for users
 - Make interests fields not required in community forms

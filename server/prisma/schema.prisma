@@ -210,7 +210,6 @@ model Folder {
   userID String
   user   User   @relation(fields: [userID], references: [id])
 }
-
 model BotAttachment {
   id       String @id @default(cuid())
   configID String @db.VarChar(255)
