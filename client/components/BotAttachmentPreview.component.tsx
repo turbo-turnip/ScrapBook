@@ -9,16 +9,42 @@ import { useRef } from "react";
 import { Popup, PopupType } from "./";
 
 interface BotAttachmentPreviewProps {
-  userBot?: BotType;
-  userCoins?: number;
   attachment?: BotAttachmentType;
 }
 
-export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ userBot, userCoins, attachment }) => {
+export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ attachment }) => {
   const previewRef = useRef<HTMLDivElement|null>(null);
   const [errorPopups, setErrorPopups] = useState<Array<string>>([]);
   const [successPopups, setSuccessPopups] = useState<Array<string>>([]);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+  const [userBot, setUserBot] = useState<BotType|null>(null);
+  const [coins, setCoins] = useState(0);
+
+  const fetchBot = async () => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/bot", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ accessToken, refreshToken }),
+    });
+
+    const res: ServerResponse = await req.json();
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken || "");
+        localStorage.setItem("rt", res?.newRefreshToken || "");
+      }
+
+      console.log(res);
+      setUserBot(res?.userBot);
+      setCoins(res?.coins || 0);
+    } else
+      setErrorPopups(prevState => [...prevState, res?.error || "Something went wrong trying to preview your bot... Please refresh the page"]);
+  }
 
   const purchaseAttachment = async () => {
     if (attachment) {
@@ -40,17 +66,18 @@ export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ userBot, u
           localStorage.setItem("rt", res?.newRefreshToken || "");
         }
 
-        setSuccessPopups(prevState => [...prevState, "Successfully purchased attachment!"]);
-
-        if (previewRef?.current) {
+        if (previewRef?.current)
           previewRef.current.style.display = "none";
-        }
+
+        setSuccessPopups(prevState => [...prevState, res?.message || "Successfully purchased attachment!"]);
       } else
         setErrorPopups(prevState => [...prevState, res?.error || "Something went wrong purchasing that attachment... Please try again"]);
     }
   }
 
   useEffect(() => {
+    fetchBot();
+
     setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     window.onresize = () => {
       setWindowSize({ width: window.innerWidth, height: window.innerHeight });
@@ -86,13 +113,13 @@ export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ userBot, u
         }}>
           <div className={styles.botAttachments}>
             {(attachment && userBot?.attachments) ?
-              ((userBot?.attachments || []) as Array<{ configID: string }>)
+              ((userBot.attachments || []) as Array<{ configID: string }>)
                   .map((att: { configID: string }): BotAttachmentType => botAttachments.filter(a => a.configID === att?.configID)[0] as BotAttachmentType)
                   .filter((att: BotAttachmentType) => att.attachmentType !== attachment.attachmentType)
                   .map((att: BotAttachmentType) => 
                   <div className={styles.attachment} style={{
                     top: att?.attachmentPosition || "0",
-                    transform: `scale(${att?.attachmentScale || "1"}) translateX(${att?.attachmentType === "Feet" ? "0" : att?.attachmentType === "Wrist" ? "20%" : "10px"})`,
+                    transform: `scale(${att?.attachmentScale || "1"}) translateX(${att?.attachmentType === "Feet" ? "0" : att?.attachmentType === "Wrist" ? "380%" : "10px"})`,
                   }}>
                     <img src={`/attachments/${att?.attachmentRequiredRank || "Silver"}/${att?.imgPath || ""}`} />
                   </div>) : <></>}
@@ -107,9 +134,9 @@ export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ userBot, u
 
         {(attachment && userBot) ?
           <button className={styles.purchaseBtn} onClick={() => purchaseAttachment()}>
-            {((new Number(attachment.attachmentCost) <= (userCoins || 0)) && requiredRankMet(userBot.rank, attachment.attachmentRequiredRank)) ?
+            {((new Number(attachment.attachmentCost) <= (coins || 0)) && requiredRankMet(userBot.rank, attachment.attachmentRequiredRank)) ?
               `Purchase ${attachment.attachmentName} for ${attachment.attachmentCost} coins`
-              : `You need ${parseFloat(attachment.attachmentCost) - (userCoins || 0)} more coins ${!requiredRankMet(userBot.rank, attachment.attachmentRequiredRank) ? `and ${BotAttachmentPreview} Rank ` : ""}to purchase this attachment.`}
+              : `You need ${parseFloat(attachment.attachmentCost) - (coins || 0)} more coins ${!requiredRankMet(userBot.rank, attachment.attachmentRequiredRank) ? `and ${BotAttachmentPreview} Rank ` : ""}to purchase this attachment.`}
           </button> : <h1>Loading...</h1>}
       </div>
     </>

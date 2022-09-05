@@ -32,7 +32,7 @@ export const purchaseAttachment = async (req: Request, res: Response) => {
     return;
   }
 
-  await prisma.bot.update({
+  const updatedBot = await prisma.bot.update({
     where: { id: response.account.bot.id },
     data: {
       attachments: {
@@ -40,15 +40,46 @@ export const purchaseAttachment = async (req: Request, res: Response) => {
           configID: attachmentID
         }
       }
-    }
+    },
+    include: { attachments: true }
   });
 
   await prisma.user.update({
     where: { id: response.account.id },
     data: {
       coins: response.account.coins - parseFloat(attachment.attachmentCost)
+    },
+    include: {
+      bot: {
+        include: {
+          attachments: true
+        }
+      }
     }
   });
 
-  res.status(200).json({ success: true, ...response })
+  res.status(200).json({ success: true, ...response, attachments: updatedBot?.attachments || [] })
+}
+
+// POST :8080/bot
+// Fetch a certain user's bot
+export const findBot = async (req: Request, res: Response) => {
+  const accessToken: string = req.body?.accessToken || "";
+  const refreshToken: string = req.body?.refreshToken || "";
+
+  const { success, response } = await authenticateUser(accessToken, refreshToken);
+  if (!success) {
+    log(LogType.ERROR, JSON.stringify(response));
+    res.status(400).json({ success, error: "Invalid account" });
+    return;
+  }
+
+  const userBot = await prisma.bot.findFirst({
+    where: {
+      user: { id: response.account.id }
+    },
+    include: { attachments: true }
+  });
+
+  res.status(200).json({ success: true, ...response, userBot, coins: response.account.coins })
 }

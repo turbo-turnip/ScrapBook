@@ -77,7 +77,7 @@ const PostPage: NextPage = () => {
       <Sidebar categories={getSidebarPropsWithOption("Account")} onToggle={(value) => setSidebarCollapsed(value)} />
       <Nav loggedIn={loggedIn} account={loggedIn ? account : null} /> 
       {attachmentPreviews.map((preview, i) =>
-        <BotAttachmentPreview userBot={preview.userBot} userCoins={preview.userCoins} attachment={preview.attachment} key={i} />)}
+        <BotAttachmentPreview attachment={preview.attachment} key={i} />)}
 
       <div className={styles.container} data-collapsed={sidebarCollapsed}>
         <div className={styles.infoTop}>
