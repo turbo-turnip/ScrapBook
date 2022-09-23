@@ -10,9 +10,10 @@ import { Popup, PopupType } from "./";
 
 interface BotAttachmentPreviewProps {
   attachment?: BotAttachmentType;
+  userID: string;
 }
 
-export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ attachment }) => {
+export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ attachment, userID }) => {
   const previewRef = useRef<HTMLDivElement|null>(null);
   const [errorPopups, setErrorPopups] = useState<Array<string>>([]);
   const [successPopups, setSuccessPopups] = useState<Array<string>>([]);
@@ -21,15 +22,12 @@ export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ attachment
   const [coins, setCoins] = useState(0);
 
   const fetchBot = async () => {
-    const accessToken = localStorage.getItem("at") || "";
-    const refreshToken = localStorage.getItem("rt") || "";
-
     const req = await fetch(backendPath + "/bot", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ accessToken, refreshToken }),
+      body: JSON.stringify({ userID }),
     });
 
     const res: ServerResponse = await req.json();
@@ -39,7 +37,6 @@ export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ attachment
         localStorage.setItem("rt", res?.newRefreshToken || "");
       }
 
-      console.log(res);
       setUserBot(res?.userBot);
       setCoins(res?.coins || 0);
     } else
@@ -116,13 +113,13 @@ export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ attachment
               ((userBot.attachments || []) as Array<{ configID: string }>)
                   .map((att: { configID: string }): BotAttachmentType => botAttachments.filter(a => a.configID === att?.configID)[0] as BotAttachmentType)
                   .filter((att: BotAttachmentType) => att.attachmentType !== attachment.attachmentType)
-                  .map((att: BotAttachmentType) => 
-                  <div className={styles.attachment} style={{
-                    top: att?.attachmentPosition || "0",
-                    transform: `scale(${att?.attachmentScale || "1"}) translateX(${att?.attachmentType === "Feet" ? "0" : att?.attachmentType === "Wrist" ? "380%" : "10px"})`,
-                  }}>
-                    <img src={`/attachments/${att?.attachmentRequiredRank || "Silver"}/${att?.imgPath || ""}`} />
-                  </div>) : <></>}
+                  .map((att: BotAttachmentType, i) => 
+                    <div className={styles.attachment} key={i} style={{
+                      top: att?.attachmentPosition || "0",
+                      transform: `scale(${att?.attachmentScale || "1"}) translateX(${att?.attachmentType === "Feet" ? "0" : att?.attachmentType === "Wrist" ? "380%" : "10px"})`,
+                    }}>
+                      <img src={`/attachments/${att?.attachmentRequiredRank || "Silver"}/${att?.imgPath || ""}`} />
+                    </div>) : <></>}
             <div className={styles.attachment} style={{
               top: attachment?.attachmentPosition,
               transform: `scale(${attachment?.attachmentScale || "1"}) translateX(${attachment?.attachmentType === "Feet" ? "0" : attachment?.attachmentType === "Wrist" ? "380%" : "10px"})`,
@@ -134,7 +131,8 @@ export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ attachment
 
         {(attachment && userBot) ?
           <button className={styles.purchaseBtn} onClick={() => purchaseAttachment()}>
-            {((new Number(attachment.attachmentCost) <= (coins || 0)) && requiredRankMet(userBot.rank, attachment.attachmentRequiredRank)) ?
+            {console.log(attachment)}
+            {(((new Number(attachment.attachmentCost) || 0) <= (coins || 0)) && requiredRankMet(userBot.rank, attachment.attachmentRequiredRank)) ?
               `Purchase ${attachment.attachmentName} for ${attachment.attachmentCost} coins`
               : `You need ${parseFloat(attachment.attachmentCost) - (coins || 0)} more coins ${!requiredRankMet(userBot.rank, attachment.attachmentRequiredRank) ? `and ${BotAttachmentPreview} Rank ` : ""}to purchase this attachment.`}
           </button> : <h1>Loading...</h1>}

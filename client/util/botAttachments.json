@@ -45,7 +45,7 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Sunglasses",
     "attachmentCost": "20",
-    "attachmentPosition": "-2px",
+    "attachmentPosition": "-10px",
     "attachmentScale": "52%",
     "attachmentType": "Face"
   },
@@ -55,7 +55,7 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Sunglasses",
     "attachmentCost": "30",
-    "attachmentPosition": "-2px",
+    "attachmentPosition": "-10px",
     "attachmentScale": "52%",
     "attachmentType": "Face"
   },
@@ -65,7 +65,7 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Sunglasses",
     "attachmentCost": "50",
-    "attachmentPosition": "-2px",
+    "attachmentPosition": "-5px",
     "attachmentScale": "52%",
     "attachmentType": "Face"
   },
@@ -75,7 +75,7 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Sunglasses",
     "attachmentCost": "60",
-    "attachmentPosition": "-2px",
+    "attachmentPosition": "-10px",
     "attachmentScale": "52%",
     "attachmentType": "Face"
   },
@@ -85,7 +85,7 @@
     "attachmentRequiredRank": "Diamond",
     "attachmentName": "Sunglasses",
     "attachmentCost": "40",
-    "attachmentPosition": "-2px",
+    "attachmentPosition": "-3.5%",
     "attachmentScale": "52%",
     "attachmentType": "Face"
   },
@@ -95,7 +95,7 @@
     "attachmentRequiredRank": "Diamond",
     "attachmentName": "Sunglasses",
     "attachmentCost": "60",
-    "attachmentPosition": "10%",
+    "attachmentPosition": "-3.5%",
     "attachmentScale": "52%",
     "attachmentType": "Face"
   },
@@ -275,8 +275,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Blue Beanie",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-32%",
+    "attachmentScale": "40%",
     "attachmentType": "Head"
   },
   {
@@ -285,8 +285,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Golden Beanie",
     "attachmentCost": "40",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-32%",
+    "attachmentScale": "40%",
     "attachmentType": "Head"
   },
   {
@@ -295,8 +295,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Green Beanie",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-32%",
+    "attachmentScale": "40%",
     "attachmentType": "Head"
   },
   {
@@ -305,8 +305,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Pink Beanie",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-32%",
+    "attachmentScale": "40%",
     "attachmentType": "Head"
   },
   {
@@ -315,8 +315,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Purple Beanie",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-32%",
+    "attachmentScale": "40%",
     "attachmentType": "Head"
   },
   {
@@ -325,8 +325,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Red Beanie",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-32%",
+    "attachmentScale": "40%",
     "attachmentType": "Head"
   },
   {
@@ -335,8 +335,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Black Cap",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
     "attachmentType": "Head"
   },
   {
@@ -345,8 +345,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Blue Cap",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
     "attachmentType": "Head"
   },
   {
@@ -355,8 +355,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Golden Cap",
     "attachmentCost": "40",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
     "attachmentType": "Head"
   },
   {
@@ -365,8 +365,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Green Cap",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
     "attachmentType": "Head"
   },
   {
@@ -375,8 +375,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Pink Cap",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
     "attachmentType": "Head"
   },
   {
@@ -385,8 +385,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Red Cap",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
     "attachmentType": "Head"
   },
   {
@@ -395,8 +395,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "White Cap",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
     "attachmentType": "Head"
   },
   {
@@ -405,8 +405,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Yellow Cap",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
     "attachmentType": "Head"
   },
   {
@@ -415,8 +415,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Golden Crown",
     "attachmentCost": "100",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "55%",
     "attachmentType": "Head"
   },
   {
@@ -425,8 +425,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Graduation Hat",
     "attachmentCost": "40",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "40%",
     "attachmentType": "Head"
   },
   {
@@ -434,9 +434,9 @@
     "imgPath": "tophat_golden.png",
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Golden Top Hat",
-    "attachmentCost": "40",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-22%",
+    "attachmentScale": "55%",
+    "attachmentCost": "50",
     "attachmentType": "Head"
   },
   {
@@ -445,8 +445,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Tiny Tophat",
     "attachmentCost": "40",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-18%",
+    "attachmentScale": "30%",
     "attachmentType": "Head"
   },
   {
@@ -455,8 +455,8 @@
     "attachmentRequiredRank": "Diamond",
     "attachmentName": "Black Beanie",
     "attachmentCost": "40",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-32%",
+    "attachmentScale": "40%",
     "attachmentType": "Head"
   },
   {
@@ -465,8 +465,8 @@
     "attachmentRequiredRank": "Diamond",
     "attachmentName": "Diamond Beanie",
     "attachmentCost": "50",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-32%",
+    "attachmentScale": "40%",
     "attachmentType": "Head"
   },
   {
@@ -475,8 +475,8 @@
     "attachmentRequiredRank": "Diamond",
     "attachmentName": "White Beanie",
     "attachmentCost": "40",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-32%",
+    "attachmentScale": "40%",
     "attachmentType": "Head"
   },
   {
@@ -485,8 +485,8 @@
     "attachmentRequiredRank": "Diamond",
     "attachmentName": "Diamond Cap",
     "attachmentCost": "50",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "50%",
     "attachmentType": "Head"
   },
   {
@@ -495,8 +495,8 @@
     "attachmentRequiredRank": "Diamond",
     "attachmentName": "Diamond Crown",
     "attachmentCost": "100",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-28%",
+    "attachmentScale": "55%",
     "attachmentType": "Head"
   },
   {
@@ -505,8 +505,8 @@
     "attachmentRequiredRank": "Diamond",
     "attachmentName": "Propeller Hat",
     "attachmentCost": "60",
-    "attachmentPosition": "10%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "-32%",
+    "attachmentScale": "50%",
     "attachmentType": "Head"
   },
   {
@@ -555,8 +555,8 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Boots",
     "attachmentCost": "40",
-    "attachmentPosition": "93%",
-    "attachmentScale": "100%",
+    "attachmentPosition": "75%",
+    "attachmentScale": "95%",
     "attachmentType": "Feet"
   },
   {
@@ -605,9 +605,9 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Golden Sneakers",
     "attachmentCost": "60",
-    "attachmentPosition": "10%",
+    "attachmentPosition": "93%",
     "attachmentScale": "100%",
-    "attachmentType": "Head"
+    "attachmentType": "Feet"
   },
   {
     "configID": "62",
@@ -615,9 +615,9 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Pink Sneakers",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
+    "attachmentPosition": "93%",
     "attachmentScale": "100%",
-    "attachmentType": "Head"
+    "attachmentType": "Feet"
   },
   {
     "configID": "63",
@@ -625,9 +625,9 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Purple Sneakers",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
+    "attachmentPosition": "93%",
     "attachmentScale": "100%",
-    "attachmentType": "Head"
+    "attachmentType": "Feet"
   },
   {
     "configID": "64",
@@ -635,9 +635,9 @@
     "attachmentRequiredRank": "Golden",
     "attachmentName": "Yellow Sneakers",
     "attachmentCost": "30",
-    "attachmentPosition": "10%",
+    "attachmentPosition": "93%",
     "attachmentScale": "100%",
-    "attachmentType": "Head"
+    "attachmentType": "Feet"
   },
   {
     "configID": "65",
@@ -645,9 +645,9 @@
     "attachmentRequiredRank": "Diamond",
     "attachmentName": "Black Sneakers",
     "attachmentCost": "40",
-    "attachmentPosition": "10%",
+    "attachmentPosition": "93%",
     "attachmentScale": "100%",
-    "attachmentType": "Head"
+    "attachmentType": "Feet"
   },
   {
     "configID": "66",
@@ -655,9 +655,9 @@
     "attachmentRequiredRank": "Diamond",
     "attachmentName": "Diamond Sneakers",
     "attachmentCost": "60",
-    "attachmentPosition": "10%",
+    "attachmentPosition": "93%",
     "attachmentScale": "100%",
-    "attachmentType": "Head"
+    "attachmentType": "Feet"
   },
   {
     "configID": "67",
@@ -665,8 +665,8 @@
     "attachmentRequiredRank": "Diamond",
     "attachmentName": "White Sneakers",
     "attachmentCost": "40",
-    "attachmentPosition": "10%",
+    "attachmentPosition": "93%",
     "attachmentScale": "100%",
-    "attachmentType": "Head"
+    "attachmentType": "Feet"
   }
-] 
+]

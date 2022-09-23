@@ -19,6 +19,7 @@ const PostPage: NextPage = () => {
   const [successPopups, setSuccessPopups] = useState<Array<string>>([]);
   const [alerts, setAlerts] = useState<Array<{ message: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }>, input?: { placeholder?: string } }>>([]);
   const [attachmentPreviews, setAttachmentPreviews] = useState<Array<{ userBot?: BotType, userCoins?: number, attachment: BotAttachmentType }>>([]);
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [showAttachments, setShowAttachments] = useState(false);
   const router = useRouter();
 
@@ -53,6 +54,13 @@ const PostPage: NextPage = () => {
     auth();
   }, []);
 
+  useEffect(() => {
+    setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    window.onresize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    }
+  }, []);
+
   return (
     <>
       <Head>
@@ -77,7 +85,7 @@ const PostPage: NextPage = () => {
       <Sidebar categories={getSidebarPropsWithOption("Account")} onToggle={(value) => setSidebarCollapsed(value)} />
       <Nav loggedIn={loggedIn} account={loggedIn ? account : null} /> 
       {attachmentPreviews.map((preview, i) =>
-        <BotAttachmentPreview attachment={preview.attachment} key={i} />)}
+        <BotAttachmentPreview userID={account?.id || ""} attachment={preview.attachment} key={i} />)}
 
       <div className={styles.container} data-collapsed={sidebarCollapsed}>
         <div className={styles.infoTop}>
@@ -98,8 +106,23 @@ const PostPage: NextPage = () => {
                 : <></>)}
           </div> :
           <div className={styles.userContainer}>
-            <div className={styles.botContainer}>
-              <img src="/bot.png" alt="ScrapBook Bot" />
+            <div className={styles.botContainer} style={{
+              width: windowSize.height / 3,
+              height: windowSize.height / 1.9
+            }}>
+              {account?.bot ?
+                <div className={styles.accountBotAttachments}>
+                  {(account.bot.attachments) ?
+                  ((account.bot.attachments || []) as Array<{ configID: string }>)
+                      .map((att: { configID: string }): BotAttachmentType => botAttachments.filter(a => a.configID === att?.configID)[0] as BotAttachmentType)
+                      .map((att: BotAttachmentType, i) => 
+                        <div className={styles.attachment} key={i} style={{
+                          top: att?.attachmentPosition || "0",
+                          transform: `scale(${att?.attachmentScale || "1"}) translateX(${att?.attachmentType === "Feet" ? "0" : att?.attachmentType === "Wrist" ? "380%" : "10px"})`,
+                        }}>
+                          <img src={`/attachments/${att?.attachmentRequiredRank || "Silver"}/${att?.imgPath || ""}`} />
+                        </div>) : <></>}
+                </div> : <></>}
             </div>
             <div className={styles.userInfoContainer}>
               <div className={styles.userInfo}>

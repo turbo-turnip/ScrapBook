@@ -198,7 +198,7 @@ model Comment {
 
 model BannedRefreshTokens {
   id           String @id @default(cuid())
-  refreshToken String @unique @db.VarChar(512)
+  refreshToken String @db.VarChar(512)
 
   @@map("banned_refresh_token")
 }

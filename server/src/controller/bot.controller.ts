@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { PrismaClient, User } from '@prisma/client';
 import { canAffordAttachment, getBotAttachment } from '../service/bot.service';
-import { authenticateUser } from '../service';
+import { authenticateUser, getUser } from '../service';
 import { log, LogType } from '../util/log.util';
 
 const prisma = new PrismaClient();
@@ -64,22 +64,19 @@ export const purchaseAttachment = async (req: Request, res: Response) => {
 // POST :8080/bot
 // Fetch a certain user's bot
 export const findBot = async (req: Request, res: Response) => {
-  const accessToken: string = req.body?.accessToken || "";
-  const refreshToken: string = req.body?.refreshToken || "";
-
-  const { success, response } = await authenticateUser(accessToken, refreshToken);
-  if (!success) {
-    log(LogType.ERROR, JSON.stringify(response));
-    res.status(400).json({ success, error: "Invalid account" });
+  const userID = req.body?.userID || "";
+  const account = await getUser("id", userID);
+  if (!account) {
+    res.status(400).json({ success: false, error: "Invalid account" });
     return;
   }
 
   const userBot = await prisma.bot.findFirst({
     where: {
-      user: { id: response.account.id }
+      user: { id: account.id }
     },
     include: { attachments: true }
   });
 
-  res.status(200).json({ success: true, ...response, userBot, coins: response.account.coins })
+  res.status(200).json({ success: true, userBot, coins: account.coins });
 }
