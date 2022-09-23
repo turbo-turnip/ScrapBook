@@ -210,11 +210,13 @@ model Folder {
   userID String
   user   User   @relation(fields: [userID], references: [id])
 }
+
 model BotAttachment {
-  id       String @id @default(cuid())
-  configID String @db.VarChar(255)
+  id       String  @id @default(cuid())
+  configID String  @db.VarChar(255)
   botID    String
-  bot      Bot    @relation(fields: [botID], references: [id])
+  main     Boolean @default(true)
+  bot      Bot     @relation(fields: [botID], references: [id])
 }
 
 model Bot {

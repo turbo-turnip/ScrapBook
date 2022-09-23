@@ -105,8 +105,8 @@ export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ attachment
 
         <h1>{attachment?.attachmentName || "Loading..."}</h1>
         <div className={styles.botPreview} style={{
-          width: windowSize.width / 3.78,
-          height: windowSize.width / 2.4
+          width: windowSize.width / 2.837,
+          height: windowSize.width / 1.8
         }}>
           <div className={styles.botAttachments}>
             {(attachment && userBot?.attachments) ?

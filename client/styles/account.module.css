@@ -24,7 +24,7 @@
 .botContainer {
   position: absolute;
   height: 75%;
-  top: 50%;
+  top: 56%;
   left: 50%;
   transform: translate(-50%, -50%);
   background: url(/bot.png);
@@ -312,5 +312,48 @@
 
   .attachmentsContainer {
     padding-top: 18vh;
+  }
+}
+
+@media (max-width: 830px), (max-height: 500px), (min-width: 1000px) {
+  .infoTop {
+    left: 0;
+    flex-direction: column;
+    gap: 1rem 0;
+    align-items: flex-start;
+    width: 200px;
+  }
+
+  .infoTop > * {
+    width: 100%;
+  }
+
+  .attachmentsContainer {
+    width: calc(100% - 200px);
+    position: absolute;
+    right: 0;
+    padding-top: 1rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .attachmentsContainer {
+    width: 100%;
+    position: relative;
+    padding-top: 10vh;
+  }
+
+  .infoTop {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    width: 100%;
+  }
+
+  .infoTop > * {
+    font-size: 0.8rem !important;
+    padding: 0.3rem 0.5rem;
+    text-align: center;
+    min-width: 80px;
   }
 }

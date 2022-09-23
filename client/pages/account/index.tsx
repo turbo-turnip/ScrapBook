@@ -10,6 +10,7 @@ import * as botAttachments from '../../util/botAttachments.json';
 import { BotAttachmentType } from "../../util/botAttachmentType";
 import { BotType } from "../../util/botType.util";
 import { BotAttachmentPreview } from "../../components/BotAttachmentPreview.component";
+import { findRankAffordableBotAttachments } from "../../util/findRankAffordableBotAttachments.util";
 
 const PostPage: NextPage = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -95,20 +96,18 @@ const PostPage: NextPage = () => {
         </div>
         {(showAttachments) ?
           <div className={styles.attachmentsContainer}>
-            {botAttachments.map((attachment, i) => 
-              attachment.attachmentRequiredRank === (account?.bot?.rank || "Silver") ? 
-                <div className={styles.botAttachment} onClick={() => showAttachmentBuyOptions(attachment as BotAttachmentType)} data-name={attachment.attachmentName} key={i} style={{
-                  opacity: (new Number(attachment.attachmentCost) > (account?.coins || 0)) ? "0.5" : "1",
-                }}>
-                  <img src={`/attachments/${attachment.attachmentRequiredRank}/${attachment.imgPath}`} />
-                  <h4>{attachment.attachmentCost}</h4>
-                </div> 
-                : <></>)}
+            {findRankAffordableBotAttachments((account?.bot?.rank || "Silver") as ("Silver"|"Golden"|"Diamond")).map((attachment, i) => 
+              <div className={styles.botAttachment} onClick={() => showAttachmentBuyOptions(attachment as BotAttachmentType)} data-name={attachment.attachmentName} key={i} style={{
+                opacity: (new Number(attachment.attachmentCost) > (account?.coins || 0)) ? "0.5" : "1",
+              }}>
+                <img src={`/attachments/${attachment.attachmentRequiredRank}/${attachment.imgPath}`} />
+                <h4>{attachment.attachmentCost}</h4>
+              </div>)}
           </div> :
           <div className={styles.userContainer}>
             <div className={styles.botContainer} style={{
-              width: windowSize.height / 3,
-              height: windowSize.height / 1.9
+              width: windowSize.height / 3.75,
+              height: windowSize.height / 2.375
             }}>
               {account?.bot ?
                 <div className={styles.accountBotAttachments}>
