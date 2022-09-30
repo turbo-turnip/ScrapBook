@@ -9,10 +9,12 @@ import styles from '../../styles/account.module.css';
 import * as botAttachments from '../../util/botAttachments.json';
 import { BotAttachmentType } from "../../util/botAttachmentType";
 import { BotType } from "../../util/botType.util";
-import { BotAttachmentPreview } from "../../components/BotAttachmentPreview.component";
+import { BotAttachmentPreview } from "../../components";
 import { findRankAffordableBotAttachments } from "../../util/findRankAffordableBotAttachments.util";
+import { findMultipleBotAttachments } from "../../util/findMultipleBotAttachments.util";
+import { findAttachment } from "../../util/findAttachment.util";
 
-const PostPage: NextPage = () => {
+const AccountPage: NextPage = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [account, setAccount] = useState<UserType|null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -22,6 +24,10 @@ const PostPage: NextPage = () => {
   const [attachmentPreviews, setAttachmentPreviews] = useState<Array<{ userBot?: BotType, userCoins?: number, attachment: BotAttachmentType }>>([]);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [showAttachments, setShowAttachments] = useState(false);
+  const [attachmentFaceSliderPos, setAttachmentFaceSliderPos] = useState(0);
+  const [attachmentHeadSliderPos, setAttachmentHeadSliderPos] = useState(0);
+  const [attachmentWristSliderPos, setAttachmentWristSliderPos] = useState(0);
+  const [attachmentFeetSliderPos, setAttachmentFeetSliderPos] = useState(0);
   const router = useRouter();
 
   const auth = async () => {
@@ -53,7 +59,26 @@ const PostPage: NextPage = () => {
 
   useEffect(() => {
     auth();
-  }, []);
+  }, [showAttachments]);
+
+  useEffect(() => {
+    if (account && account?.bot?.attachments) {
+      const currAttachments = account?.bot?.attachments?.map?.((att: any) => ({ main: att.main, ...findAttachment(att.configID) }));
+      const multipleFaceAttachments = findMultipleBotAttachments("Face", currAttachments || []) as Array<BotAttachmentType>;
+      const multipleHeadAttachments = findMultipleBotAttachments("Head", currAttachments || []) as Array<BotAttachmentType>;
+      const multipleWristAttachments = findMultipleBotAttachments("Wrist", currAttachments || []) as Array<BotAttachmentType>;
+      const multipleFeetAttachments = findMultipleBotAttachments("Feet", currAttachments || []) as Array<BotAttachmentType>;
+
+      if (multipleFaceAttachments)
+        setAttachmentFaceSliderPos(multipleFaceAttachments.findIndex(att => att.main) || 0);
+      if (multipleHeadAttachments)
+        setAttachmentHeadSliderPos(multipleHeadAttachments.findIndex(att => att.main) || 0);
+      if (multipleWristAttachments)
+        setAttachmentWristSliderPos(multipleWristAttachments.findIndex(att => att.main) || 0);
+      if (multipleFeetAttachments)
+        setAttachmentFeetSliderPos(multipleFeetAttachments.findIndex(att => att.main) || 0);
+    }
+  }, [account]);
 
   useEffect(() => {
     setWindowSize({ width: window.innerWidth, height: window.innerHeight });
@@ -86,7 +111,11 @@ const PostPage: NextPage = () => {
       <Sidebar categories={getSidebarPropsWithOption("Account")} onToggle={(value) => setSidebarCollapsed(value)} />
       <Nav loggedIn={loggedIn} account={loggedIn ? account : null} /> 
       {attachmentPreviews.map((preview, i) =>
-        <BotAttachmentPreview userID={account?.id || ""} attachment={preview.attachment} key={i} />)}
+        <BotAttachmentPreview 
+          userID={account?.id || ""} 
+          attachment={preview.attachment} 
+          setShowAttachments={setShowAttachments} 
+          key={i} />)}
 
       <div className={styles.container} data-collapsed={sidebarCollapsed}>
         <div className={styles.infoTop}>
@@ -94,15 +123,77 @@ const PostPage: NextPage = () => {
           <button onClick={() => setShowAttachments(prevState => !prevState)}>{showAttachments ? "View Bot" : "Shop"}</button>
           <div>{account?.bot?.rank || "Silver"} Rank</div>
         </div>
+        {(!showAttachments && findMultipleBotAttachments("Face", account?.bot?.attachments?.map?.((att) => findAttachment(att.configID)) || [])) &&
+          <div className={styles.slider} style={{
+            top: "27%"
+          }} onClick={() => {
+            const attachmentLength = (findMultipleBotAttachments("Face", account?.bot?.attachments?.map?.((att) => findAttachment(att.configID)) || []) as Array<BotAttachmentType>).length;
+
+            if (attachmentFaceSliderPos === attachmentLength - 1)
+              setAttachmentFaceSliderPos(0);
+            else
+              setAttachmentFaceSliderPos(prev => ++prev);
+          }}>
+            <div className={styles.sliderBtn} data-tooltip={`Switch face attachment`}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"><path stroke="#FF8A65" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" d="M8.91 19.92l6.52-6.52c.77-.77.77-2.03 0-2.8L8.91 4.08"></path></svg>
+            </div>
+          </div>}
+          {(!showAttachments && findMultipleBotAttachments("Head", account?.bot?.attachments?.map?.((att) => findAttachment(att.configID)) || [])) &&
+            <div className={styles.slider} style={{
+              top: "15%"
+            }} onClick={() => {
+              const attachmentLength = (findMultipleBotAttachments("Head", account?.bot?.attachments?.map?.((att) => findAttachment(att.configID)) || []) as Array<BotAttachmentType>).length;
+
+              if (attachmentHeadSliderPos === attachmentLength - 1)
+                setAttachmentHeadSliderPos(0);
+              else
+                setAttachmentHeadSliderPos(prev => ++prev);
+            }}>
+              <div className={styles.sliderBtn} data-tooltip={`Switch head attachment`}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"><path stroke="#FF8A65" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" d="M8.91 19.92l6.52-6.52c.77-.77.77-2.03 0-2.8L8.91 4.08"></path></svg>
+              </div>
+            </div>}
+            {(!showAttachments && findMultipleBotAttachments("Wrist", account?.bot?.attachments?.map?.((att) => findAttachment(att.configID)) || [])) &&
+              <div className={styles.slider} style={{
+                top: "53%"
+              }} onClick={() => {
+                const attachmentLength = (findMultipleBotAttachments("Wrist", account?.bot?.attachments?.map?.((att) => findAttachment(att.configID)) || []) as Array<BotAttachmentType>).length;
+
+                if (attachmentWristSliderPos === attachmentLength - 1)
+                  setAttachmentWristSliderPos(0);
+                else
+                  setAttachmentWristSliderPos(prev => ++prev);
+              }}>
+                <div className={styles.sliderBtn} data-tooltip={`Switch wrist attachment`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"><path stroke="#FF8A65" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" d="M8.91 19.92l6.52-6.52c.77-.77.77-2.03 0-2.8L8.91 4.08"></path></svg>
+                </div>
+              </div>}
+              {(!showAttachments && findMultipleBotAttachments("Feet", account?.bot?.attachments?.map?.((att) => findAttachment(att.configID)) || [])) &&
+                <div className={styles.slider} style={{
+                  top: "80%"
+                }} onClick={() => {
+                  const attachmentLength = (findMultipleBotAttachments("Feet", account?.bot?.attachments?.map?.((att) => findAttachment(att.configID)) || []) as Array<BotAttachmentType>).length;
+
+                  if (attachmentFeetSliderPos === attachmentLength - 1)
+                    setAttachmentFeetSliderPos(0);
+                  else
+                    setAttachmentFeetSliderPos(prev => ++prev);
+                }}>
+                  <div className={styles.sliderBtn} data-tooltip={`Switch feet attachment`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"><path stroke="#FF8A65" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" d="M8.91 19.92l6.52-6.52c.77-.77.77-2.03 0-2.8L8.91 4.08"></path></svg>
+                  </div>
+          </div>}
         {(showAttachments) ?
           <div className={styles.attachmentsContainer}>
-            {findRankAffordableBotAttachments((account?.bot?.rank || "Silver") as ("Silver"|"Golden"|"Diamond")).map((attachment, i) => 
-              <div className={styles.botAttachment} onClick={() => showAttachmentBuyOptions(attachment as BotAttachmentType)} data-name={attachment.attachmentName} key={i} style={{
-                opacity: (new Number(attachment.attachmentCost) > (account?.coins || 0)) ? "0.5" : "1",
-              }}>
-                <img src={`/attachments/${attachment.attachmentRequiredRank}/${attachment.imgPath}`} />
-                <h4>{attachment.attachmentCost}</h4>
-              </div>)}
+            {findRankAffordableBotAttachments((account?.bot?.rank || "Silver") as ("Silver"|"Golden"|"Diamond"))
+              .filter(attachment => !(account?.bot?.attachments || []).find(att => att.configID === attachment.configID))
+              .map((attachment, i) => 
+                <div className={styles.botAttachment} onClick={() => showAttachmentBuyOptions(attachment as BotAttachmentType)} data-name={attachment.attachmentName} key={i} style={{
+                  opacity: (new Number(attachment.attachmentCost) > (account?.coins || 0)) ? "0.5" : "1",
+                }}>
+                  <img src={`/attachments/${attachment.attachmentRequiredRank}/${attachment.imgPath}`} />
+                  <h4>{attachment.attachmentCost}</h4>
+                </div>)}
           </div> :
           <div className={styles.userContainer}>
             <div className={styles.botContainer} style={{
@@ -114,6 +205,21 @@ const PostPage: NextPage = () => {
                   {(account.bot.attachments) ?
                   ((account.bot.attachments || []) as Array<{ configID: string }>)
                       .map((att: { configID: string }): BotAttachmentType => botAttachments.filter(a => a.configID === att?.configID)[0] as BotAttachmentType)
+                      .filter(attachment => {
+                        const multipleAttachments = findMultipleBotAttachments(attachment.attachmentType as ("Face"|"Head"|"Wrist"|"Feet"), account?.bot?.attachments?.map?.((att) => findAttachment(att.configID)) || []);
+                        if (!multipleAttachments) return attachment;
+                        
+                        switch (attachment.attachmentType) {
+                          case "Face": 
+                            return (multipleAttachments[attachmentFaceSliderPos].configID === attachment.configID);
+                          case "Head": 
+                            return (multipleAttachments[attachmentHeadSliderPos].configID === attachment.configID);
+                          case "Wrist": 
+                            return (multipleAttachments[attachmentWristSliderPos].configID === attachment.configID);
+                          case "Feet": 
+                            return (multipleAttachments[attachmentFeetSliderPos].configID === attachment.configID);
+                        }
+                      })
                       .map((att: BotAttachmentType, i) => 
                         <div className={styles.attachment} key={i} style={{
                           top: att?.attachmentPosition || "0",
@@ -150,4 +256,4 @@ const PostPage: NextPage = () => {
   );
 }
 
-export default PostPage;
+export default AccountPage;

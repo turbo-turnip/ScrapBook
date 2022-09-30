@@ -7,4 +7,5 @@ export type BotAttachmentType = {
   attachmentPosition: string;
   attachmentScale: string;
   attachmentType: "Face"|"Head"|"Wrist"|"Feet";
+  main?: boolean;
 };

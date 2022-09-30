@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { PrismaClient, User } from '@prisma/client';
-import { canAffordAttachment, getBotAttachment } from '../service/bot.service';
+import { Prisma, PrismaClient, User } from '@prisma/client';
+import { canAffordAttachment, getAttachmentIDs, getBotAttachment, multipleAttachments } from '../service/bot.service';
 import { authenticateUser, getUser } from '../service';
 import { log, LogType } from '../util/log.util';
 
@@ -32,17 +32,43 @@ export const purchaseAttachment = async (req: Request, res: Response) => {
     return;
   }
 
-  const updatedBot = await prisma.bot.update({
+  
+  var updatedBot: any = await prisma.bot.update({
     where: { id: response.account.bot.id },
     data: {
       attachments: {
         create: {
-          configID: attachmentID
+          configID: attachmentID,
+          main: true
         }
       }
     },
     include: { attachments: true }
   });
+  
+  const multiplePurchasedAttachments = await multipleAttachments(attachment.attachmentType, updatedBot.attachments);
+
+  if (multiplePurchasedAttachments) {
+    const attachmentConfigIDs = await getAttachmentIDs(attachment.attachmentType);
+
+    await prisma.botAttachment.updateMany({
+      where: {
+        bot: { id: response.account.bot.id },
+        configID: {
+          in: attachmentConfigIDs,
+          not: attachmentID
+        }
+      },
+      data: {
+        main: false
+      }
+    });
+
+    updatedBot = await prisma.bot.findUnique({
+      where: { id: response.account.bot.id },
+      include: { attachments: true }
+    });
+  }
 
   await prisma.user.update({
     where: { id: response.account.id },

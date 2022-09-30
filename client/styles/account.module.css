@@ -289,6 +289,52 @@
   position: relative;
 }
 
+.slider {
+  position: absolute;
+  /* I can tell you are judging me, stop it. */
+  z-index: 10000000000000000000000000000000000;  
+  width: 100%;
+}
+
+.sliderBtn {
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  box-shadow: 0 0 4px 2px #0003;
+  cursor: pointer;
+  position: absolute;
+  right: 10%;
+  transition: 0.2s;
+}
+
+.sliderBtn::after {
+  content: attr(data-tooltip);
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  transform-origin: bottom center;
+  background: #fff;
+  width: max-content;
+  position: absolute;
+  padding: 0.5rem;
+  box-shadow: 0 4px 6px 1px #0006;
+  border-radius: 12px;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.sliderBtn:hover::after {
+  opacity: 1;
+  transform: translate(-50%, -125%) scale(1);
+}
+
+.sliderBtn:hover {
+  transform: translateY(-10px);
+}
+
 @media (min-width: 400px) {
   .container[data-collapsed="false"] {
     width: calc(100vw - 200px);

@@ -7,19 +7,26 @@ import * as botAttachments from '../util/botAttachments.json';
 import { requiredRankMet } from "../util/requiredRankMet.util";
 import { useRef } from "react";
 import { Popup, PopupType } from "./";
+import { findMultipleBotAttachments } from "../util/findMultipleBotAttachments.util";
+import { findAttachment } from "../util/findAttachment.util";
 
 interface BotAttachmentPreviewProps {
   attachment?: BotAttachmentType;
   userID: string;
+  setShowAttachments: (value: boolean) => void;
 }
 
-export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ attachment, userID }) => {
+export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ attachment, userID, setShowAttachments }) => {
   const previewRef = useRef<HTMLDivElement|null>(null);
   const [errorPopups, setErrorPopups] = useState<Array<string>>([]);
   const [successPopups, setSuccessPopups] = useState<Array<string>>([]);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [userBot, setUserBot] = useState<BotType|null>(null);
   const [coins, setCoins] = useState(0);
+  const [mainFaceAttachment, setMainFaceAttachment] = useState(0); 
+  const [mainHeadAttachment, setMainHeadAttachment] = useState(0); 
+  const [mainFeetAttachment, setMainFeetAttachment] = useState(0); 
+  const [mainWristAttachment, setMainWristAttachment] = useState(0); 
 
   const fetchBot = async () => {
     const req = await fetch(backendPath + "/bot", {
@@ -67,6 +74,7 @@ export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ attachment
           previewRef.current.style.display = "none";
 
         setSuccessPopups(prevState => [...prevState, res?.message || "Successfully purchased attachment!"]);
+        setShowAttachments(false);
       } else
         setErrorPopups(prevState => [...prevState, res?.error || "Something went wrong purchasing that attachment... Please try again"]);
     }
@@ -80,6 +88,25 @@ export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ attachment
       setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     }
   }, []);
+
+  useEffect(() => {
+    if (userBot && userBot?.attachments) {
+      const currAttachments = userBot.attachments.map((att: any) => ({ main: att.main, ...findAttachment(att.configID) }));
+      const multipleFaceAttachments = findMultipleBotAttachments("Face", currAttachments || []) as Array<BotAttachmentType>;
+      const multipleHeadAttachments = findMultipleBotAttachments("Head", currAttachments || []) as Array<BotAttachmentType>;
+      const multipleWristAttachments = findMultipleBotAttachments("Wrist", currAttachments || []) as Array<BotAttachmentType>;
+      const multipleFeetAttachments = findMultipleBotAttachments("Feet", currAttachments || []) as Array<BotAttachmentType>;
+
+      if (multipleFaceAttachments)
+        setMainFaceAttachment(multipleFaceAttachments.findIndex(att => att.main) || 0);
+      if (multipleHeadAttachments)
+        setMainHeadAttachment(multipleHeadAttachments.findIndex(att => att.main) || 0);
+      if (multipleWristAttachments)
+        setMainWristAttachment(multipleWristAttachments.findIndex(att => att.main) || 0);
+      if (multipleFeetAttachments)
+        setMainFeetAttachment(multipleFeetAttachments.findIndex(att => att.main) || 0);
+    }
+  }, [userBot]);
 
   return (
     <>
@@ -105,13 +132,28 @@ export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ attachment
 
         <h1>{attachment?.attachmentName || "Loading..."}</h1>
         <div className={styles.botPreview} style={{
-          width: windowSize.width / 2.837,
-          height: windowSize.width / 1.8
+          width: windowSize.height / 3.3,
+          height: windowSize.height / 2.1
         }}>
           <div className={styles.botAttachments}>
             {(attachment && userBot?.attachments) ?
               ((userBot.attachments || []) as Array<{ configID: string }>)
                   .map((att: { configID: string }): BotAttachmentType => botAttachments.filter(a => a.configID === att?.configID)[0] as BotAttachmentType)
+                  .filter((att: BotAttachmentType) => {
+                    const multipleAttachments = findMultipleBotAttachments(att.attachmentType as ("Face"|"Head"|"Wrist"|"Feet"), userBot?.attachments?.map?.((att) => findAttachment(att.configID)) || []);
+                    if (!multipleAttachments) return true;
+                    
+                    switch (att.attachmentType) {
+                      case "Face": 
+                        return (multipleAttachments[mainFaceAttachment].configID === att.configID);
+                      case "Head": 
+                        return (multipleAttachments[mainHeadAttachment].configID === att.configID);
+                      case "Wrist": 
+                        return (multipleAttachments[mainWristAttachment].configID === att.configID);
+                      case "Feet": 
+                        return (multipleAttachments[mainFeetAttachment].configID === att.configID);
+                    }
+                  })
                   .filter((att: BotAttachmentType) => att.attachmentType !== attachment.attachmentType)
                   .map((att: BotAttachmentType, i) => 
                     <div className={styles.attachment} key={i} style={{

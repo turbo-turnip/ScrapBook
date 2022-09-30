@@ -38,3 +38,42 @@ export const canAffordAttachment = (attachment: BotAttachmentType, user: any) =>
     } else res(false);
   });
 }
+
+export const multipleAttachments = (type: "Head"|"Face"|"Wrist"|"Feet", attachments: Array<BotAttachmentType>) => {
+  return new Promise<Array<BotAttachmentType>|false>(async (res) => {
+    let foundCount = 0;
+
+    for (let i = 0; i < attachments.length; i++) {
+      const attachment = await getBotAttachment(attachments[i].configID);
+      if (attachment?.attachmentType === type)
+        foundCount++;
+    }
+
+    if (foundCount < 2)
+      res(false);
+
+    let multipleAttachments: Array<BotAttachmentType> = [];
+    for (let i = 0; i < attachments.length; i++) {
+      const attachment = await getBotAttachment(attachments[i].configID);
+
+      if (attachment?.attachmentType === type)
+        multipleAttachments.push(attachment);
+    }
+
+    res(multipleAttachments);
+  });
+}
+
+export const getAttachmentIDs = (type: "Head"|"Face"|"Wrist"|"Feet") => {
+  return new Promise<Array<string>>(async (res) => {
+    const attachmentsConfigFile = await readFile(process.cwd() + "/src/config/botAttachments.config.json");
+    const botAttachments: Array<BotAttachmentType> = JSON.parse(attachmentsConfigFile.toString());
+
+    const filteredAttachments = botAttachments.filter(attachment => attachment.attachmentType === type);
+    botAttachments.forEach(attachment => {
+      console.log(attachment.attachmentType, type);
+    });
+
+    res(filteredAttachments.map(attachment => attachment.configID));
+  });
+}
