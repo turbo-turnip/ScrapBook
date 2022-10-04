@@ -115,6 +115,7 @@
   padding: 0.8rem;
   justify-content: space-between;
   width: 100%;
+  gap: 1rem;
 }
 
 .infoTop > * {
@@ -126,6 +127,9 @@
   width: 25%;
   min-width: 145px;
   max-width: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .infoTop > button {
@@ -352,7 +356,6 @@
 @media (max-width: 700px) {
   .infoTop {
     flex-wrap: wrap;
-    gap: 1rem;
     justify-content: center;
   }
 
@@ -365,7 +368,7 @@
   .infoTop {
     left: 0;
     flex-direction: column;
-    gap: 1rem 0;
+    gap: 1rem;
     align-items: flex-start;
     width: 200px;
   }
@@ -391,8 +394,8 @@
 
   .infoTop {
     flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-evenly;
+    flex-wrap: wrap;
+    justify-content: space-between;
     width: 100%;
   }
 
@@ -400,6 +403,10 @@
     font-size: 0.8rem !important;
     padding: 0.3rem 0.5rem;
     text-align: center;
-    min-width: 80px;
+    width: fit-content;
+  }
+
+  .infoTop button:first-of-type {
+    order: 1;
   }
 }

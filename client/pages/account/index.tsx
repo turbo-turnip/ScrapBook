@@ -28,6 +28,7 @@ const AccountPage: NextPage = () => {
   const [attachmentHeadSliderPos, setAttachmentHeadSliderPos] = useState(0);
   const [attachmentWristSliderPos, setAttachmentWristSliderPos] = useState(0);
   const [attachmentFeetSliderPos, setAttachmentFeetSliderPos] = useState(0);
+  const [attachmentsChanged, setAttachmentsChanged] = useState(false);
   const router = useRouter();
 
   const auth = async () => {
@@ -121,6 +122,55 @@ const AccountPage: NextPage = () => {
         <div className={styles.infoTop}>
           <div>{account?.coins || 0} Coins</div>
           <button onClick={() => setShowAttachments(prevState => !prevState)}>{showAttachments ? "View Bot" : "Shop"}</button>
+          {attachmentsChanged && <button style={{ fontSize: "1rem" }} onClick={() => {
+            const multipleHeadAttachments = (findMultipleBotAttachments("Head", account?.bot?.attachments?.map?.((att) => ({ ...findAttachment(att.configID), main: att?.main || false })) || []) as Array<BotAttachmentType>);
+            const multipleFaceAttachments = (findMultipleBotAttachments("Face", account?.bot?.attachments?.map?.((att) => ({ ...findAttachment(att.configID), main: att?.main || false })) || []) as Array<BotAttachmentType>);
+            const multipleWristAttachments = (findMultipleBotAttachments("Wrist", account?.bot?.attachments?.map?.((att) => ({ ...findAttachment(att.configID), main: att?.main || false })) || []) as Array<BotAttachmentType>);
+            const multipleFeetAttachments = (findMultipleBotAttachments("Feet", account?.bot?.attachments?.map?.((att) => ({ ...findAttachment(att.configID), main: att?.main || false })) || []) as Array<BotAttachmentType>);
+
+            const newAttachments: { [key: string]: BotAttachmentType|null } = {
+              newHeadAttachment: null,
+              newFaceAttachment: null,
+              newWristAttachment: null,
+              newFeetAttachment: null
+            };
+
+            if (multipleHeadAttachments) {
+              newAttachments.newHeadAttachment = multipleHeadAttachments[attachmentHeadSliderPos];
+              const mainHeadAttachment = multipleHeadAttachments.find(att => att.main) || { configID: "" };
+
+              if (mainHeadAttachment.configID === newAttachments.newHeadAttachment.configID)
+                newAttachments.newHeadAttachment = null;
+            }
+
+            if (multipleFaceAttachments) {
+              newAttachments.newFaceAttachment = multipleFaceAttachments[attachmentFaceSliderPos];
+
+              const mainFaceAttachment = multipleFaceAttachments.find(att => att.main) || { configID: "" };
+
+              if (mainFaceAttachment.configID === newAttachments.newFaceAttachment.configID)
+                newAttachments.newFaceAttachment = null;
+            }
+
+            if (multipleWristAttachments) {
+              newAttachments.newWristAttachment = multipleWristAttachments[attachmentWristSliderPos];
+
+              const mainWristAttachment = multipleWristAttachments.find(att => att.main) || { configID: "" };
+
+              if (mainWristAttachment.configID === newAttachments.newWristAttachment.configID)
+                newAttachments.newWristAttachment = null;
+            }
+
+            if (multipleFeetAttachments) {
+              newAttachments.newFeetAttachment = multipleFeetAttachments[attachmentFeetSliderPos];
+
+              const mainFeetAttachment = multipleFeetAttachments.find(att => att.main) || { configID: "" };
+
+              if (mainFeetAttachment.configID === newAttachments.newFeetAttachment.configID)
+                newAttachments.newFeetAttachment = null;
+            }
+            console.log(newAttachments);
+          }}>Save Attachments</button>}
           <div>{account?.bot?.rank || "Silver"} Rank</div>
         </div>
         {(!showAttachments && findMultipleBotAttachments("Face", account?.bot?.attachments?.map?.((att) => findAttachment(att.configID)) || [])) &&
@@ -133,6 +183,9 @@ const AccountPage: NextPage = () => {
               setAttachmentFaceSliderPos(0);
             else
               setAttachmentFaceSliderPos(prev => ++prev);
+
+            if (!attachmentsChanged)
+              setAttachmentsChanged(true);
           }}>
             <div className={styles.sliderBtn} data-tooltip={`Switch face attachment`}>
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"><path stroke="#FF8A65" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" d="M8.91 19.92l6.52-6.52c.77-.77.77-2.03 0-2.8L8.91 4.08"></path></svg>
@@ -148,6 +201,9 @@ const AccountPage: NextPage = () => {
                 setAttachmentHeadSliderPos(0);
               else
                 setAttachmentHeadSliderPos(prev => ++prev);
+              
+              if (!attachmentsChanged)
+                setAttachmentsChanged(true);
             }}>
               <div className={styles.sliderBtn} data-tooltip={`Switch head attachment`}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"><path stroke="#FF8A65" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" d="M8.91 19.92l6.52-6.52c.77-.77.77-2.03 0-2.8L8.91 4.08"></path></svg>
@@ -163,6 +219,9 @@ const AccountPage: NextPage = () => {
                   setAttachmentWristSliderPos(0);
                 else
                   setAttachmentWristSliderPos(prev => ++prev);
+
+                if (!attachmentsChanged)
+                  setAttachmentsChanged(true);
               }}>
                 <div className={styles.sliderBtn} data-tooltip={`Switch wrist attachment`}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"><path stroke="#FF8A65" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" d="M8.91 19.92l6.52-6.52c.77-.77.77-2.03 0-2.8L8.91 4.08"></path></svg>
@@ -178,6 +237,9 @@ const AccountPage: NextPage = () => {
                     setAttachmentFeetSliderPos(0);
                   else
                     setAttachmentFeetSliderPos(prev => ++prev);
+
+                  if (!attachmentsChanged)
+                    setAttachmentsChanged(true);
                 }}>
                   <div className={styles.sliderBtn} data-tooltip={`Switch feet attachment`}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"><path stroke="#FF8A65" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" d="M8.91 19.92l6.52-6.52c.77-.77.77-2.03 0-2.8L8.91 4.08"></path></svg>
@@ -236,7 +298,7 @@ const AccountPage: NextPage = () => {
                     <h1>{account.name}</h1>
                     {account?.details ? <h4>{account.details}</h4> : <></>}
                     <div>
-                      <h4>{account?.followers ? account.followers.length : "Loading..."} Follower{(account?.followers?.length || 0) != 1 && "s"} • {account?.communities ? account.communities.length : "Loading..."} Communit{(account?.communities?.length || 0) != 1 ? "ies" : "y"} • {account?.likes != null ? account?.likes : "Loading..."} Like{(account?.likes || 0) != 1 && "s"} • {account?.posts ? account.posts.length : "Loading..."} Post{(account?.posts?.length || 0) != 1 && "s"}</h4>
+                      <h4>{account?.followers ? account.followers.length : "Loading..."} Follower{(account?.followers?.length || 0) != 1 && "s"} • {account?.communities ? account.communities.length : "Loading..."} Communit{(account?.communities?.length || 0) != 1 ? "ies" : "y"} • {account?.posts ? account.posts.length : "Loading..."} Post{(account?.posts?.length || 0) != 1 && "s"} • {account?.likes != null ? account?.likes : "Loading..."} Like{(account?.likes || 0) != 1 && "s"}</h4>
                       {account?.suggestions ? 
                         (
                           <h4>
