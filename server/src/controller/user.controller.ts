@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { log, LogType } from '../util/log.util';
 import { hash, verify } from 'argon2';
 import { email } from '../util/email.util';
-import { userExists, getUser } from '../service';
+import { userExists, getUser, authenticateUser } from '../service';
 import { hashEmailCode } from '../util/hashCode.util';
 
 const prisma = new PrismaClient();
@@ -175,4 +175,75 @@ export const findUser = async (req: Request, res: Response) => {
   }
 
   res.status(200).json({ success: true, user: exists });
+}
+
+// POST :8080/users/rename
+export const renameUser = async (req: Request, res: Response) => {
+  const accessToken = req.body?.accessToken || "";
+  const refreshToken = req.body?.refreshToken || "";
+  const username = req.body?.name || "";
+  const password = req.body?.password || "";
+
+  const usernameAlreadyExists = await prisma.user.findFirst({
+    where: {
+      name: username
+    },
+    select: { id: true }
+  });
+
+  if ((usernameAlreadyExists || {})?.id) {
+    res.status(400).json({ success: false, error: "That username already exists, please try a different one ☹️" });
+    return;
+  }
+
+  const { success, response } = await authenticateUser(accessToken, refreshToken);
+  if (!success) {
+    log(LogType.ERROR, JSON.stringify(response));
+    res.status(400).json({ success, error: "Invalid account" });
+    return;
+  }
+
+  try {
+    const passwordCorrect = await verify(response.account.password, password);
+    if (!passwordCorrect) {
+      res.status(403).json({ success: false, error: "Invalid password" });
+      return;
+    }
+
+    await prisma.user.update({
+      where: { id: response.account.id },
+      data: {
+        name: username
+      }
+    });
+
+    const updatedUser = await prisma.user.findUnique({
+      where: { id: response.account.id },
+      include: {
+        interests: true,
+        blockedUsers: true,
+        communities: true,
+        posts: true,
+        followers: true,
+        friends: true,
+        messages: true,
+        openDMs: true,
+        bot: {
+          include: {
+            attachments: true
+          }
+        },
+        folders: {
+          include: {
+            posts: true
+          }
+        }
+      }
+    })
+
+    res.status(200).json({ success: true, message: "Successfully verified user", updatedUser, ...response });
+  } catch (err: any) {
+    log(LogType.ERROR, err);
+    res.status(500).json({ success: false, error: "An error occurred. Please refresh the page" });
+  }
 }

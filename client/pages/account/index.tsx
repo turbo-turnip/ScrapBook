@@ -58,6 +58,37 @@ const AccountPage: NextPage = () => {
     ]);
   }
 
+  const updateName = async (name: string, password: string) => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/users/rename", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        name, password
+      })
+    });
+    const res = await req.json();
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken || "");
+        localStorage.setItem("rt", res?.newRefreshToken || "");
+      }
+
+      setSuccessPopups(prevState => [...prevState, "Successfully updated name"]);
+      setAccount(res.updatedUser);
+      
+      return;
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
+      return;
+    }
+  }
+
   useEffect(() => {
     auth();
   }, [showAttachments]);
@@ -96,6 +127,12 @@ const AccountPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
       </Head>
 
+      {alerts.map((a, i) => 
+        <Alert 
+          message={a.message}
+          buttons={a.buttons}
+          input={a?.input}
+          key={i} />)}
       {errorPopups.map((errorPopup, i) =>
         <Popup 
           key={i}
@@ -122,7 +159,7 @@ const AccountPage: NextPage = () => {
         <div className={styles.infoTop}>
           <div>{account?.coins || 0} Coins</div>
           <button onClick={() => setShowAttachments(prevState => !prevState)}>{showAttachments ? "View Bot" : "Shop"}</button>
-          {attachmentsChanged && <button style={{ fontSize: "1rem" }} onClick={() => {
+          {(attachmentsChanged && !showAttachments) && <button style={{ fontSize: "1rem" }} onClick={async () => {
             const multipleHeadAttachments = (findMultipleBotAttachments("Head", account?.bot?.attachments?.map?.((att) => ({ ...findAttachment(att.configID), main: att?.main || false })) || []) as Array<BotAttachmentType>);
             const multipleFaceAttachments = (findMultipleBotAttachments("Face", account?.bot?.attachments?.map?.((att) => ({ ...findAttachment(att.configID), main: att?.main || false })) || []) as Array<BotAttachmentType>);
             const multipleWristAttachments = (findMultipleBotAttachments("Wrist", account?.bot?.attachments?.map?.((att) => ({ ...findAttachment(att.configID), main: att?.main || false })) || []) as Array<BotAttachmentType>);
@@ -169,7 +206,33 @@ const AccountPage: NextPage = () => {
               if (mainFeetAttachment.configID === newAttachments.newFeetAttachment.configID)
                 newAttachments.newFeetAttachment = null;
             }
-            console.log(newAttachments);
+
+            if (!newAttachments.newHeadAttachment && !newAttachments.newFaceAttachment && !newAttachments.newWristAttachment && !newAttachments.newFeetAttachment) return;
+
+            const accessToken = localStorage.getItem("at") || "";
+            const refreshToken = localStorage.getItem("rt") || "";
+            
+            const req = await fetch(backendPath + "/bot/saveAttachments", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                accessToken, refreshToken,
+                newAttachments
+              })
+            });
+            const res: ServerResponse = await req.json();
+            if (res.success) {
+              if (res.generateTokens) {
+                localStorage.setItem("at", res?.accessToken || "");
+                localStorage.setItem("rt", res?.refreshToken || "");
+              }
+        
+              setSuccessPopups(prevState => [...prevState, "Successfully saved attachments"]);
+            } else {
+              setErrorPopups(prevState => [...prevState, res?.message || "An error occurred. Please refresh the page and try again"]);
+            }
           }}>Save Attachments</button>}
           <div>{account?.bot?.rank || "Silver"} Rank</div>
         </div>
@@ -295,7 +358,38 @@ const AccountPage: NextPage = () => {
               <div className={styles.userInfo}>
                 {account ? (
                   <>
-                    <h1>{account.name}</h1>
+                    <h1 className={styles.accountName} onClick={() => {
+                      setAlerts(prevState => [...prevState, { 
+                        message: "Change your username", 
+                        input: { placeholder: "New username" },
+                        buttons: [
+                          { 
+                            message: "Update", 
+                            color: "var(--blue)",
+                            onClickInput: (name: string) => {
+                              setAlerts(prevState => [...prevState, {
+                                message: "Enter your password",
+                                input: { placeholder: "Password here..." },
+                                buttons: [
+                                  {
+                                    message: "Update name",
+                                    color: "var(--blue)",
+                                    onClickInput: (password: string) => {
+                                      updateName(name, password);
+                                    }
+                                  },
+                                  {
+                                    message: "Cancel",
+                                    color: "var(--orange)"
+                                  }
+                                ]
+                              }]);
+                            }
+                          },
+                          { message: "Cancel", color: "var(--orange)" }
+                        ] 
+                      }])
+                    }}>{account.name}</h1>
                     {account?.details ? <h4>{account.details}</h4> : <></>}
                     <div>
                       <h4>{account?.followers ? account.followers.length : "Loading..."} Follower{(account?.followers?.length || 0) != 1 && "s"} • {account?.communities ? account.communities.length : "Loading..."} Communit{(account?.communities?.length || 0) != 1 ? "ies" : "y"} • {account?.posts ? account.posts.length : "Loading..."} Post{(account?.posts?.length || 0) != 1 && "s"} • {account?.likes != null ? account?.likes : "Loading..."} Like{(account?.likes || 0) != 1 && "s"}</h4>

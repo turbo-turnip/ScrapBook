@@ -70,9 +70,6 @@ export const getAttachmentIDs = (type: "Head"|"Face"|"Wrist"|"Feet") => {
     const botAttachments: Array<BotAttachmentType> = JSON.parse(attachmentsConfigFile.toString());
 
     const filteredAttachments = botAttachments.filter(attachment => attachment.attachmentType === type);
-    botAttachments.forEach(attachment => {
-      console.log(attachment.attachmentType, type);
-    });
 
     res(filteredAttachments.map(attachment => attachment.configID));
   });

@@ -339,6 +339,36 @@
   transform: translateY(-10px);
 }
 
+.accountName {
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 0.2rem 1rem;
+  position: relative;
+  transition: 0.2s;
+}
+
+.accountName::before {
+  content: "✏️";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.5);
+  font-size: 1.5rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: 0.2s;
+}
+
+.accountName:hover {
+  border: 1px solid rgb(195, 195, 195);
+}
+
+.accountName:hover::before {
+  opacity: 1;
+  transform: translate(-150%, -50%) scale(1);
+}
+
 @media (min-width: 400px) {
   .container[data-collapsed="false"] {
     width: calc(100vw - 200px);

@@ -102,20 +102,23 @@ const PostPage: NextPage = () => {
         <Alert message={alert.message} buttons={alert.buttons} input={alert?.input} key={i} />)}
 
       <div className={styles.container} data-collapsed={sidebarCollapsed}>
-        <Post
-          account={account as UserType}
-          post={post}
-          showFolders={showFolders}
-          setShowFolders={(set: (folders: Array<boolean>) => Array<boolean>) => setShowFolders(set([showFolders])[0])}
-          showComments={showComments}
-          setShowComments={(set: (comments: Array<boolean>) => Array<boolean>) => setShowComments(set([showComments])[0])} 
-          index={0}
-          router={router}
-          userID={account?.id || ""}
-          setAlerts={setAlerts}
-          setErrorPopups={setErrorPopups}
-          setSuccessPopups={setSuccessPopups}
-          setCommunity={(set: CommunityType) => setPost(set.posts.find(communityPost => communityPost.id === post?.id))} />
+        {post ?
+          <Post
+            account={account as UserType}
+            post={post}
+            showFolders={showFolders}
+            setShowFolders={(set: (folders: Array<boolean>) => Array<boolean>) => setShowFolders(set([showFolders])[0])}
+            showComments={showComments}
+            setShowComments={(set: (comments: Array<boolean>) => Array<boolean>) => setShowComments(set([showComments])[0])} 
+            index={0}
+            router={router}
+            userID={account?.id || ""}
+            setAlerts={setAlerts}
+            setErrorPopups={setErrorPopups}
+            setSuccessPopups={setSuccessPopups}
+            setCommunity={(set: CommunityType) => setPost(set.posts.find(communityPost => communityPost.id === post?.id))}
+            actionPermissions={!!post.community.membersUser?.find(user => user.id === account?.id)?.id} /> 
+          : <h1>Loading...</h1>}
       </div>
     </>
   );
