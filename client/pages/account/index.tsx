@@ -20,7 +20,7 @@ const AccountPage: NextPage = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [errorPopups, setErrorPopups] = useState<Array<string>>([]);
   const [successPopups, setSuccessPopups] = useState<Array<string>>([]);
-  const [alerts, setAlerts] = useState<Array<{ message: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }>, input?: { placeholder?: string } }>>([]);
+  const [alerts, setAlerts] = useState<Array<{ message: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }>, textArea?: { placeholder?: string}, input?: { placeholder?: string } }>>([]);
   const [attachmentPreviews, setAttachmentPreviews] = useState<Array<{ userBot?: BotType, userCoins?: number, attachment: BotAttachmentType }>>([]);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [showAttachments, setShowAttachments] = useState(false);
@@ -81,7 +81,38 @@ const AccountPage: NextPage = () => {
 
       setSuccessPopups(prevState => [...prevState, "Successfully updated name"]);
       setAccount(res.updatedUser);
-      
+
+      return;
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
+      return;
+    }
+  }
+
+  const updateDetails = async (details: string, password: string) => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/users/updateDetails", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        details, password
+      })
+    });
+    const res = await req.json();
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken || "");
+        localStorage.setItem("rt", res?.newRefreshToken || "");
+      }
+
+      setSuccessPopups(prevState => [...prevState, "Successfully updated details"]);
+      setAccount(res.updatedUser);
+
       return;
     } else {
       setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
@@ -132,6 +163,7 @@ const AccountPage: NextPage = () => {
           message={a.message}
           buttons={a.buttons}
           input={a?.input}
+          textArea={a?.textArea}
           key={i} />)}
       {errorPopups.map((errorPopup, i) =>
         <Popup 
@@ -390,7 +422,38 @@ const AccountPage: NextPage = () => {
                         ] 
                       }])
                     }}>{account.name}</h1>
-                    {account?.details ? <h4>{account.details}</h4> : <></>}
+                    <h4 onClick={() => {
+                      setAlerts(prevState => [...prevState, { 
+                        message: "Change your user details", 
+                        textArea: { placeholder: "What do you want people to know about you? 🤔", value: account.details || "" },
+                        buttons: [
+                          { 
+                            message: "Submit", 
+                            color: "var(--blue)",
+                            onClickTextarea: (details: string) => {
+                              setAlerts(prevState => [...prevState, {
+                                message: "Enter your password",
+                                input: { placeholder: "Password here..." },
+                                buttons: [
+                                  {
+                                    message: "Submit",
+                                    color: "var(--blue)",
+                                    onClickInput: (password: string) => {
+                                      updateDetails(details, password);
+                                    }
+                                  },
+                                  {
+                                    message: "Cancel",
+                                    color: "var(--orange)"
+                                  }
+                                ]
+                              }]);
+                            }
+                          },
+                          { message: "Cancel", color: "var(--orange)" }
+                        ] 
+                      }])
+                    }} className={styles.accountDetails}>{account?.details ? account.details : "No details. Click to add"}</h4>
                     <div>
                       <h4>{account?.followers ? account.followers.length : "Loading..."} Follower{(account?.followers?.length || 0) != 1 && "s"} • {account?.communities ? account.communities.length : "Loading..."} Communit{(account?.communities?.length || 0) != 1 ? "ies" : "y"} • {account?.posts ? account.posts.length : "Loading..."} Post{(account?.posts?.length || 0) != 1 && "s"} • {account?.likes != null ? account?.likes : "Loading..."} Like{(account?.likes || 0) != 1 && "s"}</h4>
                       {account?.suggestions ? 

@@ -178,6 +178,7 @@ export const findUser = async (req: Request, res: Response) => {
 }
 
 // POST :8080/users/rename
+// Rename a user
 export const renameUser = async (req: Request, res: Response) => {
   const accessToken = req.body?.accessToken || "";
   const refreshToken = req.body?.refreshToken || "";
@@ -241,7 +242,67 @@ export const renameUser = async (req: Request, res: Response) => {
       }
     })
 
-    res.status(200).json({ success: true, message: "Successfully verified user", updatedUser, ...response });
+    res.status(200).json({ success: true, message: "Successfully renamed user", updatedUser, ...response });
+  } catch (err: any) {
+    log(LogType.ERROR, err);
+    res.status(500).json({ success: false, error: "An error occurred. Please refresh the page" });
+  }
+}
+
+// POST :8080/users/updateDetails
+// Update a user's details
+export const updateDetails = async (req: Request, res: Response) => {
+  const accessToken = req.body?.accessToken || "";
+  const refreshToken = req.body?.refreshToken || "";
+  const details = req.body?.details || "";
+  const password = req.body?.password || "";
+
+  const { success, response } = await authenticateUser(accessToken, refreshToken);
+  if (!success) {
+    log(LogType.ERROR, JSON.stringify(response));
+    res.status(400).json({ success, error: "Invalid account" });
+    return;
+  }
+
+  try {
+    const passwordCorrect = await verify(response.account.password, password);
+    if (!passwordCorrect) {
+      res.status(403).json({ success: false, error: "Invalid password" });
+      return;
+    }
+
+    await prisma.user.update({
+      where: { id: response.account.id },
+      data: {
+        details
+      }
+    });
+
+    const updatedUser = await prisma.user.findUnique({
+      where: { id: response.account.id },
+      include: {
+        interests: true,
+        blockedUsers: true,
+        communities: true,
+        posts: true,
+        followers: true,
+        friends: true,
+        messages: true,
+        openDMs: true,
+        bot: {
+          include: {
+            attachments: true
+          }
+        },
+        folders: {
+          include: {
+            posts: true
+          }
+        }
+      }
+    })
+
+    res.status(200).json({ success: true, message: "Successfully updated details", updatedUser, ...response });
   } catch (err: any) {
     log(LogType.ERROR, err);
     res.status(500).json({ success: false, error: "An error occurred. Please refresh the page" });

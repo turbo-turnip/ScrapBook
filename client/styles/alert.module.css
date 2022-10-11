@@ -1,5 +1,5 @@
 .alert {
-  width: 90vw;
+  width: 95vw;
   max-width: 400px;
   position: fixed;
   left: 50%;
@@ -8,7 +8,7 @@
   opacity: 0;
   background: var(--white);
   box-shadow: 0 0 0 200vw #000c;
-  z-index: 1000000000000000;
+  z-index: 1000000;
   border-radius: 20px;
   padding: 1rem;
   transition: 0.5s;
@@ -42,4 +42,15 @@
   border-radius: 6px;
   padding: 0.2rem 0.8rem;
   margin-bottom: 1rem;
+}
+
+.textArea {
+  width: 100%;
+  resize: none;
+  height: 20vh;
+  font-family: var(--text-font);
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.5rem 0.8rem;
 }

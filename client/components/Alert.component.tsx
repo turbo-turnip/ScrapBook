@@ -4,15 +4,17 @@ import styles from '../styles/alert.module.css';
 interface AlertProps {
   message: string;
   input?: { placeholder?: string; };
+  textArea?: { placeholder?: string; value?: string; };
   buttons: Array<{
     message: string;
     onClickInput?: (input: string) => any;
+    onClickTextarea?: (input: string) => any;
     onClick?: () => any;
     color?: string;
   }>;
 }
 
-export const Alert: FC<AlertProps> = ({ message, input, buttons }) => {
+export const Alert: FC<AlertProps> = ({ message, input, textArea, buttons }) => {
   const alertRef = useRef<HTMLDivElement|null>(null);
 
   useEffect(() => {
@@ -28,6 +30,7 @@ export const Alert: FC<AlertProps> = ({ message, input, buttons }) => {
     <div className={styles.alert} ref={alertRef}>
       <h4 className={styles.message}>{message}</h4>
       {input && <input className={styles.input} placeholder={input?.placeholder || ""} />}
+      {textArea && <textarea className={styles.textArea} placeholder={textArea?.placeholder || ""} defaultValue={textArea?.value || ""}></textarea>}
       <div className={styles.btns}>
         {buttons.map((btn, i) =>
           <button className={styles.btn} key={i} onClick={(event) => {
@@ -40,7 +43,9 @@ export const Alert: FC<AlertProps> = ({ message, input, buttons }) => {
               }, 500);
             }
 
-            if (input && btn?.onClickInput)
+            if (textArea && btn?.onClickTextarea)
+              btn.onClickTextarea(((event.target as HTMLButtonElement)?.parentElement?.previousElementSibling as HTMLTextAreaElement)?.value || "");
+            else if (input && btn?.onClickInput)
               btn.onClickInput(((event.target as HTMLButtonElement)?.parentElement?.previousElementSibling as HTMLInputElement)?.value || "");
             else if (btn?.onClick) btn.onClick();
           }} style={{

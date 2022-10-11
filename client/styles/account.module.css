@@ -296,7 +296,7 @@
 .slider {
   position: absolute;
   /* I can tell you are judging me, stop it. */
-  z-index: 10000000000000000000000000000000000;  
+  z-index: 10;  
   width: 100%;
 }
 
@@ -339,7 +339,8 @@
   transform: translateY(-10px);
 }
 
-.accountName {
+.accountName,
+.accountDetails {
   cursor: pointer;
   border: 1px solid transparent;
   border-radius: 12px;
@@ -348,7 +349,8 @@
   transition: 0.2s;
 }
 
-.accountName::before {
+.accountName::before,
+.accountDetails::before {
   content: "✏️";
   position: absolute;
   left: 0;
@@ -360,11 +362,13 @@
   transition: 0.2s;
 }
 
-.accountName:hover {
+.accountName:hover,
+.accountDetails:hover {
   border: 1px solid rgb(195, 195, 195);
 }
 
-.accountName:hover::before {
+.accountName:hover::before,
+.accountDetails:hover::before {
   opacity: 1;
   transform: translate(-150%, -50%) scale(1);
 }
