@@ -6,3 +6,4 @@ export * from './Sidebar.component';
 export * from "./Alert.component";
 export * from "./Post.component";
 export * from "./BotAttachmentPreview.component";
+export * from "./InterestsPopup.component";

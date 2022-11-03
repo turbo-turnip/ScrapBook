@@ -6,9 +6,8 @@
   position: fixed;
   top: 0;
   width: 100vw;
-  height: 10vh;
-  max-height: 100px;
-  min-height: 50px;
+  height: 80px;
+  min-height: 5%;
   display: flex;
   justify-content: center;
   border-bottom: 1px solid var(--border);

@@ -308,3 +308,68 @@ export const updateDetails = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: "An error occurred. Please refresh the page" });
   }
 }
+
+// POST :8080/users/updateInterests
+// Update a user's interests
+export const updateInterests = async (req: Request, res: Response) => {
+  const accessToken = req.body?.accessToken || "";
+  const refreshToken = req.body?.refreshToken || "";
+  const interests: Array<string> = req.body?.interests || [];
+
+  const { success, response } = await authenticateUser(accessToken, refreshToken);
+  if (!success) {
+    log(LogType.ERROR, JSON.stringify(response));
+    res.status(400).json({ success, error: "Invalid account" });
+    return;
+  }
+
+  try {
+
+    const currInterests: Array<string> = response.account.interests.map((interest: any) => interest.name);
+    const removedInterests = currInterests.filter(int => !interests.includes(int));
+
+    await prisma.user.update({
+      where: { id: response.account.id },
+      data: {
+        interests: {
+          connectOrCreate: interests.map(int => {
+            return {
+              where: { name: int },
+              create: { name: int }
+            };
+          }),
+          disconnect: removedInterests.map(int => ({ name: int }))
+        }
+      }
+    });
+
+    const updatedUser = await prisma.user.findUnique({
+      where: { id: response.account.id },
+      include: {
+        interests: true,
+        blockedUsers: true,
+        communities: true,
+        posts: true,
+        followers: true,
+        friends: true,
+        messages: true,
+        openDMs: true,
+        bot: {
+          include: {
+            attachments: true
+          }
+        },
+        folders: {
+          include: {
+            posts: true
+          }
+        }
+      }
+    })
+
+    res.status(200).json({ success: true, message: "Successfully updated interests", updatedUser, ...response });
+  } catch (err: any) {
+    log(LogType.ERROR, err);
+    res.status(500).json({ success: false, error: "An error occurred. Please refresh the page and try again" });
+  }
+}

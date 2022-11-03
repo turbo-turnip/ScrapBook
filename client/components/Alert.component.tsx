@@ -3,6 +3,7 @@ import styles from '../styles/alert.module.css';
 
 interface AlertProps {
   message: string;
+  subheading?: string;
   input?: { placeholder?: string; };
   textArea?: { placeholder?: string; value?: string; };
   buttons: Array<{
@@ -14,7 +15,7 @@ interface AlertProps {
   }>;
 }
 
-export const Alert: FC<AlertProps> = ({ message, input, textArea, buttons }) => {
+export const Alert: FC<AlertProps> = ({ message, input, textArea, buttons, subheading }) => {
   const alertRef = useRef<HTMLDivElement|null>(null);
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export const Alert: FC<AlertProps> = ({ message, input, textArea, buttons }) => 
   return (
     <div className={styles.alert} ref={alertRef}>
       <h4 className={styles.message}>{message}</h4>
+      {subheading && <p className={styles.subheading}>{subheading || ""}</p>}
       {input && <input className={styles.input} placeholder={input?.placeholder || ""} />}
       {textArea && <textarea className={styles.textArea} placeholder={textArea?.placeholder || ""} defaultValue={textArea?.value || ""}></textarea>}
       <div className={styles.btns}>

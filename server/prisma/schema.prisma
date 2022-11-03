@@ -29,7 +29,7 @@ model User {
   messages         Message[]
   posts            Post[]
   openDMs          DM[]
-  interests        UserInterest[]
+  interests        UserInterest[]      
   folders          Folder[]
   bot              Bot?
 

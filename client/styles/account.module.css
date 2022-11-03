@@ -1,7 +1,7 @@
 .container {
   min-height: 50vh !important;
   position: relative;
-  top: 10vh;
+  top: 80px;
 }
 
 .container[data-collapsed="true"] {
@@ -295,9 +295,9 @@
 
 .slider {
   position: absolute;
-  /* I can tell you are judging me, stop it. */
-  z-index: 10;  
+  z-index: 100;  
   width: 100%;
+  z-index: 100;
 }
 
 .sliderBtn {
@@ -328,6 +328,7 @@
   border-radius: 12px;
   opacity: 0;
   transition: 0.3s;
+  pointer-events: none;
 }
 
 .sliderBtn:hover::after {
@@ -335,12 +336,9 @@
   transform: translate(-50%, -125%) scale(1);
 }
 
-.sliderBtn:hover {
-  transform: translateY(-10px);
-}
-
 .accountName,
-.accountDetails {
+.accountDetails,
+.accountInterests {
   cursor: pointer;
   border: 1px solid transparent;
   border-radius: 12px;
@@ -350,7 +348,8 @@
 }
 
 .accountName::before,
-.accountDetails::before {
+.accountDetails::before,
+.accountInterests::before {
   content: "✏️";
   position: absolute;
   left: 0;
@@ -363,12 +362,14 @@
 }
 
 .accountName:hover,
-.accountDetails:hover {
+.accountDetails:hover,
+.accountInterests:hover {
   border: 1px solid rgb(195, 195, 195);
 }
 
 .accountName:hover::before,
-.accountDetails:hover::before {
+.accountDetails:hover::before,
+.accountInterests:hover::before {
   opacity: 1;
   transform: translate(-150%, -50%) scale(1);
 }

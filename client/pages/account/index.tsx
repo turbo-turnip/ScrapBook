@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { UserType } from "../../util/userType.util";
-import { Nav, Popup, PopupType, Sidebar, Post, Alert } from "../../components";
+import { Nav, Popup, PopupType, Sidebar, InterestsPopup,  Alert } from "../../components";
 import { getSidebarPropsWithOption } from "../../util/homeSidebarProps.util";
 import styles from '../../styles/account.module.css';
 import * as botAttachments from '../../util/botAttachments.json';
@@ -20,7 +20,8 @@ const AccountPage: NextPage = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [errorPopups, setErrorPopups] = useState<Array<string>>([]);
   const [successPopups, setSuccessPopups] = useState<Array<string>>([]);
-  const [alerts, setAlerts] = useState<Array<{ message: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }>, textArea?: { placeholder?: string}, input?: { placeholder?: string } }>>([]);
+  const [alerts, setAlerts] = useState<Array<{ message: string, subheading?: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }>, textArea?: { placeholder?: string}, input?: { placeholder?: string } }>>([]);
+  const [interestsPopups, setInterestsPopups] = useState<Array<Array<string>>>([]);
   const [attachmentPreviews, setAttachmentPreviews] = useState<Array<{ userBot?: BotType, userCoins?: number, attachment: BotAttachmentType }>>([]);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [showAttachments, setShowAttachments] = useState(false);
@@ -80,6 +81,37 @@ const AccountPage: NextPage = () => {
       }
 
       setSuccessPopups(prevState => [...prevState, "Successfully updated name"]);
+      setAccount(res.updatedUser);
+
+      return;
+    } else {
+      setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
+      return;
+    }
+  }
+
+  const updateInterests = async (interests: Array<string>) => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/users/updateInterests", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+        interests
+      })
+    });
+    const res = await req.json();
+    if (res.success) {
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res?.newAccessToken || "");
+        localStorage.setItem("rt", res?.newRefreshToken || "");
+      }
+
+      setSuccessPopups(prevState => [...prevState, "Successfully updated interests"]);
       setAccount(res.updatedUser);
 
       return;
@@ -158,12 +190,19 @@ const AccountPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
       </Head>
 
+      {interestsPopups.map((popups, i) => 
+        <InterestsPopup
+          currInterests={popups}
+          suggestions={account?.suggestions || false}
+          updateInterests={updateInterests}
+          key={i} />)}
       {alerts.map((a, i) => 
         <Alert 
           message={a.message}
           buttons={a.buttons}
           input={a?.input}
           textArea={a?.textArea}
+          subheading={a?.subheading}
           key={i} />)}
       {errorPopups.map((errorPopup, i) =>
         <Popup 
@@ -261,6 +300,7 @@ const AccountPage: NextPage = () => {
                 localStorage.setItem("rt", res?.refreshToken || "");
               }
         
+              setAttachmentsChanged(false);
               setSuccessPopups(prevState => [...prevState, "Successfully saved attachments"]);
             } else {
               setErrorPopups(prevState => [...prevState, res?.message || "An error occurred. Please refresh the page and try again"]);
@@ -380,8 +420,9 @@ const AccountPage: NextPage = () => {
                       .map((att: BotAttachmentType, i) => 
                         <div className={styles.attachment} key={i} style={{
                           top: att?.attachmentPosition || "0",
-                          transform: `scale(${att?.attachmentScale || "1"}) translateX(${att?.attachmentType === "Feet" ? "0" : att?.attachmentType === "Wrist" ? "380%" : "10px"})`,
+                          transform: `scale(${parseFloat(att?.attachmentScale.replace("%", "")) / 100 || "1"}) translateX(${att?.attachmentType === "Feet" ? "0" : att?.attachmentType === "Wrist" ? "380%" : "10px"})`,
                         }}>
+                          {console.log(att?.attachmentScale)}
                           <img src={`/attachments/${att?.attachmentRequiredRank || "Silver"}/${att?.imgPath || ""}`} />
                         </div>) : <></>}
                 </div> : <></>}
@@ -456,14 +497,19 @@ const AccountPage: NextPage = () => {
                     }} className={styles.accountDetails}>{account?.details ? account.details : "No details. Click to add"}</h4>
                     <div>
                       <h4>{account?.followers ? account.followers.length : "Loading..."} Follower{(account?.followers?.length || 0) != 1 && "s"} • {account?.communities ? account.communities.length : "Loading..."} Communit{(account?.communities?.length || 0) != 1 ? "ies" : "y"} • {account?.posts ? account.posts.length : "Loading..."} Post{(account?.posts?.length || 0) != 1 && "s"} • {account?.likes != null ? account?.likes : "Loading..."} Like{(account?.likes || 0) != 1 && "s"}</h4>
-                      {account?.suggestions ? 
-                        (
-                          <h4>
+                      <h4 onClick={() => {
+                        setInterestsPopups(prevState => [...prevState, (account?.interests || []).map(i => i.name)])
+                      }} className={styles.accountInterests}>
+                        {account.suggestions ?
+                          <>
                             Interests:&nbsp;
                             {(account?.interests?.length) != 0 ?
-                              (account?.interests || []).map((interest, i) => interest.name).slice(0, (account?.interests?.length || 0) - 1).join(", ") + " and " + account?.interests?.[account?.interests?.length - 1].name : "Opt-in to ScrapBook suggestions to add your interests!"}
-                          </h4>
-                        ) : <></>}
+                              (account?.interests || [])
+                                .map((interest, i) => interest.name)
+                                .slice(0, (account?.interests?.length || 0) - 1)
+                                .join(", ") + `${(account?.interests || []).length === 1 ? "" : " and "}` + account?.interests?.[account?.interests?.length - 1].name : "Opt-in to ScrapBook suggestions to add your interests!"}
+                          </> : <h4>Opt-in to ScrapBook Suggestions to add your interests</h4>}
+                      </h4>
                     </div>
                   </>
                 ) : <h1>Loading...</h1>}

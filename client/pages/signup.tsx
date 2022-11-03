@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Form, FieldType, Nav, Popup, PopupType } from "../components";
-import { queryInterests } from "../util/interests.util";
+import { queryLimitedInterests } from "../util/interests.util";
 
 const useForceUpdate = () => {
   const [ _, setValue ] = useState(0);
@@ -123,7 +123,7 @@ const SignUp: NextPage = () => {
             onChange: (event) => { 
               const target: HTMLInputElement = event.target as any;
               const empty = !target.value || target.value == "";
-              empty ? setRelatedInterests([]) : setRelatedInterests(queryInterests(target.value.toLowerCase()));
+              empty ? setRelatedInterests([]) : setRelatedInterests(queryLimitedInterests(target.value.toLowerCase()));
             }
           } : { skip: true }
         ]}
