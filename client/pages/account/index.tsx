@@ -195,6 +195,10 @@ const AccountPage: NextPage = () => {
           currInterests={popups}
           suggestions={account?.suggestions || false}
           updateInterests={updateInterests}
+          setAlerts={setAlerts}
+          setSuccessPopups={setSuccessPopups}
+          setErrorPopups={setErrorPopups}
+          setAccount={setAccount}
           key={i} />)}
       {alerts.map((a, i) => 
         <Alert 

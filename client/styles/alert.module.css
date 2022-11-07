@@ -145,6 +145,7 @@
   display: flex;
   justify-content: space-around;
   column-gap: 1.5rem;
+  margin-top: 1rem;
 }
 
 .interest { background: var(--white); }
