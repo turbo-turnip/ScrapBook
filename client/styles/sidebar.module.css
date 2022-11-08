@@ -2,9 +2,11 @@
   position: fixed;
   right: 0;
   bottom: 0;
+  top: 80px;
   height: calc(90vh + 1rem);
-  width: 50vh;
-  max-width: 200px;
+  width: 20vw;
+  max-width: 300px;
+  min-width: 200px;
   border-left: 1px solid var(--border);
   transition: transform 0.2s ease;
   z-index: 1000;
@@ -67,18 +69,18 @@
 .collapse::after {
   content: "Hide sidebar ⛔️";
   position: absolute;
-  background: var(--tooltip-color);
+  background: var(--orange);
   left: 0;
   top: 60%;
   width: max-content;
   padding-right: 1rem;
-  padding: 0.25rem 1rem;
-  border-radius: 5px;
+  padding: 0.1rem 1rem;
+  border-radius: 12px;
   transform: translate(-110%, -50%);
-  color: var(--white);
   opacity: 0;
   transition: 0.2s;
   pointer-events: none;
+  font-family: var(--text-font)
 }
 
 .sidebar:hover .collapse {
@@ -122,4 +124,10 @@
 	100% {
 		transform: translate(-180%, calc(-50% + 0px));
 	}
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .collapse {
+    opacity: 1 !important;
+  }
 }

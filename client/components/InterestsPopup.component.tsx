@@ -18,6 +18,7 @@ export const InterestsPopup: FC<InterestsPopupProps> = ({ currInterests, suggest
   const interestsPopupRef = useRef<HTMLDivElement|null>(null);
   const [interests, setInterests] = useState<Array<string>>(currInterests);
   const [relatedInterests, setRelatedInterests] = useState<Array<string>>([]);
+  const [showSuggestionsInfo, setShowSuggestionsInfo] = useState(false);
 
   const optUserOut = async () => {
     const accessToken = localStorage.getItem("at") || "";
@@ -91,8 +92,9 @@ export const InterestsPopup: FC<InterestsPopupProps> = ({ currInterests, suggest
             ]
           }]);
         }}><span>Opt out of ScrapBook Suggestions</span> <span>➡️</span></button>}
-        {!suggestions && <button className={styles.info}>i</button>}
+        {!suggestions && <button className={styles.info} onClick={() => setShowSuggestionsInfo(prevState => !prevState)}>{showSuggestionsInfo ? "×" : "i"}</button>}
       </h4>
+      {showSuggestionsInfo && <h4>ScrapBook Suggestions recommends certain communities or people based on your interests. Opting-out is always an option.</h4>}
       <div className={styles.subheading}>
         {interests.map((interest, i) =>
           <div className={styles.interest} key={i}>{interest} <span onClick={() => {

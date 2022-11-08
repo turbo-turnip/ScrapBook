@@ -13,6 +13,7 @@ import { BotAttachmentPreview } from "../../components";
 import { findRankAffordableBotAttachments } from "../../util/findRankAffordableBotAttachments.util";
 import { findMultipleBotAttachments } from "../../util/findMultipleBotAttachments.util";
 import { findAttachment } from "../../util/findAttachment.util";
+import { useRef } from "react";
 
 const AccountPage: NextPage = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -30,6 +31,8 @@ const AccountPage: NextPage = () => {
   const [attachmentWristSliderPos, setAttachmentWristSliderPos] = useState(0);
   const [attachmentFeetSliderPos, setAttachmentFeetSliderPos] = useState(0);
   const [attachmentsChanged, setAttachmentsChanged] = useState(false);
+  const containerRef = useRef<HTMLDivElement|null>(null);
+  const sidebarRef = useRef<any>(null);
   const router = useRouter();
 
   const auth = async () => {
@@ -182,6 +185,32 @@ const AccountPage: NextPage = () => {
     }
   }, []);
 
+  useEffect(() => {
+    // Very inelegant, I'll either fix it later, or forget about it, which most likely sums up at least 80% of the codebase...
+    if (windowSize.width !== 0) {
+      if (windowSize.width >= 600 && containerRef.current) {
+        if (!sidebarCollapsed) {
+          const sidebar = containerRef.current?.previousElementSibling?.previousElementSibling;
+          if (sidebar) {
+            const sidebarClientRect = sidebar.getBoundingClientRect();
+            containerRef.current.style.width = `calc(100vw - ${sidebarClientRect.width}px)`;
+          }
+        } else {
+          containerRef.current.style.width = "calc(100vw - 15px)";
+        }
+      } else if (windowSize.width < 600 && containerRef.current) {
+        containerRef.current.style.width = "calc(100vw - 15px)";
+        if (!sidebarCollapsed) {
+          containerRef.current.style.filter = "blur(15px)";
+          containerRef.current.style.pointerEvents = "none";
+        } else {
+          containerRef.current.style.filter = "none";
+          containerRef.current.style.pointerEvents = "all";
+        }
+      }
+    }
+  }, [sidebarCollapsed, windowSize]);
+
   return (
     <>
       <Head>
@@ -230,7 +259,7 @@ const AccountPage: NextPage = () => {
           setShowAttachments={setShowAttachments} 
           key={i} />)}
 
-      <div className={styles.container} data-collapsed={sidebarCollapsed}>
+      <div className={styles.container} ref={containerRef}>
         <div className={styles.infoTop}>
           <div>{account?.coins || 0} Coins</div>
           <button onClick={() => setShowAttachments(prevState => !prevState)}>{showAttachments ? "View Bot" : "Shop"}</button>
@@ -500,7 +529,10 @@ const AccountPage: NextPage = () => {
                       }])
                     }} className={styles.accountDetails}>{account?.details ? account.details : "No details. Click to add"}</h4>
                     <div>
-                      <h4>{account?.followers ? account.followers.length : "Loading..."} Follower{(account?.followers?.length || 0) != 1 && "s"} • {account?.communities ? account.communities.length : "Loading..."} Communit{(account?.communities?.length || 0) != 1 ? "ies" : "y"} • {account?.posts ? account.posts.length : "Loading..."} Post{(account?.posts?.length || 0) != 1 && "s"} • {account?.likes != null ? account?.likes : "Loading..."} Like{(account?.likes || 0) != 1 && "s"}</h4>
+                      <span>{account?.followers ? account.followers.length : "Loading..."} Follower{(account?.followers?.length || 0) != 1 && "s"}</span>
+                      <span>{account?.communities ? account.communities.length : "Loading..."} Communit{(account?.communities?.length || 0) != 1 ? "ies" : "y"}</span>
+                      <span>{account?.posts ? account.posts.length : "Loading..."} Post{(account?.posts?.length || 0) != 1 && "s"}</span>
+                      <span>{account?.likes != null ? account?.likes : "Loading..."} Like{(account?.likes || 0) != 1 && "s"}</span>
                       <h4 onClick={() => {
                         setInterestsPopups(prevState => [...prevState, (account?.interests || []).map(i => i.name)])
                       }} className={styles.accountInterests}>

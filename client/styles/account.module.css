@@ -2,14 +2,7 @@
   min-height: 50vh !important;
   position: relative;
   top: 80px;
-}
-
-.container[data-collapsed="true"] {
-  width: calc(100vw - (200px - (200px * 0.91)));
-}
-
-.container[data-collapsed="false"] {
-  width: 50vw;
+  transition: filter 0.2s;
 }
 
 .userContainer {
@@ -66,15 +59,17 @@
 
 .userInfo > div {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  row-gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin-top: 0.5rem;
   text-align: center;
+  justify-content: center;
 }
 
-.userInfo > div > h4 {
-  max-width: 350px;
+.userInfo > div > span {
+  background: var(--border);
+  padding: 0.2rem 0.5rem;
+  border-radius: 8px;
 }
 
 .userInfo > div > h4:first-of-type {
@@ -374,12 +369,6 @@
   transform: translate(-150%, -50%) scale(1);
 }
 
-@media (min-width: 400px) {
-  .container[data-collapsed="false"] {
-    width: calc(100vw - 200px);
-  }
-}
-
 @media (max-width: 300px) {
   .botAttachment {
     width: 80%;
@@ -443,5 +432,15 @@
 
   .infoTop button:first-of-type {
     order: 1;
+  }
+}
+
+@media (max-width: 730px) {
+  .userInfoContainer {
+    width: 100%;
+  }
+
+  .userInfo {
+    width: 100%;
   }
 }
