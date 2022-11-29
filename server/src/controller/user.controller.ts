@@ -309,7 +309,7 @@ export const updateDetails = async (req: Request, res: Response) => {
   }
 }
 
-// POST :8080/user/updateInterests
+// POST :8080/users/updateInterests
 // Update a user's interests
 export const updateInterests = async (req: Request, res: Response) => {
   const accessToken = req.body?.accessToken || "";
@@ -324,6 +324,15 @@ export const updateInterests = async (req: Request, res: Response) => {
   }
 
   try {
+
+    if (!response.account.suggestions) {
+      await prisma.user.update({
+        where: { id: response.account.id },
+        data: {
+          suggestions: true
+        }
+      });
+    }
 
     const currInterests: Array<string> = response.account.interests.map((interest: any) => interest.name);
     const removedInterests = currInterests.filter(int => !interests.includes(int));

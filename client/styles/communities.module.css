@@ -174,7 +174,7 @@
 
 .topBar {
   position: relative;
-  top: 10vh;
+  top: 80px;
   display: flex;
   justify-content: center;
   padding: 1rem 0;
@@ -201,7 +201,7 @@
 
 .communityContainer {
   position: relative;
-  top: 10vh;
+  top: 80px;
 }
 
 .topBar[data-collapsed="true"],

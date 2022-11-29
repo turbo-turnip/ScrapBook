@@ -6,7 +6,7 @@ import { getSidebarPropsWithOption } from "../../util/homeSidebarProps.util";
 import React, { useState, useEffect } from "react";
 import { UserType } from "../../util/userType.util";
 import styles from '../../styles/communities.module.css';
-import { queryInterests } from "../../util/interests.util";
+import { queryInterests, queryLimitedInterests } from "../../util/interests.util";
 
 const useForceUpdate = () => {
   const [ _, setValue ] = useState(0);
@@ -122,7 +122,7 @@ const Create: NextPage = () => {
               onChange: (event) => { 
                 const target: HTMLInputElement = event.target as any;
                 const empty = !target.value || target.value == "";
-                empty ? setRelatedInterests([]) : setRelatedInterests(queryInterests(target.value.toLowerCase()));
+                empty ? setRelatedInterests([]) : setRelatedInterests(queryLimitedInterests(target.value.toLowerCase()));
               }
             }
           ]}

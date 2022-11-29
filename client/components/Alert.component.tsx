@@ -4,7 +4,7 @@ import styles from '../styles/alert.module.css';
 interface AlertProps {
   message: string;
   subheading?: string;
-  input?: { placeholder?: string; };
+  input?: { placeholder?: string; password?: boolean; };
   textArea?: { placeholder?: string; value?: string; };
   buttons: Array<{
     message: string;
@@ -31,7 +31,7 @@ export const Alert: FC<AlertProps> = ({ message, input, textArea, buttons, subhe
     <div className={styles.alert} ref={alertRef}>
       <h4 className={styles.message}>{message}</h4>
       {subheading && <p className={styles.subheading}>{subheading || ""}</p>}
-      {input && <input className={styles.input} placeholder={input?.placeholder || ""} />}
+      {input && <input className={styles.input} placeholder={input?.placeholder || ""} type={input?.password ? "password" : "text"} />}
       {textArea && <textarea className={styles.textArea} placeholder={textArea?.placeholder || ""} defaultValue={textArea?.value || ""}></textarea>}
       <div className={styles.btns}>
         {buttons.map((btn, i) =>

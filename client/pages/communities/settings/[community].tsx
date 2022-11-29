@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { queryInterests } from "../../../util/interests.util";
+import { queryInterests, queryLimitedInterests } from "../../../util/interests.util";
 import { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import { Alert, Form, Nav, Popup, PopupType, Post, Sidebar } from "../../../components";
@@ -174,6 +174,7 @@ const CommunitySettings: NextPage = () => {
       <div className={styles.createContainer} data-collapsed={sidebarCollapsed}>
         <Form 
           heading="Edit community"
+          cancelBtn={true}
           fields={[
             {
               label: "Community Name",
@@ -206,7 +207,7 @@ const CommunitySettings: NextPage = () => {
               onChange: (event) => { 
                 const target: HTMLInputElement = event.target as any;
                 const empty = !target.value || target.value == "";
-                empty ? setRelatedInterests([]) : setRelatedInterests(queryInterests(target.value.toLowerCase()));
+                empty ? setRelatedInterests([]) : setRelatedInterests(queryLimitedInterests(target.value.toLowerCase()));
               }
             }
           ]}

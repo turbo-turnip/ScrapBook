@@ -194,7 +194,7 @@
 .container,
 .folderViewContainer {
   position: relative;
-  top: 10vh;
+  top: 80px;
   padding: 1rem;
   display: flex;
   flex-direction: column;

@@ -158,13 +158,13 @@ export const BotAttachmentPreview: FC<BotAttachmentPreviewProps> = ({ attachment
                   .map((att: BotAttachmentType, i) => 
                     <div className={styles.attachment} key={i} style={{
                       top: att?.attachmentPosition || "0",
-                      transform: `scale(${att?.attachmentScale || "1"}) translateX(${att?.attachmentType === "Feet" ? "0" : att?.attachmentType === "Wrist" ? "380%" : "10px"})`,
+                      transform: `scale(${parseFloat(att?.attachmentScale.replace("%", "")) / 100 || "1"}) translateX(${att?.attachmentType === "Feet" ? "0" : att?.attachmentType === "Wrist" ? "380%" : "10px"})`,
                     }}>
                       <img src={`/attachments/${att?.attachmentRequiredRank || "Silver"}/${att?.imgPath || ""}`} />
                     </div>) : <></>}
             <div className={styles.attachment} style={{
               top: attachment?.attachmentPosition,
-              transform: `scale(${attachment?.attachmentScale || "1"}) translateX(${attachment?.attachmentType === "Feet" ? "0" : attachment?.attachmentType === "Wrist" ? "380%" : "10px"})`,
+              transform: `scale(${parseFloat((attachment?.attachmentScale.replace("%", "") as string)) / 100 || "1"}) translateX(${attachment?.attachmentType === "Feet" ? "0" : attachment?.attachmentType === "Wrist" ? "380%" : "10px"})`,
             }}>
               <img src={`/attachments/${attachment?.attachmentRequiredRank}/${attachment?.imgPath}`} />
             </div>

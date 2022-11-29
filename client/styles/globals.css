@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cabin:wght@400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind:wght@300&display=swap');
 
 :root {
   --heading-font: 'Nunito Sans';
   --subheading-font: 'Cabin';
-  --text-font: 'Lato';
+  --text-font: 'Hind';
   --blue: rgb(52, 138, 167);
   --darker-blue: rgb(38, 96, 116);
   --lighter-blue: rgb(173, 207, 219);

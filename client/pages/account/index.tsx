@@ -21,7 +21,7 @@ const AccountPage: NextPage = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [errorPopups, setErrorPopups] = useState<Array<string>>([]);
   const [successPopups, setSuccessPopups] = useState<Array<string>>([]);
-  const [alerts, setAlerts] = useState<Array<{ message: string, subheading?: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }>, textArea?: { placeholder?: string}, input?: { placeholder?: string } }>>([]);
+  const [alerts, setAlerts] = useState<Array<{ message: string, subheading?: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }>, textArea?: { placeholder?: string }, input?: { placeholder?: string, password?: boolean } }>>([]);
   const [interestsPopups, setInterestsPopups] = useState<Array<Array<string>>>([]);
   const [attachmentPreviews, setAttachmentPreviews] = useState<Array<{ userBot?: BotType, userCoins?: number, attachment: BotAttachmentType }>>([]);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
@@ -65,6 +65,11 @@ const AccountPage: NextPage = () => {
   const updateName = async (name: string, password: string) => {
     const accessToken = localStorage.getItem("at") || "";
     const refreshToken = localStorage.getItem("rt") || "";
+
+    if (name == "") {
+      setErrorPopups(prevState => [...prevState, "Invalid name"]);
+      return;
+    }
 
     const req = await fetch(backendPath + "/users/rename", {
       method: 'POST',
@@ -199,6 +204,7 @@ const AccountPage: NextPage = () => {
           containerRef.current.style.width = "calc(100vw - 15px)";
         }
       } else if (windowSize.width < 600 && containerRef.current) {
+        setSidebarCollapsed(true);
         containerRef.current.style.width = "calc(100vw - 15px)";
         if (!sidebarCollapsed) {
           containerRef.current.style.filter = "blur(15px)";
@@ -475,7 +481,7 @@ const AccountPage: NextPage = () => {
                             onClickInput: (name: string) => {
                               setAlerts(prevState => [...prevState, {
                                 message: "Enter your password",
-                                input: { placeholder: "Password here..." },
+                                input: { placeholder: "Password here...", password: true },
                                 buttons: [
                                   {
                                     message: "Update name",
@@ -507,7 +513,7 @@ const AccountPage: NextPage = () => {
                             onClickTextarea: (details: string) => {
                               setAlerts(prevState => [...prevState, {
                                 message: "Enter your password",
-                                input: { placeholder: "Password here..." },
+                                input: { placeholder: "Password here...", password: true },
                                 buttons: [
                                   {
                                     message: "Submit",

@@ -1,6 +1,7 @@
 import styles from '../styles/form.module.css';
 import Link from 'next/link';
 import { ChangeEvent, ChangeEventHandler, FC, MouseEventHandler } from "react";
+import { useRouter } from 'next/router';
 
 export enum FieldType {
   CHECKBOX = "checkbox",
@@ -12,6 +13,7 @@ export enum FieldType {
 
 interface FormProps {
   heading?: string;
+  cancelBtn?: boolean;
   submitHandler: (inputs: Array<any>, tags?: Array<any>) => void;
   fields: Array<{
     label?: string,
@@ -35,7 +37,9 @@ interface FormProps {
   }>;
 }
 
-export const Form: FC<FormProps> = ({ submitHandler, heading, fields, links, tags }) => {
+export const Form: FC<FormProps> = ({ submitHandler, heading, fields, links, tags, cancelBtn }) => {
+  const router = useRouter();
+
   return ( 
     <form className={styles.form} onSubmit={(event) => {
       event.preventDefault();
@@ -65,7 +69,10 @@ export const Form: FC<FormProps> = ({ submitHandler, heading, fields, links, tag
           <Link href={link.href}>{link.text}</Link>
         </div>)}
 
-      <button type="submit" className={styles.submit}>Submit</button>
+      {cancelBtn && <button className={styles.cancel} onClick={router.back}>Cancel</button>}
+      <button style={{
+        marginTop: cancelBtn ? "1rem" : "3rem"
+      }} type="submit" className={styles.submit}>Submit</button>
     </form>
   );
 }
