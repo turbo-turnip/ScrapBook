@@ -535,10 +535,12 @@ const AccountPage: NextPage = () => {
                       }])
                     }} className={styles.accountDetails}>{account?.details ? account.details : "No details. Click to add"}</h4>
                     <div>
-                      <span>{account?.followers ? account.followers.length : "Loading..."} Follower{(account?.followers?.length || 0) != 1 && "s"}</span>
-                      <span>{account?.communities ? account.communities.length : "Loading..."} Communit{(account?.communities?.length || 0) != 1 ? "ies" : "y"}</span>
-                      <span>{account?.posts ? account.posts.length : "Loading..."} Post{(account?.posts?.length || 0) != 1 && "s"}</span>
-                      <span>{account?.likes != null ? account?.likes : "Loading..."} Like{(account?.likes || 0) != 1 && "s"}</span>
+                      <div>
+                        <span>{account?.followers ? account.followers.length : "Loading..."} Follower{(account?.followers?.length || 0) != 1 && "s"}</span>
+                        <span>{account?.communities ? account.communities.length : "Loading..."} Communit{(account?.communities?.length || 0) != 1 ? "ies" : "y"}</span>
+                        <span>{account?.posts ? account.posts.length : "Loading..."} Post{(account?.posts?.length || 0) != 1 && "s"}</span>
+                        <span>{account?.likes != null ? account?.likes : "Loading..."} Like{(account?.likes || 0) != 1 && "s"}</span>
+                      </div>
                       <h4 onClick={() => {
                         setInterestsPopups(prevState => [...prevState, (account?.interests || []).map(i => i.name)])
                       }} className={styles.accountInterests}>

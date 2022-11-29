@@ -218,10 +218,12 @@ const UserPage: NextPage = () => {
                     <h1 className={styles.accountName}>{user.name}</h1>
                     <h4 className={styles.accountDetails}>{account?.details ? account.details : "This user doesn't have any personal details"}</h4>
                     <div>
-                      <span>{user?.followers ? user.followers.length : "Loading..."} Follower{(user?.followers?.length || 0) != 1 && "s"}</span>
-                      <span>{user?.communities ? user.communities.length : "Loading..."} Communit{(user?.communities?.length || 0) != 1 ? "ies" : "y"}</span>
-                      <span>{user?.posts ? user.posts.length : "Loading..."} Post{(user?.posts?.length || 0) != 1 && "s"}</span>
-                      <span>{user?.likes != null ? user?.likes : "Loading..."} Like{(user?.likes || 0) != 1 && "s"}</span>
+                      <div>
+                        <span>{user?.followers ? user.followers.length : "Loading..."} Follower{(user?.followers?.length || 0) != 1 && "s"}</span>
+                        <span>{user?.communities ? user.communities.length : "Loading..."} Communit{(user?.communities?.length || 0) != 1 ? "ies" : "y"}</span>
+                        <span>{user?.posts ? user.posts.length : "Loading..."} Post{(user?.posts?.length || 0) != 1 && "s"}</span>
+                        <span>{user?.likes != null ? user?.likes : "Loading..."} Like{(user?.likes || 0) != 1 && "s"}</span>
+                      </div>
                       <h4 className={styles.accountInterests}>
                         {user.suggestions ?
                           <>
@@ -247,7 +249,9 @@ const UserPage: NextPage = () => {
                   {(user.bot.attachments) ?
                   ((user.bot.attachments || []) as Array<{ configID: string }>)
                       .map((att: { configID: string }): BotAttachmentType => (user?.bot?.attachments || []).filter(a => a.configID === att?.configID)[0] as BotAttachmentType)
-                      .map(att => ({ ...botAttachments.find(iHaveRanOutOfVariableNamesForAttachmentsSoThisIsGoodEnough => iHaveRanOutOfVariableNamesForAttachmentsSoThisIsGoodEnough.configID === att.configID) as BotAttachmentType, main: att.main }) ?? null)
+                      .map(att => {
+                        return { ...botAttachments.find(iHaveRanOutOfVariableNamesForAttachmentsSoThisIsGoodEnough => iHaveRanOutOfVariableNamesForAttachmentsSoThisIsGoodEnough.configID === att.configID) as BotAttachmentType, main: att.main } ?? null;
+                      })
                       .filter(att => att)
                       .filter(attachment => {
                         const multipleAttachments = findMultipleBotAttachments(attachment.attachmentType as ("Face"|"Head"|"Wrist"|"Feet"), user?.bot?.attachments?.map?.((att) => findAttachment(att.configID)) || []);

@@ -60,16 +60,22 @@
 .userInfo > div {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
   text-align: center;
   justify-content: center;
+  flex-direction: column;
+  margin-top: 1rem;
 }
 
-.userInfo > div > span {
+.userInfo > div > div {
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.userInfo > div > div > span {
   background: var(--border);
   padding: 0.2rem 0.5rem;
   border-radius: 8px;
+  margin: 0.2rem;
 }
 
 .userInfo > div > h4:first-of-type {
