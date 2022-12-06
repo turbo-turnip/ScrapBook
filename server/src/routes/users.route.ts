@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { addUser, findUser, optUserOut, renameUser, sendVerificationEmail, updateDetails, updateInterests, verifyUser } from '../controller/user.controller';
+import { addUser, findUser, followUser, optUserOut, renameUser, sendVerificationEmail, updateDetails, updateInterests, verifyUser } from '../controller/user.controller';
 
 export const UserRouter = Router();
 
@@ -11,3 +11,4 @@ UserRouter.post('/rename', renameUser);
 UserRouter.post('/updateDetails', updateDetails);
 UserRouter.post('/updateInterests', updateInterests);
 UserRouter.post('/optOut', optUserOut);
+UserRouter.post('/follow', followUser);

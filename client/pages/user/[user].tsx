@@ -75,30 +75,37 @@ const UserPage: NextPage = () => {
     }
   }
 
-  // const followUser = async () => {
-  //   const path = new URL(window.location.href).pathname;
-  //   const user = decodeURIComponent(path.split("/")[2]);
-  //   const accessToken = localStorage.getItem("at") || "";
-  //   const refreshToken = localStorage.getItem("rt") || "";
+  const followUser = async () => {
+    const path = new URL(window.location.href).pathname;
+    const user = decodeURIComponent(path.split("/")[2]);
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
 
-  //   const req = await fetch(backendPath + "/users/follow", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ 
-  //       accessToken, refreshToken,
-  //       user
-  //     }),
-  //   });
-  //   const res = await req.json();
-  //   if (res.success) {
-      
-  //     return;
-  //   } else {
-      
-  //   }
-  // }
+    const req = await fetch(backendPath + "/users/follow", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ 
+        accessToken, refreshToken,
+        user
+      }),
+    });
+    const res = await req.json();
+    if (res.success) {
+      if (res.generateTokens) {
+        localStorage.setItem("at", res.newAccessToken);
+        localStorage.setItem("rt", res.newRefreshToken);
+      }
+
+      setUser(res.updatedUser);
+      setSuccessPopups(prevState => [...prevState, "Successfully followed " + user]);
+
+      return;
+    } else {
+      setErrorPopups(prevState => [...prevState, "An error occurred, please try again."]);
+    }
+  }
 
   useEffect(() => {
     auth();
@@ -207,6 +214,10 @@ const UserPage: NextPage = () => {
         <div className={styles.container} ref={containerRef}>
           <div className={styles.infoTop}>
             <div>{user?.coins || 0} Coins</div>
+            <button className={styles.follow} onClick={() => followUser()}>
+              {user?.followers &&
+                (user?.followers || []).find(user => user.followingUserID === account?.id) ? "Unfollow" : "Follow"}
+            </button>
             <div>{user?.bot?.rank || "Silver"} Rank</div>
           </div>
 

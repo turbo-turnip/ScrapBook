@@ -29,7 +29,7 @@ model User {
   messages         Message[]
   posts            Post[]
   openDMs          DM[]
-  interests        UserInterest[]      
+  interests        UserInterest[]
   folders          Folder[]
   bot              Bot?
 
@@ -37,12 +37,10 @@ model User {
 }
 
 model Follower {
-  id     String @id @default(cuid())
-  userID String
-  user   User   @relation(fields: [userID], references: [id])
-
-  @@index([userID], map: "follower_userID_fkey")
-  @@map("follower")
+  id              String @id @default(cuid())
+  followingUserID String
+  followerUserID  String
+  followerUser    User   @relation(fields: [followerUserID], references: [id])
 }
 
 model BlockedUser {

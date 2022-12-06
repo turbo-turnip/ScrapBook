@@ -119,15 +119,15 @@
   align-items: center;
 }
 
-.infoTop > button {
-  background: var(--darker-blue);
+.follow {
+  background: var(--orange);
   color: var(--white);
   font-size: 1.2rem;
   cursor: pointer;
   transition: 0.2s;
 }
 
-.infoTop > button:hover {
+.follow:hover {
   transform: scale(1.2);
 }
 

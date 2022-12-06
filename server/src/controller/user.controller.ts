@@ -309,7 +309,7 @@ export const updateDetails = async (req: Request, res: Response) => {
   }
 }
 
-// POST :8080/users/updateInterests
+// POST :8080/user/updateInterests
 // Update a user's interests
 export const updateInterests = async (req: Request, res: Response) => {
   const accessToken = req.body?.accessToken || "";
@@ -331,7 +331,7 @@ export const updateInterests = async (req: Request, res: Response) => {
         data: {
           suggestions: true
         }
-      });
+      })
     }
 
     const currInterests: Array<string> = response.account.interests.map((interest: any) => interest.name);
@@ -431,6 +431,68 @@ export const optUserOut = async (req: Request, res: Response) => {
         }
       }
     })
+
+    res.status(200).json({ success: true, message: "Successfully opted out", updatedUser, ...response });
+  } catch (err: any) {
+    log(LogType.ERROR, err);
+    res.status(500).json({ success: false, error: "An error occurred. Please refresh the page and try again" });
+  }
+}
+
+// POST :8080/user/follow
+// Opt a user out of scrapbook suggestions
+export const followUser = async (req: Request, res: Response) => {
+  const accessToken = req.body?.accessToken || "";
+  const refreshToken = req.body?.refreshToken || "";
+  const username = req.body?.user;
+
+  const { success, response } = await authenticateUser(accessToken, refreshToken);
+  if (!success) {
+    log(LogType.ERROR, JSON.stringify(response));
+    res.status(400).json({ success, error: "Invalid account" });
+    return;
+  }
+
+  try {
+    const userExists = await prisma.user.findFirst({
+      where: { name: username }
+    });
+
+    if (!userExists)
+      return res.status(400).json({ success: false, message: "Invalid user" });
+
+    await prisma.follower.create({
+      data: {
+        followingUserID: response.account.id,
+        followerUser: {
+          connect: { id: userExists.id }
+        }
+      }
+    });
+
+    const updatedUser = await prisma.user.findUnique({
+      where: { id: userExists.id },
+      include: {
+        interests: true,
+        blockedUsers: true,
+        communities: true,
+        posts: true,
+        followers: true,
+        friends: true,
+        messages: true,
+        openDMs: true,
+        bot: {
+          include: {
+            attachments: true
+          }
+        },
+        folders: {
+          include: {
+            posts: true
+          }
+        }
+      }
+    });
 
     res.status(200).json({ success: true, message: "Successfully opted out", updatedUser, ...response });
   } catch (err: any) {
