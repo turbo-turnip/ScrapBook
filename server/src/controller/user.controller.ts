@@ -461,14 +461,34 @@ export const followUser = async (req: Request, res: Response) => {
     if (!userExists)
       return res.status(400).json({ success: false, message: "Invalid user" });
 
-    await prisma.follower.create({
-      data: {
+    const followers = await prisma.follower.findFirst({
+      where: {
         followingUserID: response.account.id,
         followerUser: {
-          connect: { id: userExists.id }
+          id: userExists.id
         }
       }
     });
+
+    if (followers) {
+      await prisma.follower.deleteMany({
+        where: {
+          followingUserID: response.account.id,
+          followerUser: {
+            id: userExists.id
+          }
+        }
+      });
+    } else {
+      await prisma.follower.create({
+        data: {
+          followingUserID: response.account.id,
+          followerUser: {
+            connect: { id: userExists.id }
+          }
+        }
+      });
+    }
 
     const updatedUser = await prisma.user.findUnique({
       where: { id: userExists.id },
