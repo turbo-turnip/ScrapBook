@@ -503,7 +503,7 @@ export const followUser = async (req: Request, res: Response) => {
         openDMs: true,
         bot: {
           include: {
-            attachments: true
+            attachments: true 
           }
         },
         folders: {
@@ -514,7 +514,7 @@ export const followUser = async (req: Request, res: Response) => {
       }
     });
 
-    res.status(200).json({ success: true, message: "Successfully opted out", updatedUser, ...response });
+    res.status(200).json({ success: true, message: "Successfully opted out", updatedUser, followed: !followers, ...response });
   } catch (err: any) {
     log(LogType.ERROR, err);
     res.status(500).json({ success: false, error: "An error occurred. Please refresh the page and try again" });

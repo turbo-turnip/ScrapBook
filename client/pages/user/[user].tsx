@@ -99,7 +99,7 @@ const UserPage: NextPage = () => {
       }
 
       setUser(res.updatedUser);
-      setSuccessPopups(prevState => [...prevState, "Successfully followed " + user]);
+      setSuccessPopups(prevState => [...prevState, `Successfully ${res.followed ? "followed" : "unfollowed"} ${user}`]);
 
       return;
     } else {
@@ -183,7 +183,7 @@ const UserPage: NextPage = () => {
       )}
 
       <Sidebar
-        categories={getSidebarPropsWithOption("Communities")}
+        categories={getSidebarPropsWithOption("Feed")}
         onToggle={(value) => setSidebarCollapsed(value)}
       />
       <Nav loggedIn={loggedIn} account={loggedIn ? account : null} />
@@ -227,7 +227,7 @@ const UserPage: NextPage = () => {
                 {user ? (
                   <>
                     <h1 className={styles.accountName}>{user.name}</h1>
-                    <h4 className={styles.accountDetails}>{account?.details ? account.details : "This user doesn't have any personal details"}</h4>
+                    <h4 className={styles.accountDetails}>{account?.details ? account.details : "No details provided"}</h4>
                     <div>
                       <div>
                         <span>{user?.followers ? user.followers.length : "Loading..."} Follower{(user?.followers?.length || 0) != 1 && "s"}</span>
