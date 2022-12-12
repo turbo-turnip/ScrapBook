@@ -1,0 +1,60 @@
+.friendsContainer {
+  width: 100%;
+  position: relative;
+  top: 80px;
+}
+
+.friendsContainer[data-collapsed="true"] {
+  width: calc(100vw - (200px - (200px * 0.91)));
+}
+
+.friendsContainer[data-collapsed="false"] {
+  width: 50vw;
+}
+
+.findFriend {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+
+.findFriend input {
+  font-size: 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.3rem 0.8rem;
+  font-family: var(--text-font);
+  width: 40%;
+  max-width: 600px;
+  min-width: 300px;
+}
+
+.findFriend button {
+  font-size: 1.2rem;
+  background: var(--blue);
+  color: var(--white);
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.findFriend button:hover {
+  transform: translateY(-2px);
+}
+
+@media (min-width: 400px) {
+  .friendsContainer[data-collapsed="false"] {
+    width: calc(100vw - 200px);
+  }
+}
+
+@media (max-width: 690px) {
+  .friendsContainer {
+    width: calc(100vw - 1rem) !important;
+  }
+}
