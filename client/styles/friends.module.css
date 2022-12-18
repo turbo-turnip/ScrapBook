@@ -2,6 +2,9 @@
   width: 100%;
   position: relative;
   top: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .friendsContainer[data-collapsed="true"] {
@@ -45,6 +48,53 @@
 
 .findFriend button:hover {
   transform: translateY(-2px);
+}
+
+.results {
+  width: 100%;
+  padding: 0 2rem;
+  max-width: 1200px;
+  margin-top: 1.5rem;
+}
+
+.results h1 {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.friendUser {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  margin-top: 1rem;
+  border-bottom: 1px solid var(--border);
+  transition: 0.2s;
+}
+
+.friendUser h4 {
+  font-size: 1.2rem;
+}
+
+.friendUser button {
+  font-size: 1rem;
+  background: var(--orange);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.friendUser:hover {
+  transform: translateX(-20px);
+}
+
+.friendUser button:hover {
+  transform: translateY(-5px);
+}
+
+.friendUser:last-of-type {
+  border-bottom: none;
 }
 
 @media (min-width: 400px) {

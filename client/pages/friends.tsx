@@ -14,6 +14,8 @@ const FriendsPage: NextPage = () => {
   const [errorPopups, setErrorPopups] = useState<Array<string>>([]);
   const [successPopups, setSuccessPopups] = useState<Array<string>>([]);
   const [alerts, setAlerts] = useState<Array<{ message: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }>, input?: { placeholder?: string } }>>([]);
+  const [queriedName, setQueriedName] = useState("");
+  const [friendsResponse, setFriendsResponse] = useState<Array<UserType>>([]);
   const router = useRouter();
 
   const auth = async () => {
@@ -29,6 +31,22 @@ const FriendsPage: NextPage = () => {
       router.push(res.redirect);
       return;
     }
+  }
+
+  const searchUsers = async () => {
+    const req = await fetch(backendPath + "/users/search", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: queriedName
+      })
+    });
+    const res = await req.json();
+
+    setFriendsResponse(res.users);
+    return;
   }
 
   // const fetchFolder = async () => {
@@ -125,8 +143,16 @@ const FriendsPage: NextPage = () => {
 
       <div className={styles.friendsContainer} data-collapsed={sidebarCollapsed}>
         <div className={styles.findFriend}>
-          <input placeholder="Enter a user name" />
-          <button>Search 🔍</button>
+          <input placeholder="Enter a user name" onChange={(e) => setQueriedName(e.target.value)} />
+          <button onClick={() => searchUsers()}>Search 🔍</button>
+        </div>
+        <div className={styles.results}>
+          {friendsResponse.length === 0 ? <h1>Enter a username above to search for users to friend ❤️</h1> : 
+            friendsResponse.map((friendUser, i) =>
+              <div className={styles.friendUser} key={i}>
+                <h4>{friendUser.name}</h4>
+                <button>Add friend</button>
+              </div>)}
         </div>
       </div>
     </>

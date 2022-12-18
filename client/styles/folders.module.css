@@ -154,7 +154,9 @@
   bottom: -10px;
   left: 50%;
   transform: translate(-50%, 100%);
-  width: fit-content;
+  width: max-content;
+  max-width: 180%;
+  text-align: center;
   transition: 0.2s;
 }
 

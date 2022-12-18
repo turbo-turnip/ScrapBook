@@ -520,3 +520,19 @@ export const followUser = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, error: "An error occurred. Please refresh the page and try again" });
   }
 }
+
+// POST :8080/user/search
+// Find specific users based on username
+export const searchUsers = async (req: Request, res: Response) => {
+  const username = req.body?.name || "";
+
+  const users = await prisma.user.findMany({
+    where: {
+      name: {
+        contains: username
+      }
+    }
+  });
+
+  return res.status(200).json({ success: true, users });
+}
