@@ -525,14 +525,36 @@ export const followUser = async (req: Request, res: Response) => {
 // Find specific users based on username
 export const searchUsers = async (req: Request, res: Response) => {
   const username = req.body?.name || "";
+  const accessToken = req.body?.accessToken || "";
+  const refreshToken = req.body?.refreshToken || "";
+  const page: number = req.body?.page;
+  const cursor: string|undefined = req.body?.cursor;
+
+  const { success, response } = await authenticateUser(accessToken, refreshToken);
+  if (!success) {
+    log(LogType.ERROR, JSON.stringify(response));
+    res.status(400).json({ success, error: "Invalid account" });
+    return;
+  }
+  
+  const userFriendsIDs = response.account.friends.map((friend: { id: string }) => friend.id);
+
+  const allUsers = await prisma.user.findMany({
+    where: { name: { contains: username }, id: { notIn: [...userFriendsIDs, response.account.id] } },
+    select: { id: true }
+  });
 
   const users = await prisma.user.findMany({
+    take: 2,
+    skip: page === 1 ? 0 : 1,
+    cursor: cursor ? { id: cursor } : undefined,
     where: {
-      name: {
-        contains: username
-      }
+      name: { contains: username },
+      id: { 
+        notIn: [...userFriendsIDs, response.account.id] 
+      },
     }
   });
 
-  return res.status(200).json({ success: true, users });
+  return res.status(200).json({ success: true, users: users, cursor: users[1].id, userLength: allUsers.length, ...response });
 }

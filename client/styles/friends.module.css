@@ -73,7 +73,7 @@
 }
 
 .friendUser h4 {
-  font-size: 1.2rem;
+  font-family: 1.2rem;
 }
 
 .friendUser button {
@@ -82,19 +82,72 @@
   padding: 0.2rem 0.5rem;
   border-radius: 6px;
   cursor: pointer;
-  transition: 0.2s;
 }
 
 .friendUser:hover {
-  transform: translateX(-20px);
-}
-
-.friendUser button:hover {
-  transform: translateY(-5px);
+  transform: translateX(-15px);
 }
 
 .friendUser:last-of-type {
   border-bottom: none;
+}
+
+.arrows {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.arrow {
+  background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: 0.2s;
+  position: relative;
+}
+
+.arrow::before {
+  content: "View more users";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: max-content;
+  transform: translate(-50%, -140%) scale(0);
+  background: var(--blue);
+  color: var(--white);
+  font-size: 1rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 4px;
+  z-index: 2;
+  transition: 0.2s;
+  transform-origin: bottom center;
+}
+
+.arrow::after {
+  content: "";
+  border: 10px solid transparent;
+  border-top: 10px solid var(--blue);
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -60%) scale(0);
+  z-index: 1;
+  transition: 0.2s;
+  transform-origin: top center;
+}
+
+.arrow:hover {
+  transform: scale(1.2);
+}
+
+.arrow:hover::before {
+  transform: translate(-50%, -140%) scale(1);
+}
+
+.arrow:hover::after {
+  transform: translate(-50%, -60%) scale(1);
 }
 
 @media (min-width: 400px) {

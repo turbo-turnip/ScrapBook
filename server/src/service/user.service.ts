@@ -33,7 +33,11 @@ export const getUser = (prop?: string, value?: any) => {
         communities: true,
         posts: true,
         followers: true,
-        friends: true,
+        friends: {
+          include: {
+            user: true
+          }
+        },
         messages: true,
         openDMs: true,
         bot: {

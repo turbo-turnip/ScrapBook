@@ -16,6 +16,10 @@ const FriendsPage: NextPage = () => {
   const [alerts, setAlerts] = useState<Array<{ message: string, buttons: Array<{ message: string, onClick?: () => any, color?: string }>, input?: { placeholder?: string } }>>([]);
   const [queriedName, setQueriedName] = useState("");
   const [friendsResponse, setFriendsResponse] = useState<Array<UserType>>([]);
+  const [noFriendsSearchedResponse, setNoFriendsSearchedResponse] = useState(false);
+  const [searchCursor, setSearchCursor] = useState<string|undefined>();
+  const [currPage, setCurrPage] = useState(1);
+  const [searchUserLength, setSearchUserLength] = useState(0);
   const router = useRouter();
 
   const auth = async () => {
@@ -34,19 +38,37 @@ const FriendsPage: NextPage = () => {
   }
 
   const searchUsers = async () => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
     const req = await fetch(backendPath + "/users/search", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        name: queriedName
+        name: queriedName, 
+        page: currPage,
+        cursor: searchCursor,
+        accessToken, refreshToken
       })
     });
     const res = await req.json();
 
-    setFriendsResponse(res.users);
-    return;
+    console.log(res);
+
+    if (res.success) {
+      setSearchUserLength(res.userLength);
+      setFriendsResponse(res.users);
+
+      if (res.users.length === 0) 
+        setNoFriendsSearchedResponse(true);
+
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res.newAccessToken);
+        localStorage.setItem("rt", res.newRefreshToken);
+      }
+    }
   }
 
   // const fetchFolder = async () => {
@@ -136,7 +158,7 @@ const FriendsPage: NextPage = () => {
           type={PopupType.SUCCESS}
           />)}
 
-      <Sidebar categories={getSidebarPropsWithOption("Folders")} onToggle={(value) => setSidebarCollapsed(value)} />
+      <Sidebar categories={getSidebarPropsWithOption("Friends")} onToggle={(value) => setSidebarCollapsed(value)} />
       <Nav loggedIn={loggedIn} account={loggedIn ? account : null} /> 
       {alerts.map((alert, i) =>
         <Alert message={alert.message} buttons={alert.buttons} input={alert?.input} key={i} />)}
@@ -147,12 +169,17 @@ const FriendsPage: NextPage = () => {
           <button onClick={() => searchUsers()}>Search 🔍</button>
         </div>
         <div className={styles.results}>
-          {friendsResponse.length === 0 ? <h1>Enter a username above to search for users to friend ❤️</h1> : 
+          {friendsResponse.length === 0 ? <h1>{noFriendsSearchedResponse ? "We can't find any users under that name... 🤔" : "Enter a username above to search for users to friend ❤️"}</h1> : 
             friendsResponse.map((friendUser, i) =>
               <div className={styles.friendUser} key={i}>
                 <h4>{friendUser.name}</h4>
                 <button>Add friend</button>
               </div>)}
+          
+          <div className={styles.arrows}>
+            {(searchUserLength > 2 && (searchUserLength / 2 > currPage)) ? <button className={styles.arrow}>➡️</button> : <></>}
+            {(searchUserLength > 2 && (searchUserLength / 2 < currPage)) ? <button className={styles.arrow}>⬅️</button> : <></>}
+          </div>
         </div>
       </div>
     </>
