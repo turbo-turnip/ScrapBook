@@ -106,10 +106,11 @@
   cursor: pointer;
   transition: 0.2s;
   position: relative;
+  margin-left: 3rem;
 }
 
 .arrow::before {
-  content: "View more users";
+  content: attr(data-tooltip);
   position: absolute;
   left: 50%;
   top: 0;

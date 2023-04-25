@@ -78,6 +78,7 @@ export const addUser = async (req: Request, res: Response) => {
 
       return;
     } else {
+      console.log(err);
       log(LogType.ERROR, `Unsuccessfully created user; request body: ${JSON.stringify(req.body)} error: ${err}`);
       res.status(500).json({ success: false, error: "Something went wrong; please refresh the page and try again, or try again with different credentials" });
 
@@ -528,7 +529,6 @@ export const searchUsers = async (req: Request, res: Response) => {
   const accessToken = req.body?.accessToken || "";
   const refreshToken = req.body?.refreshToken || "";
   const page: number = req.body?.page;
-  const cursor: string|undefined = req.body?.cursor;
 
   const { success, response } = await authenticateUser(accessToken, refreshToken);
   if (!success) {
@@ -536,25 +536,25 @@ export const searchUsers = async (req: Request, res: Response) => {
     res.status(400).json({ success, error: "Invalid account" });
     return;
   }
-  
-  const userFriendsIDs = response.account.friends.map((friend: { id: string }) => friend.id);
 
-  const allUsers = await prisma.user.findMany({
-    where: { name: { contains: username }, id: { notIn: [...userFriendsIDs, response.account.id] } },
-    select: { id: true }
-  });
+  const userFriendsIDs = response.account.friends.map((friend: { id: string }) => friend.id);
+  // Exclude all the user's friends, and the current user.
+  const userLength = await prisma.user.count() - (userFriendsIDs.length + 1);
+
+  const recordsToSkip = (page - 1) * 2;
 
   const users = await prisma.user.findMany({
     take: 2,
-    skip: page === 1 ? 0 : 1,
-    cursor: cursor ? { id: cursor } : undefined,
+    skip: recordsToSkip,
     where: {
-      name: { contains: username },
-      id: { 
-        notIn: [...userFriendsIDs, response.account.id] 
+      name: {
+        contains: username
       },
+      id: {
+        notIn: [...userFriendsIDs, response.account.id]
+      }
     }
   });
 
-  return res.status(200).json({ success: true, users: users, cursor: users[1].id, userLength: allUsers.length, ...response });
+  return res.status(200).json({ success: true, users, userLength, ...response });
 }

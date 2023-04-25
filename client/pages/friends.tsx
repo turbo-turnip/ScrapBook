@@ -17,7 +17,6 @@ const FriendsPage: NextPage = () => {
   const [queriedName, setQueriedName] = useState("");
   const [friendsResponse, setFriendsResponse] = useState<Array<UserType>>([]);
   const [noFriendsSearchedResponse, setNoFriendsSearchedResponse] = useState(false);
-  const [searchCursor, setSearchCursor] = useState<string|undefined>();
   const [currPage, setCurrPage] = useState(1);
   const [searchUserLength, setSearchUserLength] = useState(0);
   const router = useRouter();
@@ -49,20 +48,21 @@ const FriendsPage: NextPage = () => {
       body: JSON.stringify({
         name: queriedName, 
         page: currPage,
-        cursor: searchCursor,
         accessToken, refreshToken
       })
     });
     const res = await req.json();
 
-    console.log(res);
-
     if (res.success) {
+      console.log(res)
       setSearchUserLength(res.userLength);
       setFriendsResponse(res.users);
 
       if (res.users.length === 0) 
         setNoFriendsSearchedResponse(true);
+
+      if (res.userLength)
+        setSearchUserLength(res.userLength);
 
       if (res.generateNewTokens) {
         localStorage.setItem("at", res.newAccessToken);
@@ -71,67 +71,75 @@ const FriendsPage: NextPage = () => {
     }
   }
 
-  // const fetchFolder = async () => {
-  //   const path = new URL(window.location.href).pathname;
-  //   const folderID = decodeURIComponent(path.split('/')[2]);
-  //   const accessToken = localStorage.getItem("at") || "";
-  //   const refreshToken = localStorage.getItem("rt") || "";
+  const nextPage = async () => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
 
-  //   const req = await fetch(backendPath + "/folders/find", {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify({
-  //       accessToken, refreshToken,
-  //       folderID
-  //     })
-  //   });
-  //   const res = await req.json();
-  //   res?.folder && setFolder(res.folder);
-  //   if (res.success) {
-  //     if (res.generateNewTokens) {
-  //       localStorage.setItem("at", res?.newAccessToken || "");
-  //       localStorage.setItem("rt", res?.newRefreshToken || "");
-  //     }
-  //   } else {
-  //     setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
-  //     return;
-  //   }
-  // }
+    const req = await fetch(backendPath + "/users/search", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: queriedName, 
+        page: currPage + 1,
+        accessToken, refreshToken
+      })
+    });
+    const res = await req.json();
 
-  // const removePostFromFolder = async (postID: string) => {
-  //   const path = new URL(window.location.href).pathname;
-  //   const folderID = decodeURIComponent(path.split('/')[2]);
-  //   const accessToken = localStorage.getItem("at") || "";
-  //   const refreshToken = localStorage.getItem("rt") || "";
+    if (res.success) {
+      setSearchUserLength(res.userLength);
+      setFriendsResponse(res.users);
+      setCurrPage(prev => prev + 1);
 
-  //   const req = await fetch(backendPath + "/folders/removePost", {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify({
-  //       accessToken, refreshToken,
-  //       folderID,
-  //       postID
-  //     })
-  //   });
-  //   const res = await req.json();
-  //   res?.folder && setFolder(res.folder);
-  //   if (res.success) {
-  //     if (res.generateNewTokens) {
-  //       localStorage.setItem("at", res?.newAccessToken || "");
-  //       localStorage.setItem("rt", res?.newRefreshToken || "");
-  //     }
+      if (res.users.length === 0) 
+        setNoFriendsSearchedResponse(true);
 
-  //     setSuccessPopups(prevState => [...prevState, "Successfully removed post from folder"]);
-  //     return;
-  //   } else {
-  //     setErrorPopups(prevState => [...prevState, res?.error || "An error occurred. Please refresh the page and try again 👁👄👁"]);
-  //     return;
-  //   }
-  // }
+      if (res.userLength)
+        setSearchUserLength(res.userLength);
+
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res.newAccessToken);
+        localStorage.setItem("rt", res.newRefreshToken);
+      }
+    }
+  }
+
+  const previousPage = async () => {
+    const accessToken = localStorage.getItem("at") || "";
+    const refreshToken = localStorage.getItem("rt") || "";
+
+    const req = await fetch(backendPath + "/users/search", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: queriedName, 
+        page: currPage - 1,
+        accessToken, refreshToken
+      })
+    });
+    const res = await req.json();
+
+    if (res.success) {
+      setSearchUserLength(res.userLength);
+      setFriendsResponse(res.users);
+      setCurrPage(prev => prev - 1);
+
+      if (res.users.length === 0) 
+        setNoFriendsSearchedResponse(true);
+
+      if (res.userLength)
+        setSearchUserLength(res.userLength);
+
+      if (res.generateNewTokens) {
+        localStorage.setItem("at", res.newAccessToken);
+        localStorage.setItem("rt", res.newRefreshToken);
+      }
+    }
+  }
 
   useEffect(() => {
     auth();
@@ -177,8 +185,8 @@ const FriendsPage: NextPage = () => {
               </div>)}
           
           <div className={styles.arrows}>
-            {(searchUserLength > 2 && (searchUserLength / 2 > currPage)) ? <button className={styles.arrow}>➡️</button> : <></>}
-            {(searchUserLength > 2 && (searchUserLength / 2 < currPage)) ? <button className={styles.arrow}>⬅️</button> : <></>}
+            {(searchUserLength > 2 && ((searchUserLength / 2 - (currPage - 1)) < (searchUserLength / 2))) ? <button data-tooltip="View previous page" className={styles.arrow} onClick={() => previousPage()}>⬅️</button> : <></>}
+            {(searchUserLength > 2 && (searchUserLength / 2 - currPage > 0)) ? <button data-tooltip="View next page" className={styles.arrow} onClick={() => nextPage()}>➡️</button> : <></>}
           </div>
         </div>
       </div>

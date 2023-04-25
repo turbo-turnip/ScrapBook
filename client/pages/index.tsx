@@ -2,9 +2,9 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import styles from "../styles/Home.module.css";
-import { LockModel, Nav } from "../components";
+import { Nav } from "../components";
 import { Canvas } from "@react-three/fiber";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UserType } from "../util/userType.util";
 
 const Home: NextPage = () => {
@@ -40,44 +40,7 @@ const Home: NextPage = () => {
       <main className={styles.banner}>
         <div className={styles.content}>
           <div className={styles.heading}>
-            <h1>Connect with others online, with privacy</h1>
-          </div>
-
-          <div className={styles.model}>
-            <Canvas style={{ background: "#0000", height: "60vh" }}>
-              <ambientLight intensity={0.5} />
-              <pointLight position={[0, 8, 2]} intensity={0.25} />
-              <pointLight position={[0, 6, 2]} intensity={0.25} />
-              <pointLight position={[0, 4, 2]} intensity={0.25} />
-              <pointLight position={[0, 2, 2]} intensity={0.25} />
-              <pointLight position={[0, 0, 2]} intensity={0.25} />
-              <pointLight position={[0, -2, 2]} intensity={0.25} />
-              <pointLight position={[1, 8, 2]} intensity={0.25} />
-              <pointLight position={[1, 6, 2]} intensity={0.25} />
-              <pointLight position={[1, 4, 2]} intensity={0.25} />
-              <pointLight position={[1, 2, 2]} intensity={0.25} />
-              <pointLight position={[1, 0, 2]} intensity={0.25} />
-              <pointLight position={[1, -2, 2]} intensity={0.25} />
-              <pointLight position={[2, 8, 2]} intensity={0.25} />
-              <pointLight position={[2, 6, 2]} intensity={0.25} />
-              <pointLight position={[2, 4, 2]} intensity={0.25} />
-              <pointLight position={[2, 2, 2]} intensity={0.25} />
-              <pointLight position={[2, 0, 2]} intensity={0.25} />
-              <pointLight position={[2, -2, 2]} intensity={0.25} />
-              <pointLight position={[-1, 8, 2]} intensity={0.075} />
-              <pointLight position={[-1, 6, 2]} intensity={0.075} />
-              <pointLight position={[-1, 4, 2]} intensity={0.075} />
-              <pointLight position={[-1, 2, 2]} intensity={0.075} />
-              <pointLight position={[-1, 0, 2]} intensity={0.075} />
-              <pointLight position={[-1, -2, 2]} intensity={0.075} />
-              <Suspense fallback={null}>
-                <LockModel
-                  rotation={[0, 30.08, 0]}
-                  position={[0, -1.5, 0]}
-                  scale={[1.25, 1.25, 1.25]}
-                />
-              </Suspense>
-            </Canvas>
+            <h1>Connect with others online, with <span>privacy</span></h1>
           </div>
         </div>
 

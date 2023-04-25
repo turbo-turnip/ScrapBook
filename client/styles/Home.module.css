@@ -30,7 +30,7 @@
 .section {
   width: 100vw;
   position: relative;
-  top: 10vh;
+  top: 80px;
   display: flex;
   justify-content: center;
 }
@@ -70,10 +70,10 @@
 
 .banner {
   width: 100vw;
-  height: 90vh;
+  height: calc(100vh - 80px);
   max-height: 800px;
   position: relative;
-  top: 10vh;
+  top: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -95,20 +95,16 @@
 }
 
 .content > * {
-  max-width: 700px;
-}
-
-.model {
-  width: 30%;
+  max-width: 800px;
 }
 
 .heading {
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   width: 70%;
   padding-left: 1rem;
 }
 
-.heading h1 {
+.heading > * {
   text-align: center;
   color: var(--darker-blue);
   font-family: var(--heading-font);
@@ -119,6 +115,26 @@
 
 .heading h1:hover {
   filter: drop-shadow(-10px 10px 0px var(--orange));
+}
+
+.heading span {
+  position: relative;
+}
+
+.heading span::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: var(--darker-blue);
+  width: 110%;
+  height: 15px;
+  transition: 0.2s;
+  transform: rotate(0deg) scaleX(0);
+}
+
+.heading span:hover::after {
+  transform: rotate(-4deg) scaleX(1);
 }
 
 .scroll {
